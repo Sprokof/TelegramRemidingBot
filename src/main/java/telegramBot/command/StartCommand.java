@@ -1,7 +1,6 @@
 package telegramBot.command;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
-import telegramBot.notification.Time;
 import telegramBot.service.SendMessageService;
 
 public class StartCommand implements Command{

@@ -1,16 +1,11 @@
 package telegramBot.notification;
 
-import org.checkerframework.checker.units.qual.A;
 import org.hibernate.Session;
-import org.telegram.telegrambots.meta.api.objects.User;
 import telegramBot.bot.TelegramBot;
 import telegramBot.dao.NoticeDAOImpl;
 import telegramBot.entity.Notice;
 import telegramBot.service.SendMessageServiceImpl;
 
-import javax.management.Query;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class SendNotice {
@@ -28,7 +23,7 @@ public class SendNotice {
                executeNotice();}
             catch (Exception e){e.printStackTrace();}
             }};
-    timer.scheduleAtFixedRate(task,2350,60000);}
+    timer.scheduleAtFixedRate(task,2350,6000);}
 
     private static final List<Notice> sentNotices = new ArrayList<>();
 
@@ -45,24 +40,24 @@ public class SendNotice {
     catch (Exception e){e.printStackTrace();}
      return ides;}
 
-    private synchronized void executeNotice() throws InterruptedException {
+    private synchronized void executeNotice(){
         int[] noticeId;
-        String executeData;
+        String executeDate;
         stop();
         for(int i = 0; i < (noticeId = getIdOfNotice()).length; i++){
             Notice notice = new NoticeDAOImpl().getObjectByID(noticeId[i]);
-            executeData = notice.getNoticeDate();
-            if(executeData.replaceAll("\\p{P}", "\\/").equals(currentDate())&&!stop
-            &&!sentNotices.contains(notice)){
-                sentNotices.add(notice);
+            executeDate = notice.getNoticeDate();
+            if(executeDate.replaceAll("\\p{P}", "\\.").equals(currentDate())&&!stop&&
+            !sentNotices.contains(notice)){
+             sentNotices.add(notice);
         sendMessageService.sendMessage(notice.getUserChatID(),
                 "Напоминание :"+ " '"+notice.getMaintenance()+" '");
         try{
         new NoticeDAOImpl().deleteByID(noticeId[i]);}
         catch (IndexOutOfBoundsException e){
-                noticeId = getIdOfNotice();}
+                noticeId = getIdOfNotice();}}
         }}
-    }
+
     private String lastCommand(){
         return TelegramBot.commands.get(TelegramBot.commands.size()-1);
         }
@@ -77,10 +72,13 @@ public class SendNotice {
     private static String currentDate(){
         String[] tempDates = Calendar.getInstance().toString().split(",");
         String day = tempDates[17].substring(tempDates[17].indexOf("=")+1);
+        if(day.length()==1){day = "0"+day;}
         String mouth = String.valueOf(Integer.parseInt(tempDates[14].substring(tempDates[14].indexOf("=")+1))+1);
+        if(mouth.length()==1){mouth = "0"+mouth;}
         String year = tempDates[13].substring(tempDates[13].indexOf("=")+1);
-        return String.format("%s/%s/%s", day, mouth, year);
-    }
+        return String.format("%s.%s.%s", day, mouth, year);
+        }
+
 
     private static String currentTime(){
         String[] tempTimes = Calendar.getInstance().toString().split(",");
