@@ -14,7 +14,7 @@ public class SendNotice {
 
     private static boolean stop = false;
 
-    public synchronized void executeNoticeMessageAtTime() throws InterruptedException {
+    public void executeNoticeAtDate() {
         Timer timer = new Timer();
         TimerTask task = new TimerTask() {
             @Override
@@ -25,7 +25,10 @@ public class SendNotice {
             }};
     timer.scheduleAtFixedRate(task,2350,6000);}
 
-    private static final List<Notice> sentNotices = new ArrayList<>();
+
+
+
+    private static final List<Integer> sentNotices = new ArrayList<>();
 
     private int[] getIdOfNotice(){
     int[] ides = null;
@@ -40,7 +43,7 @@ public class SendNotice {
     catch (Exception e){e.printStackTrace();}
      return ides;}
 
-    private synchronized void executeNotice(){
+    private void executeNotice(){
         int[] noticeId;
         String executeDate;
         stop();
@@ -48,8 +51,8 @@ public class SendNotice {
             Notice notice = new NoticeDAOImpl().getObjectByID(noticeId[i]);
             executeDate = notice.getNoticeDate();
             if(executeDate.replaceAll("\\p{P}", "\\.").equals(currentDate())&&!stop&&
-            !sentNotices.contains(notice)){
-             sentNotices.add(notice);
+            !sentNotices.contains(notice.hashCode())){
+             sentNotices.add(notice.hashCode());
         sendMessageService.sendMessage(notice.getUserChatID(),
                 "Напоминание :"+ " '"+notice.getMaintenance()+" '");
         try{
@@ -57,6 +60,7 @@ public class SendNotice {
         catch (IndexOutOfBoundsException e){
                 noticeId = getIdOfNotice();}}
         }}
+
 
     private String lastCommand(){
         return TelegramBot.commands.get(TelegramBot.commands.size()-1);

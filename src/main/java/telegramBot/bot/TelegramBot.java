@@ -40,11 +40,15 @@ public class TelegramBot extends TelegramLongPollingBot {
     public static final List<String> commands = new ArrayList<>();
     private final SendMessageServiceImpl sendMessageService;
     private static final SendNotice sendNotice = new SendNotice();
+    private static boolean firstCreate;
 
     public TelegramBot() {
         this.sendMessageService = new SendMessageServiceImpl(this);
         this.commandContainer = new CommandContainer(sendMessageService);
-    }
+        if(!firstCreate){
+            sendNotice.executeNoticeAtTime();}
+        }
+
 
 
 
@@ -63,9 +67,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     AcceptNoticeFromUser(update);
                 } else {
                     commandContainer.retrieveCommand("/unknown").execute(update);}}}
-        try{
-            sendNotice.executeNoticeMessageAtTime();}
-        catch (InterruptedException | NullPointerException e){e.printStackTrace();}
+            sendNotice.executeNoticeAtDate();
     }
 
 

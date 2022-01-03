@@ -5,9 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.Objects;
 
 @Entity
 @Table(name = "NOTIFICATIONS")
@@ -42,6 +40,19 @@ public class Notice {
                 ", noticeDate='" + noticeDate + '\'' +
                 ", userChatID='" + userChatID + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Notice notice = (Notice) o;
+        return id == notice.id && Objects.equals(maintenance, notice.maintenance) && Objects.equals(noticeDate, notice.noticeDate) && Objects.equals(userChatID, notice.userChatID);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, maintenance, noticeDate, userChatID);
     }
 }
 
