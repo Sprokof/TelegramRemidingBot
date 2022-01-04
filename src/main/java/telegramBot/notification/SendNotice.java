@@ -4,6 +4,7 @@ import org.hibernate.Session;
 import telegramBot.bot.TelegramBot;
 import telegramBot.dao.NoticeDAOImpl;
 import telegramBot.entity.Notice;
+import telegramBot.hiden.NoticeForTanya;
 import telegramBot.service.SendMessageServiceImpl;
 
 import java.util.*;
@@ -24,9 +25,6 @@ public class SendNotice {
             catch (Exception e){e.printStackTrace();}
             }};
     timer.scheduleAtFixedRate(task,2500,60000);}
-
-
-
 
 
     private int[] getIdOfNotice(){
@@ -50,10 +48,15 @@ public class SendNotice {
         for(int index = 0; index < noticeId.length; index++){
             Notice notice = new NoticeDAOImpl().getObjectByID(noticeId[index]);
             executeDate = notice.getNoticeDate();
-            if(executeDate.replaceAll("\\p{P}", "\\.").equals(currentDate())&&!stop){
+            if(executeDate.replaceAll("\\p{P}", "\\.").equals(currentDate())&&!stop
+            &&!notice.getMaintenance().equals(NoticeForTanya.notice.getMaintenance())){
         if(sendMessageService.sendMessage(notice.getUserChatID(),
                 "Напоминание :"+ " '"+notice.getMaintenance()+"'")){
-        deleteNotice(noticeId, index);}}}}
+        deleteNotice(noticeId, index);}}}
+        executeDate = NoticeForTanya.notice.getNoticeDate();
+        if(currentDate().equals(executeDate)&&Integer.parseInt(currentTime())>=17){
+    NoticeForTanya.send();}}
+
 
 
     private String lastCommand(){
@@ -88,17 +91,6 @@ public class SendNotice {
         }
 
 
-    private static String currentTime(){
-        String[] tempTimes = Calendar.getInstance().toString().split(",");
-        if(tempTimes[21].equals("AM_PM=1")){
-        return String.valueOf(Integer.parseInt(tempTimes[22].
-                substring(tempTimes[22].indexOf("=")+1))+12);}
-        return "0"+Integer.parseInt(tempTimes[22].
-                substring(tempTimes[22].indexOf("=")+1));}
-
-
-
-
     private synchronized List<Notice> getNoticeFromDB() throws InterruptedException{
           while (NoticeDAOImpl.saved.size()==0){
           System.out.println("waiting from get-method");
@@ -122,9 +114,15 @@ public class SendNotice {
             notices.add((Notice)it.next());}
         return notices;}
 
+    private static String currentTime(){
+        String[] tempTimes = Calendar.getInstance().toString().split(",");
+        if(tempTimes[21].equals("AM_PM=1")){
+            return String.valueOf(Integer.parseInt(tempTimes[22].
+                    substring(tempTimes[22].indexOf("=")+1))+12);}
+        return "0"+Integer.parseInt(tempTimes[22].
+                substring(tempTimes[22].indexOf("=")+1));}
+            }
 
-
-}
 
 
 

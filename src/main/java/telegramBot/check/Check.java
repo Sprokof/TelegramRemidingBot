@@ -9,8 +9,9 @@ public class Check {
 
     public static boolean date(String day, String mouth, String year){
         int result = 0;
+
         try{
-            if(Integer.parseInt(day)<32&&Integer.parseInt(day)>=1){
+            if(Integer.parseInt(day)<32&&Integer.parseInt(day)>=1||day.length()==2){
             result+=1;}}
         catch (NumberFormatException e){
             result-=1;}

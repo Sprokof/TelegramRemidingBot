@@ -83,10 +83,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         return update.getMessage().getText().substring(firstIndexOfDate, lastIndexOfDate);
     }
 
-    private String getTimeFromUserInput(Update update){
-        String input = update.getMessage().getText();
-        return input.substring(input.length()-2);}
-
 
     private String getNoticeContentFromUserInput(Update update) {
         String s = update.getMessage().getText();
@@ -97,8 +93,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         String chatId = update.getMessage().getChatId().toString();
         Pattern date = Pattern.compile("[0-9]{2}\\p{P}[0-9]{2}\\p{P}[0-9]{4}");
         boolean dateInput = date.matcher(update.getMessage().getText()).find();
-        Pattern time = Pattern.compile("[0-9]{2}");
-        boolean timeInput = time.matcher(update.getMessage().getText()).find();
         if ((dateInput) && Check.date(getDateFromUserInput(update).split("\\p{P}")[0],
                 getDateFromUserInput(update).split("\\p{P}")[1],
                 getDateFromUserInput(update).split("\\p{P}")[2])) {
@@ -110,32 +104,16 @@ public class TelegramBot extends TelegramLongPollingBot {
                             " добавлено");
                 } else {
                     this.sendMessageService.sendMessage(chatId,
-                            "Напоминание не было добавлено, проверьте формат даты (dd.mm.yyyy)." +
+                            "Напоминание не было добавлено, проверьте формат даты (dd.mm.yyyy) или 00.00.0000" +
                                     "После введите команду '/add' еще раз для повторного добавления.");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-       else if((timeInput)&&Check.time(getTimeFromUserInput(update))){
-           String s = update.getMessage().getText();
-           String message = s.substring(0, s.length() - getTimeFromUserInput(update).length());
-          try {
-              Notice notice = new Notice(chatId,
-                       message, getTimeFromUserInput(update));
-               if (new NoticeDAOImpl().save(notice)) {
-
-                  this.sendMessageService.sendMessage(chatId, "Напоминание успешно" +
-                           " добавлено");
-              } else {
-                   this.sendMessageService.sendMessage(chatId,
-                         "Напоминание не было добавлено, проверьте формат времени (hh)." +
-                                  "После введите команду '/add' еще раз для повторного добавления.");}
-          } catch (Exception e) {
-              e.printStackTrace();}}
         else {
             this.sendMessageService.sendMessage(chatId,
-                    "Напоминание не было добавлено, проверьте формат даты (dd.mm.yyyy), либо (hh) " +
+                    "Напоминание не было добавлено, проверьте формат даты (dd.mm.yyyy) или 00.00.0000 " +
                             "для ежедневных напоминаний" +
                             "После введите команду '/add' еще раз для повторного добавления.");}
     }
