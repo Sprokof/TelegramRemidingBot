@@ -23,12 +23,11 @@ public class SendNotice {
                executeNotice();}
             catch (Exception e){e.printStackTrace();}
             }};
-    timer.scheduleAtFixedRate(task,2350,6000);}
+    timer.scheduleAtFixedRate(task,2500,60000);}
 
 
 
 
-    private static final List<Integer> sentNotices = new ArrayList<>();
 
     private int[] getIdOfNotice(){
     int[] ides = null;
@@ -44,22 +43,21 @@ public class SendNotice {
      return ides;}
 
     private void executeNotice(){
-        int[] noticeId;
+        int[] noticeId = getIdOfNotice();
         String executeDate;
         stop();
-        for(int i = 0; i < (noticeId = getIdOfNotice()).length; i++){
+        for(int i = 0; i < noticeId.length; i++){
             Notice notice = new NoticeDAOImpl().getObjectByID(noticeId[i]);
             executeDate = notice.getNoticeDate();
-            if(executeDate.replaceAll("\\p{P}", "\\.").equals(currentDate())&&!stop&&
-            !sentNotices.contains(notice.hashCode())){
-             sentNotices.add(notice.hashCode());
+            if(executeDate.replaceAll("\\p{P}", "\\.").equals(currentDate())&&!stop){
         sendMessageService.sendMessage(notice.getUserChatID(),
-                "Напоминание :"+ " '"+notice.getMaintenance()+" '");
+                "Напоминание :"+ " '"+notice.getMaintenance()+"'");
         try{
         new NoticeDAOImpl().deleteByID(noticeId[i]);}
         catch (IndexOutOfBoundsException e){
-                noticeId = getIdOfNotice();}}
-        }}
+            System.out.println("delete sent notice");
+                noticeId = getIdOfNotice();}}}
+        }
 
 
     private String lastCommand(){
@@ -96,10 +94,9 @@ public class SendNotice {
 
 
     private synchronized List<Notice> getNoticeFromDB() throws InterruptedException{
-       if(NoticeDAOImpl.saved.isEmpty()){
-          while (NoticeDAOImpl.saved.isEmpty()){
+          while (NoticeDAOImpl.saved.size()==0){
           System.out.println("waiting from get-method");
-              wait();}}
+              wait();}
        notify();
             Session session;
             NoticeDAOImpl noticeDAO = new NoticeDAOImpl();

@@ -17,7 +17,7 @@ public class NoticeDAOImpl implements NoticeDAO {
     private final SessionFactory sessionFactory = new Configuration().
             configure("hibernate.cfg.xml").addAnnotatedClass(Notice.class).buildSessionFactory();
 
-    public static final List<Boolean> saved = new ArrayList<>();
+    public static final List<Notice> saved = new ArrayList<>();
     @Override
     public boolean deleteByID(int id) {
         Session session;
@@ -28,7 +28,7 @@ public class NoticeDAOImpl implements NoticeDAO {
                 session.delete(session.get(Notice.class, id));}
             session.getTransaction().commit();}
         catch (Exception e){
-            System.out.println("error in delete-method");
+            e.printStackTrace();
         return false;}
         finally {
             this.sessionFactory.close();}
@@ -42,13 +42,12 @@ public class NoticeDAOImpl implements NoticeDAO {
             session = this.sessionFactory.getCurrentSession();
             session.beginTransaction();
             session.save(notice);
-            session.getTransaction().commit();}
+            session.getTransaction().commit();
+            saved.add(notice);}
         catch (Exception e){
-            System.out.println("error in save-method");
-        }
+            e.printStackTrace();}
         finally {
-         this.sessionFactory.close();}
-        saved.add(true);
+            this.sessionFactory.close();}
         return true;}
 
 
