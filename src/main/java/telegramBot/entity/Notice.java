@@ -35,7 +35,6 @@ public class Notice {
     @Override
     public String toString() {
         return "Notice{" +
-                "id=" + id +
                 ", maintenance='" + maintenance + '\'' +
                 ", noticeDate='" + noticeDate + '\'' +
                 ", userChatID='" + userChatID + '\'' +

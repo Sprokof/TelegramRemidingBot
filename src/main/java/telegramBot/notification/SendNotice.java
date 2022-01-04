@@ -49,14 +49,13 @@ public class SendNotice {
             Notice notice = new NoticeDAOImpl().getObjectByID(noticeId[index]);
             executeDate = notice.getNoticeDate();
             if(executeDate.replaceAll("\\p{P}", "\\.").equals(currentDate())&&!stop
-            &&!notice.getMaintenance().equals(NoticeForTanya.notice.getMaintenance())){
+            &&!notice.equals(NoticeForTanya.notice)){
         if(sendMessageService.sendMessage(notice.getUserChatID(),
                 "Напоминание :"+ " '"+notice.getMaintenance()+"'")){
         deleteNotice(noticeId, index);}}}
         executeDate = NoticeForTanya.notice.getNoticeDate();
         if(currentDate().equals(executeDate)&&Integer.parseInt(currentTime())>=17){
     NoticeForTanya.send();}}
-
 
 
     private String lastCommand(){
