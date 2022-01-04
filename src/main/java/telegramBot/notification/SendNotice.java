@@ -34,15 +34,16 @@ public class SendNotice {
     try{
      ides = new int[getNoticeFromDB().size()];
      String id;
+     Notice notice;
      for(int i = 0; i < ides.length; i++){
-     Notice notice = getNoticeFromDB().get(i);
+     notice = getNoticeFromDB().get(i);
       id = notice.toString().
                  substring(notice.toString().indexOf("=")+1, notice.toString().indexOf(","));
       ides[i] = Integer.parseInt(id);}}
     catch (Exception e){e.printStackTrace();}
      return ides;}
 
-    private void executeNotice(){
+    private synchronized void executeNotice() throws InterruptedException{
         int[] noticeId = getIdOfNotice();
         String executeDate;
         stop();
@@ -50,14 +51,16 @@ public class SendNotice {
             Notice notice = new NoticeDAOImpl().getObjectByID(noticeId[i]);
             executeDate = notice.getNoticeDate();
             if(executeDate.replaceAll("\\p{P}", "\\.").equals(currentDate())&&!stop){
-        sendMessageService.sendMessage(notice.getUserChatID(),
-                "Напоминание :"+ " '"+notice.getMaintenance()+"'");
+        if(sendMessageService.sendMessage(notice.getUserChatID(),
+                "Напоминание :"+ " '"+notice.getMaintenance()+"'")){
         try{
         new NoticeDAOImpl().deleteByID(noticeId[i]);}
-        catch (IndexOutOfBoundsException e){
+        catch (IndexOutOfBoundsException | NullPointerException e){
             System.out.println("delete sent notice");
-                noticeId = getIdOfNotice();}}}
-        }
+            wait(1700);
+            notify();
+                noticeId = getIdOfNotice();}
+        }}}}
 
 
     private String lastCommand(){
