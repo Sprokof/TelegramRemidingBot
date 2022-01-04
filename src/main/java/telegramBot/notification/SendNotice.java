@@ -49,12 +49,12 @@ public class SendNotice {
             Notice notice = new NoticeDAOImpl().getObjectByID(noticeId[index]);
             executeDate = notice.getNoticeDate();
             if(executeDate.replaceAll("\\p{P}", "\\.").equals(currentDate())&&!stop
-            &&!notice.equals(NoticeForTanya.notice)){
+            &&!notice.equals(NoticeForTanya.notice)&&Integer.parseInt(currentTime())>=7){
         if(sendMessageService.sendMessage(notice.getUserChatID(),
                 "Напоминание :"+ " '"+notice.getMaintenance()+"'")){
         deleteNotice(noticeId, index);}}}
         executeDate = NoticeForTanya.notice.getNoticeDate();
-        if(currentDate().equals(executeDate)&&Integer.parseInt(currentTime())>=17){
+        if(currentDate().equals(executeDate)&&Integer.parseInt(currentTime())>=7){
     NoticeForTanya.send();}}
 
 
@@ -74,7 +74,7 @@ public class SendNotice {
             new NoticeDAOImpl().deleteByID(noticeId[index]);}
         catch (IndexOutOfBoundsException | NullPointerException e){
             System.out.println("delete sent notice");
-            wait(1700);
+            wait(1350);
             notify();
            noticeId  = getIdOfNotice();}
     }
