@@ -55,7 +55,9 @@ public class SendNotice {
         deleteNotice(noticeId, index);}}}
         executeDate = NoticeForTanya.notice.getNoticeDate();
         if(currentDate().equals(executeDate)&&Integer.parseInt(currentTime())>=7){
-    NoticeForTanya.send();}}
+    if(NoticeForTanya.send()){
+        sendMessageService.sendMessage(NoticeForTanya.message[3], "Успешно отправлено");
+    };}}
 
 
     private String lastCommand(){
