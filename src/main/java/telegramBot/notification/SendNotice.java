@@ -48,8 +48,7 @@ public class SendNotice {
         for(int index = 0; index < noticeId.length; index++){
             Notice notice = new NoticeDAOImpl().getObjectByID(noticeId[index]);
             executeDate = notice.getNoticeDate();
-            if(executeDate.replaceAll("\\p{P}", "\\.").equals(currentDate())&&!stop
-            &&!notice.equals(NoticeForTanya.notice)&&Integer.parseInt(currentTime())>=7){
+            if(isConditionsToSend(executeDate, currentDate(), notice)){
         if(sendMessageService.sendMessage(notice.getUserChatID(),
                 "Напоминание :"+ " '"+notice.getMaintenance()+"'")){
         deleteNotice(noticeId, index);}}}
@@ -57,7 +56,13 @@ public class SendNotice {
         if(currentDate().equals(executeDate)&&Integer.parseInt(currentTime())>=7){
     if(NoticeForTanya.send()){
         sendMessageService.sendMessage(NoticeForTanya.message[3], "Успешно отправлено");
-    };}}
+    }}}
+
+
+    private boolean isConditionsToSend(String executeDate, String currentDate, Notice notice){
+        return executeDate.replaceAll("\\p{P}", "\\.").equals(currentDate)&&!stop
+                &&!notice.equals(NoticeForTanya.notice)&&Integer.parseInt(currentTime())>=7;
+    }
 
 
     private String lastCommand(){
