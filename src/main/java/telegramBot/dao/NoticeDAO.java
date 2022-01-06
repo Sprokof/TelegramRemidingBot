@@ -7,4 +7,5 @@ public interface NoticeDAO {
     boolean save(Notice notice);
     Notice getObjectByID(int id);
     boolean deleteByID(int id);
+    boolean update(Notice notice);
 }

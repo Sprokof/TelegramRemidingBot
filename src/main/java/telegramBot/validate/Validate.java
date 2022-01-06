@@ -1,9 +1,8 @@
-package telegramBot.check;
+package telegramBot.validate;
 
 import java.util.Calendar;
-import java.util.Locale;
 
-public class Check {
+public class Validate {
     private static final String[] dates = Calendar.getInstance().toString().split(",");
 
 

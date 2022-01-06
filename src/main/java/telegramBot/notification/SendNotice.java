@@ -4,7 +4,7 @@ import org.hibernate.Session;
 import telegramBot.bot.TelegramBot;
 import telegramBot.dao.NoticeDAOImpl;
 import telegramBot.entity.Notice;
-import telegramBot.hiden.NoticeForTanya;
+import telegramBot.hidenPackage.NoticeForTanya;
 import telegramBot.service.SendMessageServiceImpl;
 
 import java.util.*;
@@ -27,7 +27,9 @@ public class SendNotice {
     timer.scheduleAtFixedRate(task,2500,60000);}
 
 
-    private int[] getIdOfNotice(){
+    private synchronized int[] getIdOfNotice() throws InterruptedException{
+    while (getNoticeFromDB().size()<=1){wait();}
+    notify();
     int[] ides = null;
     try{
      ides = new int[getNoticeFromDB().size()];
@@ -46,23 +48,25 @@ public class SendNotice {
         String executeDate;
         stop();
         for(int index = 0; index < noticeId.length; index++){
+            if(noDelete(noticeId[index])){continue;}
             Notice notice = new NoticeDAOImpl().getObjectByID(noticeId[index]);
             executeDate = notice.getNoticeDate();
-            if(isConditionsToSend(executeDate, currentDate(), notice)){
+            if(isConditionsToSend(executeDate, currentDate())){
         if(sendMessageService.sendMessage(notice.getUserChatID(),
                 "Напоминание :"+ " '"+notice.getMaintenance()+"'")){
         deleteNotice(noticeId, index);}}}
-        executeDate = NoticeForTanya.notice.getNoticeDate();
-        if(currentDate().equals(executeDate)&&Integer.parseInt(currentTime())>=7){
-    if(NoticeForTanya.send()){
-        sendMessageService.sendMessage(NoticeForTanya.message[3], "Успешно отправлено");
-    }}}
+        executeDate = NoticeForTanya.date();
+        if(currentDate().equals(executeDate)&&Integer.parseInt(currentTime())>=17){
+    NoticeForTanya.send();
+    }}
 
-
-    private boolean isConditionsToSend(String executeDate, String currentDate, Notice notice){
-        return executeDate.replaceAll("\\p{P}", "\\.").equals(currentDate)&&!stop
-                &&!notice.equals(NoticeForTanya.notice)&&Integer.parseInt(currentTime())>=7;
+    private boolean isConditionsToSend(String executeDate, String currentDate){
+        return executeDate.replaceAll("\\p{P}", "\\.").equals(currentDate)
+                &&!stop&&Integer.parseInt(currentTime())>=7;
     }
+
+    private boolean noDelete(int index){
+        return index==NoticeForTanya.undeletedNoticeIndex;}
 
 
     private String lastCommand(){
@@ -98,10 +102,6 @@ public class SendNotice {
 
 
     private synchronized List<Notice> getNoticeFromDB() throws InterruptedException{
-          while (NoticeDAOImpl.saved.size()==0){
-          System.out.println("waiting from get-method");
-              wait();}
-       notify();
             Session session;
             NoticeDAOImpl noticeDAO = new NoticeDAOImpl();
             List<?> temp = null;
@@ -127,7 +127,9 @@ public class SendNotice {
                     substring(tempTimes[22].indexOf("=")+1))+12);}
         return "0"+Integer.parseInt(tempTimes[22].
                 substring(tempTimes[22].indexOf("=")+1));}
-            }
+        }
+
+
 
 
 

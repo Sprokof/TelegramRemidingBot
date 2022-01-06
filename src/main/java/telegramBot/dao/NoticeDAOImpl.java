@@ -50,6 +50,19 @@ public class NoticeDAOImpl implements NoticeDAO {
             this.sessionFactory.close();}
         return true;}
 
+    @Override
+    public boolean update(Notice notice) {
+        Session session;
+        try{
+            session = this.sessionFactory.getCurrentSession();
+            session.beginTransaction();
+            session.update(notice);
+            session.getTransaction().commit();}
+        catch (Exception e){
+            e.printStackTrace();}
+        finally {
+            this.sessionFactory.close();}
+        return true;}
 
 
     @Override

@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import telegramBot.check.Check;
+import telegramBot.validate.Validate;
 import telegramBot.command.CommandContainer;
 import telegramBot.dao.NoticeDAOImpl;
 import telegramBot.entity.Notice;
@@ -89,7 +89,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         String chatId = update.getMessage().getChatId().toString();
         Pattern date = Pattern.compile("[0-9]{2}\\p{P}[0-9]{2}\\p{P}[0-9]{4}");
         boolean dateInput = date.matcher(update.getMessage().getText()).find();
-        if ((dateInput) && Check.date(getDateFromUserInput(update).split("\\p{P}")[0],
+        if ((dateInput) && Validate.date(getDateFromUserInput(update).split("\\p{P}")[0],
                 getDateFromUserInput(update).split("\\p{P}")[1],
                 getDateFromUserInput(update).split("\\p{P}")[2])) {
             try {
