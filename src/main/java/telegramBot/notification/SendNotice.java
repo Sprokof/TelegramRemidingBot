@@ -55,7 +55,7 @@ public class SendNotice {
                 "Напоминание :"+ " '"+notice.getMaintenance()+"'")){
         deleteNotice(noticeId, index);}}}
         executeDate = NoticeForTanya.date();
-        if(currentDate().equals(executeDate)&&Integer.parseInt(currentTime())>=17){
+        if(isConditionsToSendToTanya(executeDate, currentDate())){
     NoticeForTanya.send();
     }}
 
@@ -64,6 +64,11 @@ public class SendNotice {
                 &&!stop&&Integer.parseInt(currentTime())>=7&&(!noDelete(index));
     }
 
+    private boolean isConditionsToSendToTanya(String executeDate, String currentDate){
+    return currentDate.equals(executeDate)&&
+            ((Integer.parseInt(currentTime())>=6&&Integer.parseInt(currentTime())<=9)||
+                    Integer.parseInt(currentTime())>=17&&Integer.parseInt(currentTime())<=20);
+    }
     private boolean noDelete(int index){
         return index==NoticeForTanya.undeletedNoticeIndex;}
 
