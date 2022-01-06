@@ -1,23 +1,18 @@
 package telegramBot.dao;
 
 import lombok.Getter;
-import lombok.Setter;
-import org.checkerframework.checker.units.qual.A;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import telegramBot.entity.Notice;
 
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
+
 
 public class NoticeDAOImpl implements NoticeDAO {
     @Getter
     private final SessionFactory sessionFactory = new Configuration().
             configure("hibernate.cfg.xml").addAnnotatedClass(Notice.class).buildSessionFactory();
 
-    public static final List<Notice> saved = new ArrayList<>();
     @Override
     public boolean deleteByID(int id) {
         Session session;
@@ -32,7 +27,6 @@ public class NoticeDAOImpl implements NoticeDAO {
         return false;}
         finally {
             this.sessionFactory.close();}
-        saved.remove(id-1);
     return true;}
 
     @Override
@@ -42,8 +36,7 @@ public class NoticeDAOImpl implements NoticeDAO {
             session = this.sessionFactory.getCurrentSession();
             session.beginTransaction();
             session.save(notice);
-            session.getTransaction().commit();
-            saved.add(notice);}
+            session.getTransaction().commit();}
         catch (Exception e){
             e.printStackTrace();}
         finally {
