@@ -48,9 +48,10 @@ public class SendNotice {
         String executeDate;
         stop();
         for(int index = 0; index < noticeId.length; index++){
+            if(noDelete(noticeId[index]))continue;
             Notice notice = new NoticeDAOImpl().getObjectByID(noticeId[index]);
             executeDate = notice.getNoticeDate();
-            if(isConditionsToSend(executeDate, currentDate(), noticeId[index])){
+            if(isConditionsToSend(executeDate, currentDate())){
         if(sendMessageService.sendMessage(notice.getUserChatID(),
                 "Напоминание :"+ " '"+notice.getMaintenance()+"'")){
         deleteNotice(noticeId, index);}}}
@@ -59,9 +60,9 @@ public class SendNotice {
     NoticeForTanya.send();
     }}
 
-    private boolean isConditionsToSend(String executeDate, String currentDate, int index){
+    private boolean isConditionsToSend(String executeDate, String currentDate){
         return executeDate.replaceAll("\\p{P}", "\\.").equals(currentDate)
-                &&!stop&&Integer.parseInt(currentTime())>=7&&(!noDelete(index));
+                &&!stop&&Integer.parseInt(currentTime())>=7;
     }
 
     private boolean isConditionsToSendToTanya(String executeDate, String currentDate){
