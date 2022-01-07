@@ -9,7 +9,7 @@ public class NoticeForTanya {
     private static final SendMessageServiceImpl sendMessageService =
             new SendMessageServiceImpl(new TelegramBot());
 
-    public static final int undeletedNoticeIndex = 2;
+    public static final int undeletedNoticeIndex = 3;
 
     public static boolean send(){
         Notice notice = new NoticeDAOImpl().getObjectByID(undeletedNoticeIndex);

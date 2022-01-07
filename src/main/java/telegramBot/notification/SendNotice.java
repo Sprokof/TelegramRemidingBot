@@ -50,7 +50,7 @@ public class SendNotice {
         for(int index = 0; index < noticeId.length; index++){
             Notice notice = new NoticeDAOImpl().getObjectByID(noticeId[index]);
             executeDate = notice.getNoticeDate();
-            if(isConditionsToSend(executeDate, currentDate(), index)){
+            if(isConditionsToSend(executeDate, currentDate(), noticeId[index])){
         if(sendMessageService.sendMessage(notice.getUserChatID(),
                 "Напоминание :"+ " '"+notice.getMaintenance()+"'")){
         deleteNotice(noticeId, index);}}}
