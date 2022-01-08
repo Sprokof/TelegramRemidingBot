@@ -6,9 +6,9 @@ public class Validate {
 
     public static boolean date(String day, String mouth, String year){
         int result = 0;
-        int dd = Integer.parseInt(day);
-        int mm = Integer.parseInt(mouth);
-        int yyyy = Integer.parseInt(year);
+        int dd = Integer.parseInt(day.trim());
+        int mm = Integer.parseInt(mouth.trim());
+        int yyyy = Integer.parseInt(year.trim());
 
         try{
             if(day.startsWith("0")) {
