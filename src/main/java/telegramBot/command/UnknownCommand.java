@@ -5,7 +5,7 @@ import telegramBot.service.SendMessageService;
 
 public class UnknownCommand implements Command{
     public static final String UNKNOWN_COMMAND = "Я понимаю команды '/start', '/stop', " +
-            "'/add'/, '/restart'";
+            "'/add', '/restart'";
     private final SendMessageService sendMessageService;
 
     public UnknownCommand(SendMessageService sendMessageService){

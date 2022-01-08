@@ -88,12 +88,12 @@ public class TelegramBot extends TelegramLongPollingBot {
     private void AcceptNoticeFromUser(Update update) {
         String chatId = update.getMessage().getChatId().toString();
         Pattern date = Pattern.compile("[0-9]{2}\\p{P}[0-9]{2}\\p{P}[0-9]{4}");
-        boolean rightDateFormat = date.matcher(update.getMessage().getText()).find();
+        boolean isDateInInput = date.matcher(update.getMessage().getText()).find();
         boolean rightDateInput = Validate.date(getDateFromUserInput(update).split("\\p{P}")[0],
                 getDateFromUserInput(update).split("\\p{P}")[1],
                 getDateFromUserInput(update).split("\\p{P}")[2]);
 
-        if ((rightDateFormat) && rightDateInput) {
+        if ((isDateInInput) && (rightDateInput)) {
             try {
                 Notice notice = new Notice(chatId,
                         getNoticeContentFromUserInput(update), getDateFromUserInput(update));
@@ -102,7 +102,8 @@ public class TelegramBot extends TelegramLongPollingBot {
                             " добавлено");
                 } else {
                     this.sendMessageService.sendMessage(chatId,
-                            "Напоминание не было добавлено, проверьте формат даты (dd.mm.yyyy) или 00.00.0000" +
+                            "Напоминание не было добавлено, проверьте формат даты (dd.mm.yyyy) или 00.00.0000. " +
+                                    "Возможно, что вы указали уже прошедшую дату" +
                                     "После введите команду '/add' еще раз для повторного добавления.");
                 }
             } catch (Exception e) {
