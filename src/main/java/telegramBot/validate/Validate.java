@@ -21,7 +21,7 @@ public class Validate {
             if(mm < 13 && mm >= 1){
             result ++;}
 
-            if(yyyy >= Integer.parseInt(date()[2].substring(date()[2].indexOf("=")+1))){
+            if(yyyy >= Integer.parseInt(date()[2])){
             result ++;}}
         catch (NumberFormatException e){ result -- ;}
         if(dd<Integer.parseInt(date()[0])||mm<Integer.parseInt(date()[1])) result --;
