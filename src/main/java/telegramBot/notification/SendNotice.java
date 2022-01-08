@@ -105,8 +105,7 @@ public class SendNotice {
         return String.format("%s.%s.%s", day, mouth, year);
         }
 
-
-    private synchronized List<Notice> getNoticeFromDB() throws InterruptedException{
+    private synchronized List<Notice> getNoticeFromDB() {
             Session session;
             NoticeDAOImpl noticeDAO = new NoticeDAOImpl();
             List<?> temp = null;
