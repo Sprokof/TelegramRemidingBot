@@ -100,6 +100,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 if (new NoticeDAOImpl().save(notice)) {
                     this.sendMessageService.sendMessage(chatId, "Напоминание успешно" +
                             " добавлено");
+                    //commands.clear();
                 } else {
                     this.sendMessageService.sendMessage(chatId,
                             "Напоминание не было добавлено, проверьте формат даты (dd.mm.yyyy) или 00.00.0000. " +
