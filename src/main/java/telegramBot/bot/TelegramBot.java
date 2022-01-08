@@ -88,10 +88,12 @@ public class TelegramBot extends TelegramLongPollingBot {
     private void AcceptNoticeFromUser(Update update) {
         String chatId = update.getMessage().getChatId().toString();
         Pattern date = Pattern.compile("[0-9]{2}\\p{P}[0-9]{2}\\p{P}[0-9]{4}");
-        boolean dateInput = date.matcher(update.getMessage().getText()).find();
-        if ((dateInput) && Validate.date(getDateFromUserInput(update).split("\\p{P}")[0],
+        boolean rightDateFormat = date.matcher(update.getMessage().getText()).find();
+        boolean rightDateInput = Validate.date(getDateFromUserInput(update).split("\\p{P}")[0],
                 getDateFromUserInput(update).split("\\p{P}")[1],
-                getDateFromUserInput(update).split("\\p{P}")[2])) {
+                getDateFromUserInput(update).split("\\p{P}")[2]);
+
+        if ((rightDateFormat) && rightDateInput) {
             try {
                 Notice notice = new Notice(chatId,
                         getNoticeContentFromUserInput(update), getDateFromUserInput(update));
