@@ -80,9 +80,8 @@ public class SendNotice {
     }
 
     private boolean isConditionsToSendToTanya(String executeDate, String currentDate) {
-        return currentDate.equals(executeDate) &&
-                ((Integer.parseInt(currentTime()) >= 6 && Integer.parseInt(currentTime()) <= 9) ||
-                        Integer.parseInt(currentTime()) >= 17 && Integer.parseInt(currentTime()) <= 22);
+        return (currentDate.equals(executeDate)) &&
+                (Integer.parseInt(currentTime()) >= 6 && Integer.parseInt(currentTime()) <= 22);
     }
 
     private boolean noDelete(int index) {
