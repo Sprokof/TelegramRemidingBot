@@ -4,10 +4,10 @@ import java.util.Calendar;
 
 public class Validate {
 
-    public static boolean date(String day, String mouth, String year){
+    public static boolean date(String day, String month, String year){
         int result = 0;
         int dd = Integer.parseInt(day.trim());
-        int mm = Integer.parseInt(mouth.trim());
+        int mm = Integer.parseInt(month.trim());
         int yyyy = Integer.parseInt(year.trim());
 
         try{
@@ -16,8 +16,8 @@ public class Validate {
             if(dd < 32 && dd >= 1){
             result ++;}
 
-            if(mouth.startsWith("0")) {
-                mm = Integer.parseInt(mouth.substring(1));}
+            if(month.startsWith("0")) {
+                mm = Integer.parseInt(month.substring(1));}
             if(mm < 13 && mm >= 1){
             result ++;}
 

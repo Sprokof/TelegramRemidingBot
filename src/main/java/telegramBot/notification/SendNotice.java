@@ -10,21 +10,21 @@ import telegramBot.service.SendMessageServiceImpl;
 import java.util.*;
 
 public class SendNotice {
-   public static final HashMap<String, String> lastDayInMouth = new HashMap<>();
+   public static final HashMap<String, String> lastDayInMonth = new HashMap<>();
 
    static {
-    lastDayInMouth.put("01", "31.01");
-    lastDayInMouth.put("02", "28.02");
-    lastDayInMouth.put("03", "30.03");
-    lastDayInMouth.put("04", "30.04");
-    lastDayInMouth.put("05", "31.05");
-    lastDayInMouth.put("06", "30.06");
-    lastDayInMouth.put("07", "31.07");
-    lastDayInMouth.put("08", "31.08");
-    lastDayInMouth.put("09", "30.09");
-    lastDayInMouth.put("10", "31.10");
-    lastDayInMouth.put("11", "30.11");
-    lastDayInMouth.put("12", "31.12");
+    lastDayInMonth.put("01", "31.01");
+    lastDayInMonth.put("02", "28.02");
+    lastDayInMonth.put("03", "30.03");
+    lastDayInMonth.put("04", "30.04");
+    lastDayInMonth.put("05", "31.05");
+    lastDayInMonth.put("06", "30.06");
+    lastDayInMonth.put("07", "31.07");
+    lastDayInMonth.put("08", "31.08");
+    lastDayInMonth.put("09", "30.09");
+    lastDayInMonth.put("10", "31.10");
+    lastDayInMonth.put("11", "30.11");
+    lastDayInMonth.put("12", "31.12");
    }
 
     private static final SendMessageServiceImpl sendMessageService =
@@ -199,7 +199,7 @@ public class SendNotice {
         String date = String.format(thisDate[0]+"%d"+thisDate[2]+
                 ""+thisDate[3]+""+thisDate[4]+""+thisDate[5]+""+
                 thisDate[6]+""+thisDate[7]+""+thisDate[8]+""+thisDate[9], Integer.parseInt(thisDate[1])+1);
-        String lastDate = lastDayInMouth.get(date.substring(date.indexOf(".")+1, date.lastIndexOf(".")));
+        String lastDate = lastDayInMonth.get(date.substring(date.indexOf(".")+1, date.lastIndexOf(".")));
 
         if((Integer.parseInt(date.substring(0, date.indexOf("."))))
                 == Integer.parseInt(lastDate.substring(0, lastDate.indexOf(".")))){
