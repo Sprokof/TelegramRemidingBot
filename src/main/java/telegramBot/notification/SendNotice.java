@@ -117,9 +117,7 @@ public class SendNotice {
 
     private boolean containsDailySendMarker(String maintenance){
         return (maintenance.split("")[0].
-                equalsIgnoreCase("Р") && maintenance.split("")[1].equals(" "))
-                || (maintenance.split("")[maintenance.length()-2].
-                equals(" ")&&maintenance.split("")[maintenance.length()-1].equalsIgnoreCase("Р"));
+                equalsIgnoreCase("Р") && maintenance.split("")[1].equals(" "));
     }
 
     private boolean noDelete(int index) {
@@ -163,7 +161,7 @@ public class SendNotice {
         return String.format("%s.%s.%s", day, mouth, year);
     }
 
-    private synchronized List<Notice> getNoticeFromDB() {
+    private List<Notice> getNoticeFromDB() {
         Session session;
         NoticeDAOImpl noticeDAO = new NoticeDAOImpl();
         List<?> temp = null;
@@ -171,7 +169,7 @@ public class SendNotice {
             session = noticeDAO.getSessionFactory().getCurrentSession();
             session.beginTransaction();
             temp = session.createSQLQuery("SELECT id," +
-                    "MAINTENANCE, NOTICEDATE, USERID from NOTIFICATIONS").
+                    "MAINTENANCE, NOTICE_DATE, USER_CHAT_ID from NOTIFICATIONS").
                     addEntity(Notice.class).list();
             session.getTransaction().commit();
         } catch (Exception e) {
@@ -217,13 +215,7 @@ public class SendNotice {
     }
 
     private static String deleteRegularMarker(Notice notice){
-        String temp = notice.getMaintenance();
-        String maintenance = null;
-        if(temp.toLowerCase(Locale.ROOT).indexOf(" ")==1){
-            maintenance =  temp.substring(2);
-        }
-        else if(temp.toLowerCase(Locale.ROOT).indexOf("p")==temp.length()-1){
-            maintenance =  temp.substring(0, temp.length()-2);}
+        String maintenance = notice.getMaintenance().substring(notice.getMaintenance().indexOf(" "));
         char firstLetter = Character.toUpperCase(maintenance.charAt(0));
         return String.format(firstLetter+"%s", maintenance.substring(1));
         }

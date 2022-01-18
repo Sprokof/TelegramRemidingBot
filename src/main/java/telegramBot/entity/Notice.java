@@ -11,21 +11,26 @@ import java.util.Objects;
 @Table(name = "NOTIFICATIONS")
 @NoArgsConstructor
 public class Notice {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(name = "USER_CHAT_ID")
+    @Setter
+    @Getter
+    private String userChatID;
+
     @Column(name = "MAINTENANCE")
     @Setter
     @Getter
     private String maintenance;
-    @Column(name = "NOTICEDATE")
+
+    @Column(name = "NOTICE_DATE")
     @Setter
     @Getter
     private String noticeDate;
-    @Column(name = "USERID")
-    @Setter
-    @Getter
-    private String userChatID;
+
 
     public Notice(String userChatID, String maintenance, String noticeDate) {
         this.userChatID = userChatID;
