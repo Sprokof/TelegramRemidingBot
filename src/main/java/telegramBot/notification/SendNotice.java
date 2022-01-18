@@ -8,8 +8,26 @@ import telegramBot.hidenPackage.NoticeForTanya;
 import telegramBot.service.SendMessageServiceImpl;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class SendNotice {
+   public static final HashMap<String, String> lastDayInMouth = new HashMap<>();
+
+   static {
+    lastDayInMouth.put("01", "31.01");
+    lastDayInMouth.put("02", "28.02");
+    lastDayInMouth.put("03", "30.03");
+    lastDayInMouth.put("04", "30.04");
+    lastDayInMouth.put("05", "31.05");
+    lastDayInMouth.put("06", "30.06");
+    lastDayInMouth.put("07", "31.07");
+    lastDayInMouth.put("08", "31.08");
+    lastDayInMouth.put("09", "30.09");
+    lastDayInMouth.put("10", "31.10");
+    lastDayInMouth.put("11", "30.11");
+    lastDayInMouth.put("12", "31.12");
+   }
+
     private static final SendMessageServiceImpl sendMessageService =
             new SendMessageServiceImpl(new TelegramBot());
 
@@ -61,10 +79,16 @@ public class SendNotice {
             if (noDelete(noticeId[index])) continue;
             Notice notice = new NoticeDAOImpl().getObjectByID(noticeId[index]);
             executeDate = notice.getNoticeDate();
-            if (isConditionsToSend(executeDate, currentDate())) {
+            if (isConditionsToSendOneTime(executeDate, currentDate(), notice)) {
                 if (sendMessageService.sendMessage(notice.getUserChatID(),
                         "Напоминание :" + " '" + notice.getMaintenance() + "'")) {
                     deleteNotice(noticeId, index);
+                }
+            }
+        else if(isConditionsToSendDaily(executeDate, currentDate(), notice)){
+                if (sendMessageService.sendMessage(notice.getUserChatID(),
+                        "Напоминание :" + " '" + deleteRegularMarker(notice) + "'")) {
+                updateDate(notice);
                 }
             }
         }
@@ -74,14 +98,28 @@ public class SendNotice {
         }
     }
 
-    private boolean isConditionsToSend(String executeDate, String currentDate) {
+    private boolean isConditionsToSendOneTime(String executeDate, String currentDate, Notice notice) {
         return executeDate.replaceAll("\\p{P}", "\\.").equals(currentDate)
-                && !stop && Integer.parseInt(currentTime()) >= 7;
+                && !stop && Integer.parseInt(currentTime()) >= 7 &&
+                !containsDailySendMarker(notice.getMaintenance());
     }
 
     private boolean isConditionsToSendToTanya(String executeDate, String currentDate) {
         return (currentDate.equals(executeDate)) &&
                 (Integer.parseInt(currentTime()) >= 6 && Integer.parseInt(currentTime()) <= 22);
+    }
+
+    private boolean isConditionsToSendDaily(String executeDate, String currentDate, Notice notice) {
+        return executeDate.replaceAll("\\p{P}", "\\.").equals(currentDate)
+                && !stop && Integer.parseInt(currentTime()) >= 7 &&
+                containsDailySendMarker(notice.getMaintenance());
+            }
+
+    private boolean containsDailySendMarker(String maintenance){
+        return (maintenance.split("")[0].
+                equalsIgnoreCase("Р") && maintenance.split("")[1].equals(" "))
+                || (maintenance.split("")[maintenance.length()-2].
+                equals(" ")&&maintenance.split("")[maintenance.length()-1].equalsIgnoreCase("Р"));
     }
 
     private boolean noDelete(int index) {
@@ -160,8 +198,37 @@ public class SendNotice {
         }
         return result;
     }
+    public static String nextDate(String[] thisDate){
+        String date = String.format(thisDate[0]+"%d"+thisDate[2]+
+                ""+thisDate[3]+""+thisDate[4]+""+thisDate[5]+""+
+                thisDate[6]+""+thisDate[7]+""+thisDate[8]+""+thisDate[9], Integer.parseInt(thisDate[1])+1);
+        String lastDate = lastDayInMouth.get(date.substring(date.indexOf(".")+1, date.lastIndexOf(".")));
 
-}
+        if((Integer.parseInt(date.substring(0, date.indexOf("."))))
+                == Integer.parseInt(lastDate.substring(0, lastDate.indexOf(".")))){
+            String temp = date.substring(date.lastIndexOf("."));
+            date = lastDate + temp;}
+        if(date.indexOf(".")==3) date = date.substring(1);
+        return date;}
+
+    private static void updateDate(Notice notice){
+        notice.setNoticeDate(nextDate(notice.getNoticeDate().split("")));
+        new NoticeDAOImpl().update(notice);
+    }
+
+    private static String deleteRegularMarker(Notice notice){
+        String temp = notice.getMaintenance();
+        String maintenance = null;
+        if(temp.toLowerCase(Locale.ROOT).indexOf(" ")==1){
+            maintenance =  temp.substring(2);
+        }
+        else if(temp.toLowerCase(Locale.ROOT).indexOf("p")==temp.length()-1){
+            maintenance =  temp.substring(0, temp.length()-2);}
+        char firstLetter = Character.toUpperCase(maintenance.charAt(0));
+        return String.format(firstLetter+"%s", maintenance.substring(1));
+        }
+    }
+
 
 
 
