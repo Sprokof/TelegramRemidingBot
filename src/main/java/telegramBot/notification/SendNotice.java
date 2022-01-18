@@ -8,7 +8,6 @@ import telegramBot.hidenPackage.NoticeForTanya;
 import telegramBot.service.SendMessageServiceImpl;
 
 import java.util.*;
-import java.util.regex.Pattern;
 
 public class SendNotice {
    public static final HashMap<String, String> lastDayInMouth = new HashMap<>();
