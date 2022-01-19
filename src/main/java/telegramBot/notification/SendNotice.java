@@ -177,7 +177,7 @@ public class SendNotice {
             noticeDAO.getSessionFactory().close();
         }
         List<Notice> notices = new ArrayList<>();
-        for (Iterator<?> it = temp.iterator(); it.hasNext(); ) {
+        for (Iterator<?> it = temp.iterator(); it.hasNext();) {
             notices.add((Notice) it.next());
         }
         return notices;
@@ -199,13 +199,22 @@ public class SendNotice {
         String date = String.format(thisDate[0]+"%d"+thisDate[2]+
                 ""+thisDate[3]+""+thisDate[4]+""+thisDate[5]+""+
                 thisDate[6]+""+thisDate[7]+""+thisDate[8]+""+thisDate[9], Integer.parseInt(thisDate[1])+1);
+
+        if(date.startsWith("0") && date.indexOf(".")==3){ date = date.substring(1);}
+        if(date.indexOf(".") == 3){
+            date = String.format("%d"+thisDate[2]+
+                    ""+thisDate[3]+""+thisDate[4]+""+thisDate[5]+""+
+                    thisDate[6]+""+thisDate[7]+""+thisDate[8]+""+thisDate[9],
+                    Integer.parseInt(thisDate[0]+thisDate[1])+1);
+        }
+
         String lastDate = lastDayInMonth.get(date.substring(date.indexOf(".")+1, date.lastIndexOf(".")));
 
         if((Integer.parseInt(date.substring(0, date.indexOf("."))))
                 == Integer.parseInt(lastDate.substring(0, lastDate.indexOf(".")))){
             String temp = date.substring(date.lastIndexOf("."));
             date = lastDate + temp;}
-        if(date.indexOf(".")==3) date = date.substring(1);
+
         return date;}
 
     private static void updateDate(Notice notice){
@@ -214,7 +223,7 @@ public class SendNotice {
     }
 
     private static String deleteRegularMarker(Notice notice){
-        String maintenance = notice.getMaintenance().substring(notice.getMaintenance().indexOf(" "));
+        String maintenance = notice.getMaintenance().substring(notice.getMaintenance().indexOf(" ")+1);
         char firstLetter = Character.toUpperCase(maintenance.charAt(0));
         return String.format(firstLetter+"%s", maintenance.substring(1));
         }
