@@ -5,14 +5,12 @@ import telegramBot.bot.TelegramBot;
 import telegramBot.dao.NoticeDAOImpl;
 import telegramBot.entity.Notice;
 import telegramBot.hidenPackage.NoticeForTanya;
-import telegramBot.myCollectionFramework.MyMap;
 import telegramBot.service.SendMessageServiceImpl;
 
 import java.util.*;
 
 public class SendNotice {
-   //public static final HashMap<String, String> lastDayInMonth = new HashMap<>();
-   public static final MyMap<String, String> lastDayInMonth = new MyMap<>();
+   public static final HashMap<String, String> lastDayInMonth = new HashMap<>();
 
    static {
     lastDayInMonth.put("01", "31.01");
@@ -154,12 +152,12 @@ public class SendNotice {
         if (day.length() == 1) {
             day = "0" + day;
         }
-        String mouth = String.valueOf(Integer.parseInt(tempDates[14].substring(tempDates[14].indexOf("=") + 1)) + 1);
-        if (mouth.length() == 1) {
-            mouth = "0" + mouth;
+        String month = String.valueOf(Integer.parseInt(tempDates[14].substring(tempDates[14].indexOf("=") + 1)) + 1);
+        if (month.length() == 1) {
+            month = "0" + month;
         }
         String year = tempDates[13].substring(tempDates[13].indexOf("=") + 1);
-        return String.format("%s.%s.%s", day, mouth, year);
+        return String.format("%s.%s.%s", day, month, year);
     }
 
     private List<Notice> getNoticeFromDB() {
@@ -210,7 +208,7 @@ public class SendNotice {
                     Integer.parseInt(thisDate[0]+thisDate[1])+1);
         }
 
-        String lastDate = lastDayInMonth.getValue(date.substring(date.indexOf(".")+1, date.lastIndexOf(".")));
+        String lastDate = lastDayInMonth.get(date.substring(date.indexOf(".")+1, date.lastIndexOf(".")));
 
         if((Integer.parseInt(date.substring(0, date.indexOf("."))))
                 == Integer.parseInt(lastDate.substring(0, lastDate.indexOf(".")))){
