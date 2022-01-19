@@ -5,12 +5,14 @@ import telegramBot.bot.TelegramBot;
 import telegramBot.dao.NoticeDAOImpl;
 import telegramBot.entity.Notice;
 import telegramBot.hidenPackage.NoticeForTanya;
+import telegramBot.myCollectionFramework.MyMap;
 import telegramBot.service.SendMessageServiceImpl;
 
 import java.util.*;
 
 public class SendNotice {
-   public static final HashMap<String, String> lastDayInMonth = new HashMap<>();
+   //public static final HashMap<String, String> lastDayInMonth = new HashMap<>();
+   public static final MyMap<String, String> lastDayInMonth = new MyMap<>();
 
    static {
     lastDayInMonth.put("01", "31.01");
@@ -208,7 +210,7 @@ public class SendNotice {
                     Integer.parseInt(thisDate[0]+thisDate[1])+1);
         }
 
-        String lastDate = lastDayInMonth.get(date.substring(date.indexOf(".")+1, date.lastIndexOf(".")));
+        String lastDate = lastDayInMonth.getValue(date.substring(date.indexOf(".")+1, date.lastIndexOf(".")));
 
         if((Integer.parseInt(date.substring(0, date.indexOf("."))))
                 == Integer.parseInt(lastDate.substring(0, lastDate.indexOf(".")))){
