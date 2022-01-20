@@ -1,13 +1,14 @@
 package telegramBot.dao;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import telegramBot.entity.Notice;
 
 
-
+@NoArgsConstructor
 public class NoticeDAOImpl implements NoticeDAO {
     @Getter
     private final SessionFactory sessionFactory = new Configuration().
