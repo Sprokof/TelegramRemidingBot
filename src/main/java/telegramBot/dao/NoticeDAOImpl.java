@@ -7,13 +7,12 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import telegramBot.entity.Notice;
 
-
 @NoArgsConstructor
 public class NoticeDAOImpl implements NoticeDAO {
     @Getter
     private final SessionFactory sessionFactory = new Configuration().
             configure("hibernate.cfg.xml").addAnnotatedClass(Notice.class).buildSessionFactory();
-
+    
     @Override
     public boolean deleteByID(int id) {
         Session session;
