@@ -97,7 +97,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     //commands.clear();
                 } else {
                     this.sendMessageService.sendMessage(chatId,
-                            "Напоминание не было добавлено, проверьте формат даты (dd.mm.yyyy) или 00.00.0000. " +
+                            "Напоминание не было добавлено, проверьте формат даты (dd.mm.yyyy)" +
                                     "Возможно, что вы указали уже прошедшую дату. " +
                                     "После введите команду '/add' еще раз для повторного добавления.");
                 }
@@ -107,7 +107,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
         else {
             this.sendMessageService.sendMessage(chatId,
-                    "Напоминание не было добавлено, проверьте формат даты (dd.mm.yyyy) или 00.00.0000 " +
+                    "Напоминание не было добавлено, проверьте формат даты (dd.mm.yyyy) " +
                             "для ежедневных напоминаний. Возможно, что вы указали уже прошедшую дату. " +
                             "После введите команду '/add' еще раз для повторного добавления.");}
     }
