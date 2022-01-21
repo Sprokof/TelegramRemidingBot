@@ -61,7 +61,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     AcceptNoticeFromUser(update);
                 } else {
                     commandContainer.retrieveCommand("/unknown").execute(update);}}}
-            SEND_REMIND.executeNoticeAtDate();
+            SEND_REMIND.executeRemindMessage();
     }
 
 

@@ -33,7 +33,7 @@ public class SendRemind {
     private static boolean stop = false;
     private static final String REMIND_MESSAGE = "Позвольте напомнить, что вам нужно ";
 
-    public void executeNoticeAtDate() {
+    public void executeRemindMessage() {
         Timer timer = new Timer();
         TimerTask task = new TimerTask() {
             @Override
