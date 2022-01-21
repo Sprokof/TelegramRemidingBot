@@ -6,10 +6,10 @@ import telegramBot.service.SendMessageService;
 public class StartCommand implements Command{
     private int counter = 1;
     public static String START_COMMAND = "Я бот, напоминающий об важных событиях," +
-            "для добавления напоманиния введите команду '/add', после " +
-            "содержание напоминания и саму дату напоминания в формате dd.mm.yyyy, где все буквы цифры." +
+            " для добавления напоманиния введите команду '/add', после этого" +
+            " содержание напоминания и саму дату напоминания в формате dd.mm.yyyy. " +
             "Для ежедневных напоминаний помимо содержание напоминания и даты старта напоминаний" +
-            "добавьте буквы 'р' в начале сообщения.";
+            " добавьте букву 'р' в начале сообщения.";
 
     private final SendMessageService sendMessageService;
 

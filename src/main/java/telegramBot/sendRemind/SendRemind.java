@@ -38,13 +38,11 @@ public class SendRemind {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                try {
-                    buildRemind();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        try{
+            buildRemind();
             }
-        };
+        catch (InterruptedException e){e.printStackTrace();
+        }}};
         timer.scheduleAtFixedRate(task, 2500, 60000);
     }
 
@@ -71,7 +69,7 @@ public class SendRemind {
         return ides;
     }
 
-    private synchronized void buildRemind() throws InterruptedException {
+    private void buildRemind() throws InterruptedException {
         int[] remindId = getIdOfRemind();
         String executeDate;
         stop();
