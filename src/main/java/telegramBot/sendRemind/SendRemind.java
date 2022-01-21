@@ -80,14 +80,16 @@ public class SendRemind {
             Remind remind = new RemindDAOImpl().getObjectByID(remindId[index]);
             executeDate = remind.getRemindDate();
             if (isConditionsToSendOneTime(executeDate, currentDate(), remind)) {
+                String maintenance = (Character.toLowerCase(remind.getMaintenance().
+                        charAt(0))+remind.getMaintenance().substring(1));
                 if (sendMessageService.sendMessage(remind.getUserChatID(),
-                        REMIND_MESSAGE + remind.getMaintenance())) {
+                        REMIND_MESSAGE + maintenance+".")) {
                     deleteRemind(remindId, index);
                 }
             }
         else if(isConditionsToSendDaily(executeDate, currentDate(), remind)){
                 if (sendMessageService.sendMessage(remind.getUserChatID(),
-                        REMIND_MESSAGE + deleteRegularMarker(remind))) {
+                        REMIND_MESSAGE + deleteRegularMarker(remind)+".")) {
                 updateDate(remind);
                 }
             }
