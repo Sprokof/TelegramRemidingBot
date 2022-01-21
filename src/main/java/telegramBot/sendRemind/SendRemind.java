@@ -31,6 +31,7 @@ public class SendRemind {
             new SendMessageServiceImpl(new TelegramBot());
 
     private static boolean stop = false;
+    private static final String REMIND_MESSAGE = "Позвольте напомнить, что вам нужно ";
 
     public void executeNoticeAtDate() {
         Timer timer = new Timer();
@@ -80,13 +81,13 @@ public class SendRemind {
             executeDate = remind.getRemindDate();
             if (isConditionsToSendOneTime(executeDate, currentDate(), remind)) {
                 if (sendMessageService.sendMessage(remind.getUserChatID(),
-                        "Позвольте напомнить :" + " '" + remind.getMaintenance() + "'")) {
+                        REMIND_MESSAGE + remind.getMaintenance())) {
                     deleteRemind(remindId, index);
                 }
             }
         else if(isConditionsToSendDaily(executeDate, currentDate(), remind)){
                 if (sendMessageService.sendMessage(remind.getUserChatID(),
-                        "Позвольте напомнить :" + " '" + deleteRegularMarker(remind) + "'")) {
+                        REMIND_MESSAGE + deleteRegularMarker(remind))) {
                 updateDate(remind);
                 }
             }
@@ -224,7 +225,7 @@ public class SendRemind {
 
     private static String deleteRegularMarker(Remind remind){
         String maintenance = remind.getMaintenance().substring(remind.getMaintenance().indexOf(" ")+1);
-        char firstLetter = Character.toUpperCase(maintenance.charAt(0));
+        char firstLetter = Character.toLowerCase(maintenance.charAt(0));
         return String.format(firstLetter+"%s", maintenance.substring(1));
         }
     }
