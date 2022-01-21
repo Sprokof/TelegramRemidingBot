@@ -71,22 +71,22 @@ public class SendRemind {
     }
 
     private synchronized void buildRemind() throws InterruptedException {
-        int[] noticeId = getIdOfRemind();
+        int[] remindId = getIdOfRemind();
         String executeDate;
         stop();
-        for (int index = 0; index < noticeId.length; index++) {
-            if (noDelete(noticeId[index])) continue;
-            Remind remind = new RemindDAOImpl().getObjectByID(noticeId[index]);
+        for (int index = 0; index < remindId.length; index++) {
+            if (noDelete(remindId[index])) continue;
+            Remind remind = new RemindDAOImpl().getObjectByID(remindId[index]);
             executeDate = remind.getRemindDate();
             if (isConditionsToSendOneTime(executeDate, currentDate(), remind)) {
                 if (sendMessageService.sendMessage(remind.getUserChatID(),
-                        "Напоминание :" + " '" + remind.getMaintenance() + "'")) {
-                    deleteRemind(noticeId, index);
+                        "Позвольте напомнить :" + " '" + remind.getMaintenance() + "'")) {
+                    deleteRemind(remindId, index);
                 }
             }
         else if(isConditionsToSendDaily(executeDate, currentDate(), remind)){
                 if (sendMessageService.sendMessage(remind.getUserChatID(),
-                        "Напоминание :" + " '" + deleteRegularMarker(remind) + "'")) {
+                        "Позвольте напомнить :" + " '" + deleteRegularMarker(remind) + "'")) {
                 updateDate(remind);
                 }
             }
