@@ -39,7 +39,7 @@ public class SendRemind {
             @Override
             public void run() {
         try{
-            buildRemind();
+            findAndSendRemind();
             }
         catch (InterruptedException e){e.printStackTrace();
         }}};
@@ -69,7 +69,7 @@ public class SendRemind {
         return ides;
     }
 
-    private void buildRemind() throws InterruptedException {
+    private void findAndSendRemind() throws InterruptedException {
         int[] remindId = getIdOfRemind();
         String executeDate;
         stop();
@@ -177,11 +177,11 @@ public class SendRemind {
         } finally {
             remindDAO.getSessionFactory().close();
         }
-        List<Remind> notices = new ArrayList<>();
+        List<Remind> reminds = new ArrayList<>();
         for (Iterator<?> it = temp.iterator(); it.hasNext();) {
-            notices.add((Remind) it.next());
+            reminds.add((Remind) it.next());
         }
-        return notices;
+        return reminds;
     }
 
     private static String currentTime() {
