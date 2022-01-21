@@ -5,22 +5,22 @@ import lombok.NoArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import telegramBot.entity.Notice;
+import telegramBot.entity.Remind;
 
 @NoArgsConstructor
-public class NoticeDAOImpl implements NoticeDAO {
+public class RemindDAOImpl implements RemindDAO {
     @Getter
     private final SessionFactory sessionFactory = new Configuration().
-            configure("hibernate.cfg.xml").addAnnotatedClass(Notice.class).buildSessionFactory();
-    
+            configure("hibernate.cfg.xml").addAnnotatedClass(Remind.class).buildSessionFactory();
+
     @Override
     public boolean deleteByID(int id) {
         Session session;
         try{
             session = this.sessionFactory.getCurrentSession();
             session.beginTransaction();
-            if(session.get(Notice.class, id)!=null){
-                session.delete(session.get(Notice.class, id));}
+            if(session.get(Remind.class, id)!=null){
+                session.delete(session.get(Remind.class, id));}
             session.getTransaction().commit();}
         catch (Exception e){
             e.printStackTrace();
@@ -30,12 +30,12 @@ public class NoticeDAOImpl implements NoticeDAO {
     return true;}
 
     @Override
-    public boolean save(Notice notice) {
+    public boolean save(Remind remind) {
         Session session;
         try{
             session = this.sessionFactory.getCurrentSession();
             session.beginTransaction();
-            session.save(notice);
+            session.save(remind);
             session.getTransaction().commit();}
         catch (Exception e){
             e.printStackTrace();}
@@ -44,12 +44,12 @@ public class NoticeDAOImpl implements NoticeDAO {
         return true;}
 
     @Override
-    public boolean update(Notice notice) {
+    public boolean update(Remind remind) {
         Session session;
         try{
             session = this.sessionFactory.getCurrentSession();
             session.beginTransaction();
-            session.update(notice);
+            session.update(remind);
             session.getTransaction().commit();}
         catch (Exception e){
             e.printStackTrace();}
@@ -59,18 +59,18 @@ public class NoticeDAOImpl implements NoticeDAO {
 
 
     @Override
-    public Notice getObjectByID(int id) {
+    public Remind getObjectByID(int id) {
             Session session;
-            Notice notice = null;
+            Remind remind = null;
             try{
                 session = this.sessionFactory.getCurrentSession();
                 session.beginTransaction();
-                notice = session.get(Notice.class,id);
+                remind = session.get(Remind.class,id);
                 session.getTransaction().commit();}
             catch (Exception e){
                 System.out.println("error in get-method");;}
            finally {
             this.sessionFactory.close();}
-            return notice;
+            return remind;
     }
 }

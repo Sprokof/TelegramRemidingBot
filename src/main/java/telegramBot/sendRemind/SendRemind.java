@@ -1,15 +1,15 @@
-package telegramBot.notification;
+package telegramBot.sendRemind;
 
 import org.hibernate.Session;
 import telegramBot.bot.TelegramBot;
-import telegramBot.dao.NoticeDAOImpl;
-import telegramBot.entity.Notice;
-import telegramBot.hidenPackage.NoticeForTanya;
+import telegramBot.dao.RemindDAOImpl;
+import telegramBot.entity.Remind;
+import telegramBot.hidenPackage.RemindForTanya;
 import telegramBot.service.SendMessageServiceImpl;
 
 import java.util.*;
 
-public class SendNotice {
+public class SendRemind {
    public static final HashMap<String, String> lastDayInMonth = new HashMap<>();
 
    static {
@@ -38,7 +38,7 @@ public class SendNotice {
             @Override
             public void run() {
                 try {
-                    executeNotice();
+                    buildRemind();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -48,18 +48,18 @@ public class SendNotice {
     }
 
 
-    private synchronized int[] getIdOfNotice() throws InterruptedException {
-        while (getNoticeFromDB().size() <= 1) {
+    private synchronized int[] getIdOfRemind() throws InterruptedException {
+        while (getRemindFromDB().size() <= 1) {
             wait();
         }
         notify();
         int[] ides = null;
         try {
-            ides = new int[getNoticeFromDB().size()];
+            ides = new int[getRemindFromDB().size()];
             String id;
-            Notice notice;
+            Remind notice;
             for (int i = 0; i < ides.length; i++) {
-                notice = getNoticeFromDB().get(i);
+                notice = getRemindFromDB().get(i);
                 id = notice.toString().
                         substring(notice.toString().indexOf("=") + 1, notice.toString().indexOf(","));
                 ides[i] = Integer.parseInt(id);
@@ -70,34 +70,34 @@ public class SendNotice {
         return ides;
     }
 
-    private synchronized void executeNotice() throws InterruptedException {
-        int[] noticeId = getIdOfNotice();
+    private synchronized void buildRemind() throws InterruptedException {
+        int[] noticeId = getIdOfRemind();
         String executeDate;
         stop();
         for (int index = 0; index < noticeId.length; index++) {
             if (noDelete(noticeId[index])) continue;
-            Notice notice = new NoticeDAOImpl().getObjectByID(noticeId[index]);
-            executeDate = notice.getNoticeDate();
-            if (isConditionsToSendOneTime(executeDate, currentDate(), notice)) {
-                if (sendMessageService.sendMessage(notice.getUserChatID(),
-                        "Напоминание :" + " '" + notice.getMaintenance() + "'")) {
-                    deleteNotice(noticeId, index);
+            Remind remind = new RemindDAOImpl().getObjectByID(noticeId[index]);
+            executeDate = remind.getRemindDate();
+            if (isConditionsToSendOneTime(executeDate, currentDate(), remind)) {
+                if (sendMessageService.sendMessage(remind.getUserChatID(),
+                        "Напоминание :" + " '" + remind.getMaintenance() + "'")) {
+                    deleteRemind(noticeId, index);
                 }
             }
-        else if(isConditionsToSendDaily(executeDate, currentDate(), notice)){
-                if (sendMessageService.sendMessage(notice.getUserChatID(),
-                        "Напоминание :" + " '" + deleteRegularMarker(notice) + "'")) {
-                updateDate(notice);
+        else if(isConditionsToSendDaily(executeDate, currentDate(), remind)){
+                if (sendMessageService.sendMessage(remind.getUserChatID(),
+                        "Напоминание :" + " '" + deleteRegularMarker(remind) + "'")) {
+                updateDate(remind);
                 }
             }
         }
-        executeDate = NoticeForTanya.date();
+        executeDate = RemindForTanya.date();
         if (isConditionsToSendToTanya(executeDate, currentDate())) {
-            NoticeForTanya.send();
+            RemindForTanya.send();
         }
     }
 
-    private boolean isConditionsToSendOneTime(String executeDate, String currentDate, Notice notice) {
+    private boolean isConditionsToSendOneTime(String executeDate, String currentDate, Remind notice) {
         return executeDate.replaceAll("\\p{P}", "\\.").equals(currentDate)
                 && !stop && Integer.parseInt(currentTime()) >= 7 &&
                 !containsDailySendMarker(notice.getMaintenance());
@@ -108,10 +108,10 @@ public class SendNotice {
                 (Integer.parseInt(currentTime()) >= 6 && Integer.parseInt(currentTime()) <= 22);
     }
 
-    private boolean isConditionsToSendDaily(String executeDate, String currentDate, Notice notice) {
+    private boolean isConditionsToSendDaily(String executeDate, String currentDate, Remind remind) {
         return executeDate.replaceAll("\\p{P}", "\\.").equals(currentDate)
                 && !stop && Integer.parseInt(currentTime()) >= 7 &&
-                containsDailySendMarker(notice.getMaintenance());
+                containsDailySendMarker(remind.getMaintenance());
             }
 
     private boolean containsDailySendMarker(String maintenance){
@@ -120,7 +120,7 @@ public class SendNotice {
     }
 
     private boolean noDelete(int index) {
-        return index == NoticeForTanya.undeletedNoticeIndex;
+        return index == RemindForTanya.undeletedNoticeIndex;
     }
 
 
@@ -135,14 +135,14 @@ public class SendNotice {
         if (lastCommand().equals("/restart")) stop = false;
     }
 
-    private void deleteNotice(int[] noticeId, int index) throws InterruptedException {
+    private void deleteRemind(int[] noticeId, int index) throws InterruptedException {
         try {
-            new NoticeDAOImpl().deleteByID(noticeId[index]);
+            new RemindDAOImpl().deleteByID(noticeId[index]);
         } catch (IndexOutOfBoundsException | NullPointerException e) {
             System.out.println("delete sent notice");
             wait(1350);
             notify();
-            noticeId = getIdOfNotice();
+            noticeId = getIdOfRemind();
         }
     }
 
@@ -160,25 +160,25 @@ public class SendNotice {
         return String.format("%s.%s.%s", day, month, year);
     }
 
-    private List<Notice> getNoticeFromDB() {
+    private List<Remind> getRemindFromDB() {
         Session session;
-        NoticeDAOImpl noticeDAO = new NoticeDAOImpl();
+        RemindDAOImpl remindDAO = new RemindDAOImpl();
         List<?> temp = null;
         try {
-            session = noticeDAO.getSessionFactory().getCurrentSession();
+            session = remindDAO.getSessionFactory().getCurrentSession();
             session.beginTransaction();
             temp = session.createSQLQuery("SELECT id," +
-                    "MAINTENANCE, NOTICE_DATE, USER_CHAT_ID from NOTIFICATIONS").
-                    addEntity(Notice.class).list();
+                    "MAINTENANCE, REMIND_DATE, USER_CHAT_ID from REMINDERS").
+                    addEntity(Remind.class).list();
             session.getTransaction().commit();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            noticeDAO.getSessionFactory().close();
+            remindDAO.getSessionFactory().close();
         }
-        List<Notice> notices = new ArrayList<>();
+        List<Remind> notices = new ArrayList<>();
         for (Iterator<?> it = temp.iterator(); it.hasNext();) {
-            notices.add((Notice) it.next());
+            notices.add((Remind) it.next());
         }
         return notices;
     }
@@ -217,13 +217,13 @@ public class SendNotice {
 
         return date;}
 
-    private static void updateDate(Notice notice){
-        notice.setNoticeDate(nextDate(notice.getNoticeDate().split("")));
-        new NoticeDAOImpl().update(notice);
+    private static void updateDate(Remind remind){
+        remind.setRemindDate((nextDate(remind.getRemindDate().split(""))));
+        new RemindDAOImpl().update(remind);
     }
 
-    private static String deleteRegularMarker(Notice notice){
-        String maintenance = notice.getMaintenance().substring(notice.getMaintenance().indexOf(" ")+1);
+    private static String deleteRegularMarker(Remind remind){
+        String maintenance = remind.getMaintenance().substring(remind.getMaintenance().indexOf(" ")+1);
         char firstLetter = Character.toUpperCase(maintenance.charAt(0));
         return String.format(firstLetter+"%s", maintenance.substring(1));
         }

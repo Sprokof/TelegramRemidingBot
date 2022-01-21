@@ -8,9 +8,9 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "NOTIFICATIONS")
+@Table(name = "REMINDERS")
 @NoArgsConstructor
-public class Notice {
+public class Remind {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,23 +26,23 @@ public class Notice {
     @Getter
     private String maintenance;
 
-    @Column(name = "NOTICE_DATE")
+    @Column(name = "REMIND_DATE")
     @Setter
     @Getter
-    private String noticeDate;
+    private String remindDate;
 
 
-    public Notice(String userChatID, String maintenance, String noticeDate) {
+    public Remind(String userChatID, String maintenance, String remindDate) {
         this.userChatID = userChatID;
-        this.noticeDate = noticeDate;
+        this.remindDate = remindDate;
         this.maintenance = maintenance;}
 
     @Override
     public String toString() {
-        return "Notice{" +
+        return "Remind{" +
                 "id=" + id +
                 ", maintenance='" + maintenance + '\'' +
-                ", noticeDate='" + noticeDate + '\'' +
+                ", noticeDate='" + remindDate + '\'' +
                 ", userChatID='" + userChatID + '\'' +
                 '}';
     }
@@ -51,13 +51,14 @@ public class Notice {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Notice notice = (Notice) o;
-        return id == notice.id && Objects.equals(maintenance, notice.maintenance) && Objects.equals(noticeDate, notice.noticeDate) && Objects.equals(userChatID, notice.userChatID);
+        Remind remind = (Remind) o;
+        return id == remind.id && Objects.equals(maintenance, remind.maintenance) && Objects.equals(remindDate, remind.remindDate)
+                && Objects.equals(userChatID, remind.userChatID);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, maintenance, noticeDate, userChatID);
+        return Objects.hash(id, maintenance, remindDate, userChatID);
     }
 }
 

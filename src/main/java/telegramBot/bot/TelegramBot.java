@@ -7,9 +7,9 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import telegramBot.validate.Validate;
 import telegramBot.command.CommandContainer;
-import telegramBot.dao.NoticeDAOImpl;
-import telegramBot.entity.Notice;
-import telegramBot.notification.SendNotice;
+import telegramBot.dao.RemindDAOImpl;
+import telegramBot.entity.Remind;
+import telegramBot.sendRemind.SendRemind;
 import telegramBot.service.SendMessageServiceImpl;
 
 import java.io.BufferedReader;
@@ -39,7 +39,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final CommandContainer commandContainer;
     public static final List<String> commands = new ArrayList<>();
     private final SendMessageServiceImpl sendMessageService;
-    private static final SendNotice sendNotice = new SendNotice();
+    private static final SendRemind SEND_REMIND = new SendRemind();
 
     public TelegramBot() {
         this.sendMessageService = new SendMessageServiceImpl(this);
@@ -61,7 +61,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     AcceptNoticeFromUser(update);
                 } else {
                     commandContainer.retrieveCommand("/unknown").execute(update);}}}
-            sendNotice.executeNoticeAtDate();
+            SEND_REMIND.executeNoticeAtDate();
     }
 
 
@@ -80,7 +80,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
 
-    private String getNoticeContentFromUserInput(String input) {
+    private String getRemindContentFromUserInput(String input) {
         return input.substring(0, input.length() - getDateFromUserInput(input).length());
     }
 
@@ -89,9 +89,9 @@ public class TelegramBot extends TelegramLongPollingBot {
         String input = update.getMessage().getText();
         if (isCorrectInput(input)) {
             try {
-                Notice notice = new Notice(chatId,
-                        getNoticeContentFromUserInput(input), getDateFromUserInput(input));
-                if (new NoticeDAOImpl().save(notice)) {
+                Remind remind = new Remind(chatId,
+                        getRemindContentFromUserInput(input), getDateFromUserInput(input));
+                if (new RemindDAOImpl().save(remind)) {
                     this.sendMessageService.sendMessage(chatId, "Напоминание успешно" +
                             " добавлено");
                     //commands.clear();
