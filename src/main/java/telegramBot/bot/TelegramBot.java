@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import telegramBot.service.RemindServiceImpl;
 import telegramBot.validate.Validate;
 import telegramBot.command.CommandContainer;
 import telegramBot.dao.RemindDAOImpl;
@@ -58,7 +59,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 commands.add(command);
             } else if (!message.startsWith(COMMAND_PREFIX)) {
                 if ((!commands.isEmpty()) && commands.get(commands.size() - 1).equals("/add")) {
-                    AcceptNoticeFromUser(update);
+                    AcceptRemindFromUser(update);
                 } else {
                     commandContainer.retrieveCommand("/unknown").execute(update);}}}
             SEND_REMIND.executeRemindMessage();
@@ -84,14 +85,15 @@ public class TelegramBot extends TelegramLongPollingBot {
         return input.substring(0, input.length() - getDateFromUserInput(input).length());
     }
 
-    private void AcceptNoticeFromUser(Update update) {
+    private void AcceptRemindFromUser(Update update) {
         String chatId = update.getMessage().getChatId().toString();
         String input = update.getMessage().getText();
+        System.out.println(input);
         if (isCorrectInput(input)) {
             try {
                 Remind remind = new Remind(chatId,
                         getRemindContentFromUserInput(input), getDateFromUserInput(input));
-                if (new RemindDAOImpl().save(remind)) {
+                if (new RemindServiceImpl(new RemindDAOImpl()).saveRemind(remind)) {
                     this.sendMessageService.sendMessage(chatId, "Напоминание успешно" +
                             " добавлено");
                     //commands.clear();
@@ -105,6 +107,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 e.printStackTrace();
             }
         }
+
         else {
             this.sendMessageService.sendMessage(chatId,
                     "Напоминание не было добавлено, проверьте формат даты (dd.mm.yyyy) " +
@@ -112,16 +115,25 @@ public class TelegramBot extends TelegramLongPollingBot {
                             "После введите команду '/add' еще раз для повторного добавления.");}
     }
 
+    private boolean isContainsRegularMarker(String input){
+        String[] strings = input.split("");
+        return strings[0].equalsIgnoreCase("P") && strings[1].equals(" ");
+    }
+
     private boolean isCorrectInput(String input){
         Pattern tempPattern = Pattern.compile("[Aa-zZ\\s][0-9]{2}\\p{P}[0-9]{2}\\p{P}[0-9]{4}");
         boolean textWithRightDate = tempPattern.matcher(input).find();
-        if(textWithRightDate) return Validate.date(getDateFromUserInput(input).split("\\p{P}")[0],
+        if(textWithRightDate){
+            return Validate.date(getDateFromUserInput(input).split("\\p{P}")[0],
                 getDateFromUserInput(input).split("\\p{P}")[1],
-                getDateFromUserInput(input).split("\\p{P}")[2]);
-        else{return false;}
-    }
+                getDateFromUserInput(input).split("\\p{P}")[2]);}
+        else{ return false; }
+    }}
 
-    }
+
+
+
+
 
 
 
