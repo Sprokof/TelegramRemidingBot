@@ -91,13 +91,13 @@ public class TelegramBot extends TelegramLongPollingBot {
     private void AcceptRemindFromUser(Update update) {
         String chatId = update.getMessage().getChatId().toString();
         String input = update.getMessage().getText();
-        boolean contains;
+        boolean isContains;
         if (isCorrectInput(input)) {
             try {
                 Remind remind = new Remind(chatId,
                         getRemindContentFromUserInput(input), getDateFromUserInput(input));
-                contains = new RemindServiceImpl(new RemindDAOImpl()).isContainsInDB(remind);
-                 if(!contains){
+                isContains = new RemindServiceImpl(new RemindDAOImpl()).isContainsInDB(remind);
+                 if(!isContains){
                     if (new RemindServiceImpl(new RemindDAOImpl()).saveRemind(remind)) {
                         this.sendMessageService.sendMessage(chatId, "Напоминание успешно" +
                                 " добавлено.");
