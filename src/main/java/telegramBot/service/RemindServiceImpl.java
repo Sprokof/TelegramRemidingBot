@@ -28,7 +28,7 @@ public class RemindServiceImpl implements RemindService{
             this.remindDAO.deleteByID(arrayId[index]);
         } catch (IndexOutOfBoundsException | NullPointerException e) {
             System.out.println("delete sent notice");
-            wait(1350);
+            wait(2000);
             notify();
             arrayId = newArrayId;
         }
@@ -65,7 +65,16 @@ public class RemindServiceImpl implements RemindService{
 
     @Override
     public Remind getRemindById(int id) {
-        return this.remindDAO.getObjectByID(id);
-    }
-}
+        return this.remindDAO.getObjectByID(id);}
+
+    @Override
+    public boolean isContainsInDB(Remind remind) {
+        List<Remind> reminds = getAllRemindsFromDB();
+        for(Remind rem:reminds){
+            if(rem.equals(remind)){return true;}}
+        return false;}
+        }
+
+
+
 

@@ -52,8 +52,9 @@ public class Remind {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Remind remind = (Remind) o;
-        return id == remind.id && Objects.equals(maintenance, remind.maintenance) && Objects.equals(remindDate, remind.remindDate)
-                && Objects.equals(userChatID, remind.userChatID);
+        return this.userChatID.equals(remind.userChatID) &&
+                this.maintenance.equals(remind.maintenance) && this.remindDate.
+                equals(remind.remindDate.replaceAll("\\p{P}", "\\."));
     }
 
     @Override

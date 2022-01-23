@@ -46,7 +46,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.sendMessageService = new SendMessageServiceImpl(this);
         this.commandContainer = new CommandContainer(sendMessageService);
 
-        }
+    }
 
     @Override
     public void onUpdateReceived(Update update) {
@@ -61,8 +61,11 @@ public class TelegramBot extends TelegramLongPollingBot {
                 if ((!commands.isEmpty()) && commands.get(commands.size() - 1).equals("/add")) {
                     AcceptRemindFromUser(update);
                 } else {
-                    commandContainer.retrieveCommand("/unknown").execute(update);}}}
-            SEND_REMIND.executeRemindMessage();
+                    commandContainer.retrieveCommand("/unknown").execute(update);
+                }
+            }
+        }
+        SEND_REMIND.executeRemindMessage();
     }
 
 
@@ -71,7 +74,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         int lastIndexOfDate = input.length();
         for (int i = 0; i < input.split("").length; i++) {
             if (String.valueOf(input.charAt(i)).matches("[0-9]")
-                    &&String.valueOf(input.charAt(i + 1)).
+                    && String.valueOf(input.charAt(i + 1)).
                     matches("\\p{P}")) {
                 firstIndexOfDate = (i - 1);
                 break;
@@ -88,47 +91,50 @@ public class TelegramBot extends TelegramLongPollingBot {
     private void AcceptRemindFromUser(Update update) {
         String chatId = update.getMessage().getChatId().toString();
         String input = update.getMessage().getText();
-        System.out.println(input);
+        boolean contains;
         if (isCorrectInput(input)) {
             try {
                 Remind remind = new Remind(chatId,
                         getRemindContentFromUserInput(input), getDateFromUserInput(input));
-                if (new RemindServiceImpl(new RemindDAOImpl()).saveRemind(remind)) {
-                    this.sendMessageService.sendMessage(chatId, "Напоминание успешно" +
-                            " добавлено");
-                    //commands.clear();
-                } else {
-                    this.sendMessageService.sendMessage(chatId,
-                            "Напоминание не было добавлено, проверьте формат даты (dd.mm.yyyy)" +
-                                    "Возможно, что вы указали уже прошедшую дату. " +
-                                    "После введите команду '/add' еще раз для повторного добавления.");
+                contains = new RemindServiceImpl(new RemindDAOImpl()).isContainsInDB(remind);
+                 if(!contains){
+                    if (new RemindServiceImpl(new RemindDAOImpl()).saveRemind(remind)) {
+                        this.sendMessageService.sendMessage(chatId, "Напоминание успешно" +
+                                " добавлено.");
+                        commands.clear();
+                    } else {
+                        this.sendMessageService.sendMessage(chatId,
+                                "Напоминание не было добавлено, проверьте формат даты (dd.mm.yyyy)" +
+                                        "Возможно, что вы указали уже прошедшую дату. " +
+                                        "После введите команду '/add' еще раз для повторного добавления.");
+                    }
                 }
+                 else{ this.sendMessageService.sendMessage(chatId,
+                         "Данное напоминание было добавлено ранее.");}
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-
-        else {
+        } else {
             this.sendMessageService.sendMessage(chatId,
                     "Напоминание не было добавлено, проверьте формат даты (dd.mm.yyyy) " +
                             "для ежедневных напоминаний. Возможно, что вы указали уже прошедшую дату. " +
-                            "После введите команду '/add' еще раз для повторного добавления.");}
+                            "После введите команду '/add' еще раз для повторного добавления.");
+        }
     }
 
-    private boolean isContainsRegularMarker(String input){
-        String[] strings = input.split("");
-        return strings[0].equalsIgnoreCase("P") && strings[1].equals(" ");
-    }
-
-    private boolean isCorrectInput(String input){
-        Pattern tempPattern = Pattern.compile("[Aa-zZ\\s][0-9]{2}\\p{P}[0-9]{2}\\p{P}[0-9]{4}");
-        boolean textWithRightDate = tempPattern.matcher(input).find();
-        if(textWithRightDate){
+    private boolean isCorrectInput(String input) {
+        Pattern p = Pattern.compile("[Aa-zZ\\s][0-9]{2}\\p{P}[0-9]{2}\\p{P}[0-9]{4}");
+        boolean textWithRightDate = p.matcher(input).find();
+        if (textWithRightDate) {
             return Validate.date(getDateFromUserInput(input).split("\\p{P}")[0],
-                getDateFromUserInput(input).split("\\p{P}")[1],
-                getDateFromUserInput(input).split("\\p{P}")[2]);}
-        else{ return false; }
-    }}
+                    getDateFromUserInput(input).split("\\p{P}")[1],
+                    getDateFromUserInput(input).split("\\p{P}")[2]);
+        } else {
+            return false;
+        }
+    }
+
+}
 
 
 

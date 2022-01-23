@@ -10,4 +10,5 @@ public interface RemindService {
     void updateDate(Remind remind, String newDate);
     List<Remind> getAllRemindsFromDB();
     Remind getRemindById(int id);
+    boolean isContainsInDB(Remind remind);
 }
