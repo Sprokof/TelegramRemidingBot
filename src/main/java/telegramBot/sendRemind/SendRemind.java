@@ -103,7 +103,7 @@ public class SendRemind {
 
     private boolean isConditionsToSendOneTime(String executeDate, String currentDate, Remind notice) {
         return executeDate.replaceAll("\\p{P}", "\\.").equals(currentDate)
-                && !stop && Integer.parseInt(currentTime()) >= 7 &&
+                && !stop && Integer.parseInt(currentTime()) >= 6 &&
                 !isContainsDailySendMarker(notice.getMaintenance());
     }
 

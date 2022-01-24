@@ -4,6 +4,7 @@ import telegramBot.bot.TelegramBot;
 import telegramBot.dao.RemindDAOImpl;
 import telegramBot.entity.Remind;
 import telegramBot.sendRemind.SendRemind;
+import telegramBot.service.RemindServiceImpl;
 import telegramBot.service.SendMessageServiceImpl;
 
 
@@ -14,15 +15,16 @@ public class RemindForTanya {
     public static final int undeletedNoticeIndex = 1;
 
     public static void send(){
-        Remind remind = new RemindDAOImpl().getObjectByID(undeletedNoticeIndex);
+        Remind remind = new RemindServiceImpl(new RemindDAOImpl()).getRemindById((undeletedNoticeIndex));
         sendMessageService.sendMessage(remind.getUserChatID(),
                 remind.getMaintenance());
             String[] thisDate = remind.getRemindDate().split("");
-            remind.setRemindDate((SendRemind.nextDate(thisDate)));
-            new RemindDAOImpl().update(remind);}
+            new RemindServiceImpl(new RemindDAOImpl()).updateDate(remind,
+                    SendRemind.nextDate(remind.getRemindDate().split("")));
+    }
 
     public static String date(){
-    return new RemindDAOImpl().getObjectByID(undeletedNoticeIndex).getRemindDate();}
+    return new RemindServiceImpl(new RemindDAOImpl()).getRemindById(undeletedNoticeIndex).getRemindDate();}
 
 
 
