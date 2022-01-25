@@ -1,11 +1,13 @@
 package telegramBot.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import telegramBot.bot.TelegramBot;
 
 @Service
+@Component
 public class SendMessageServiceImpl implements SendMessageService{
     private final TelegramBot telegramBot;
 

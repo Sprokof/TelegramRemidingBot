@@ -5,7 +5,7 @@ import telegramBot.entity.Remind;
 
 import static org.junit.Assert.assertEquals;
 
-public class RemindDAOtest {
+public class RemindDAOTest {
 
     @Test
     public void save(){

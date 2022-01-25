@@ -40,11 +40,12 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final CommandContainer commandContainer;
     public static final List<String> commands = new ArrayList<>();
     private final SendMessageServiceImpl sendMessageService;
-    private static final SendRemind SEND_REMIND = new SendRemind();
+    private final SendRemind sendRemind;
 
     public TelegramBot() {
         this.sendMessageService = new SendMessageServiceImpl(this);
         this.commandContainer = new CommandContainer(sendMessageService);
+        this.sendRemind = new SendRemind(new SendMessageServiceImpl(this));
 
     }
 
@@ -65,7 +66,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 }
             }
         }
-        SEND_REMIND.executeRemindMessage();
+        this.sendRemind.executeRemindMessage();
     }
 
 
@@ -101,7 +102,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     if (new RemindServiceImpl(new RemindDAOImpl()).saveRemind(remind)) {
                         this.sendMessageService.sendMessage(chatId, "Напоминание успешно" +
                                 " добавлено.");
-                        commands.clear();
+                        clearingCommandStorage();
                     } else {
                         this.sendMessageService.sendMessage(chatId,
                                 "Напоминание не было добавлено, проверьте формат даты (dd.mm.yyyy)" +
@@ -134,7 +135,15 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-}
+    private void clearingCommandStorage(){
+        int index = commands.size()-1;
+        while(index != 0){
+            commands.remove(index);
+            index --;}
+        }
+    }
+
+
 
 
 

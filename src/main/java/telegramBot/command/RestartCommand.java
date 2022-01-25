@@ -4,7 +4,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import telegramBot.service.SendMessageService;
 
 public class RestartCommand implements Command{
-    public static String RESTART_COMMAND = "Вы возообновили оповещения.";
+    public static String RESTART_COMMAND = "Вы возообновили напоминания.";
 
     private SendMessageService sendMessageService;
 

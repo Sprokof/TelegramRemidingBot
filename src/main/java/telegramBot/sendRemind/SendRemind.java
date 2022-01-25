@@ -1,10 +1,12 @@
 package telegramBot.sendRemind;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import telegramBot.bot.TelegramBot;
 import telegramBot.dao.RemindDAOImpl;
 import telegramBot.entity.Remind;
 import telegramBot.hidenPackage.RemindForTanya;
 import telegramBot.service.RemindServiceImpl;
+import telegramBot.service.SendMessageService;
 import telegramBot.service.SendMessageServiceImpl;
 
 import java.util.*;
@@ -27,11 +29,14 @@ public class SendRemind {
     lastDayInMonth.put("12", "31.12");
    }
 
-    private static final SendMessageServiceImpl sendMessageService =
-            new SendMessageServiceImpl(new TelegramBot());
-
+    private final SendMessageServiceImpl service;
     private static boolean stop = false;
     private static final String REMIND_MESSAGE = "Позвольте напомнить, что вам нужно ";
+
+    @Autowired
+    public SendRemind(SendMessageService service) {
+        this.service = (SendMessageServiceImpl) service;
+    }
 
     public void executeRemindMessage() {
         Timer timer = new Timer();
@@ -82,13 +87,13 @@ public class SendRemind {
             if (isConditionsToSendOneTime(executeDate, currentDate(), remind)) {
                 String maintenance = (Character.toLowerCase(remind.getMaintenance().
                         charAt(0))+remind.getMaintenance().substring(1));
-                if (sendMessageService.sendMessage(remind.getUserChatID(),
+                if (this.service.sendMessage(remind.getUserChatID(),
                         REMIND_MESSAGE + maintenance+".")) {
                     new RemindServiceImpl(new RemindDAOImpl()).deleteRemind(remindId, index, getIdOfAllReminds());
                 }
             }
         else if(isConditionsToSendDaily(executeDate, currentDate(), remind)){
-                if (sendMessageService.sendMessage(remind.getUserChatID(),
+                if (this.service.sendMessage(remind.getUserChatID(),
                         REMIND_MESSAGE + deleteRegularMarker(remind)+".")) {
                 new RemindServiceImpl(new RemindDAOImpl()).updateDate(remind,
                         nextDate(remind.getRemindDate().split("")));
@@ -168,33 +173,48 @@ public class SendRemind {
     }
 
     public static String nextDate(String[] thisDate){
-        String date = String.format(thisDate[0]+"%d"+thisDate[2]+
+        String nextDate = String.format(thisDate[0]+"%d"+thisDate[2]+
                 ""+thisDate[3]+""+thisDate[4]+""+thisDate[5]+""+
                 thisDate[6]+""+thisDate[7]+""+thisDate[8]+""+thisDate[9], Integer.parseInt(thisDate[1])+1);
 
-        if(date.startsWith("0") && date.indexOf(".")==3){ date = date.substring(1);}
+        if(nextDate.startsWith("0") && nextDate.indexOf(".")==3){
+            nextDate = nextDate.substring(1);}
 
-        if(date.indexOf(".") == 3){
-            date = String.format("%d"+thisDate[2]+
+        if(nextDate.indexOf(".") == 3){
+            nextDate = String.format("%d"+thisDate[2]+
                     ""+thisDate[3]+""+thisDate[4]+""+thisDate[5]+""+
                     thisDate[6]+""+thisDate[7]+""+thisDate[8]+""+thisDate[9],
                     Integer.parseInt(thisDate[0]+thisDate[1])+1);
         }
 
-        String lastDate = lastDayInMonth.get(date.substring(date.indexOf(".")+1,
-                date.lastIndexOf(".")));
+        String lastDate = lastDayInMonth.get(nextDate.substring(nextDate.indexOf(".")+1,
+                nextDate.lastIndexOf(".")));
 
-        if((Integer.parseInt(date.substring(0, date.indexOf("."))))
+        if((Integer.parseInt(nextDate.substring(0, nextDate.indexOf(".")))-1)
                 == Integer.parseInt(lastDate.substring(0, lastDate.indexOf(".")))){
-            String temp = date.substring(date.lastIndexOf("."));
-            date = lastDate + temp;}
+            nextDate = toNextMonth(nextDate);}
 
-        return date;}
+        return nextDate;}
 
     private static String deleteRegularMarker(Remind remind){
         String maintenance = remind.getMaintenance().substring(remind.getMaintenance().indexOf(" ")+1);
         char firstLetter = Character.toLowerCase(maintenance.charAt(0));
         return String.format(firstLetter+"%s", maintenance.substring(1));
+        }
+
+        public static String toNextMonth(String date){
+        String[] currentDate = date.split("\\.");{
+        currentDate[0] = "01";
+        String day = currentDate[0];
+        String month = "";
+        if(currentDate[1].startsWith("0")){
+            month += ("0")+(Integer.parseInt(currentDate[1].substring(1))+1);}
+        else{
+        month += (Integer.parseInt(currentDate[1])+1);}
+        String year = currentDate[2];
+
+        return String.format("%s.%s.%s", day, month, year);
+            }
         }
     }
 
