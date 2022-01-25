@@ -96,7 +96,8 @@ public class TelegramBot extends TelegramLongPollingBot {
         if (isCorrectInput(input)) {
             try {
                 Remind remind = new Remind(chatId,
-                        getRemindContentFromUserInput(input), getDateFromUserInput(input));
+                        getRemindContentFromUserInput(input),
+                        getDateFromUserInput(input).replaceAll("\\p{P}", "\\."));
                 isContains = new RemindServiceImpl(new RemindDAOImpl()).isContainsInDB(remind);
                  if(!isContains){
                     if (new RemindServiceImpl(new RemindDAOImpl()).saveRemind(remind)) {
