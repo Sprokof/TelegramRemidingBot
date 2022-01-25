@@ -63,11 +63,11 @@ public class SendRemind {
         try {
             ides = new int[reminds.size()];
             String id;
-            Remind notice;
+            Remind remind;
             for (int i = 0; i < ides.length; i++) {
-                notice = reminds.get(i);
-                id = notice.toString().
-                        substring(notice.toString().indexOf("=") + 1, notice.toString().indexOf(","));
+                remind = reminds.get(i);
+                id = remind.toString().
+                        substring(remind.toString().indexOf("=") + 1, remind.toString().indexOf(","));
                 ides[i] = Integer.parseInt(id);
             }
         } catch (Exception e) {
