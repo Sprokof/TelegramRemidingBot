@@ -7,7 +7,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import telegramBot.bot.TelegramBot;
 
 @Service
-@Component
+@Component("sendMessageServiceImpl")
 public class SendMessageServiceImpl implements SendMessageService{
     private final TelegramBot telegramBot;
 

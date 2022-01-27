@@ -1,6 +1,7 @@
 package telegramBot.sendRemind;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import telegramBot.bot.TelegramBot;
 import telegramBot.dao.RemindDAOImpl;
 import telegramBot.entity.Remind;
@@ -12,9 +13,10 @@ import telegramBot.service.SendMessageServiceImpl;
 import java.util.*;
 
 public class SendRemind {
-   public static final HashMap<String, String> lastDayInMonth = new HashMap<>();
+    private static ClassPathXmlApplicationContext context;
+    public static final HashMap<String, String> lastDayInMonth = new HashMap<>();
 
-   static {
+    static{
     lastDayInMonth.put("01", "31.01");
     lastDayInMonth.put("02", "28.02");
     lastDayInMonth.put("03", "30.03");
@@ -89,13 +91,13 @@ public class SendRemind {
                         charAt(0))+remind.getMaintenance().substring(1));
                 if (this.service.sendMessage(remind.getUserChatID(),
                         REMIND_MESSAGE + maintenance+".")) {
-                    new RemindServiceImpl(new RemindDAOImpl()).deleteRemind(remindId, index, getIdOfAllReminds());
+                    remindService().deleteRemind(remindId, index, getIdOfAllReminds());
                 }
             }
         else if(isConditionsToSendDaily(executeDate, currentDate(), remind)){
                 if (this.service.sendMessage(remind.getUserChatID(),
                         REMIND_MESSAGE + deleteRegularMarker(remind)+".")) {
-                new RemindServiceImpl(new RemindDAOImpl()).updateDate(remind,
+                    remindService().updateDate(remind,
                         nextDate(remind.getRemindDate().split("")));
                 }
             }
@@ -217,6 +219,14 @@ public class SendRemind {
         return String.format("%s.%s.%s", day, month, year);
             }
         }
+
+       public RemindServiceImpl remindService(){
+       context = new ClassPathXmlApplicationContext("applicationContext.xml");
+       RemindServiceImpl remindService = (RemindServiceImpl) context.getBean("remindServiceBean");
+       context.close();
+       return remindService;
+
+       }
     }
 
 

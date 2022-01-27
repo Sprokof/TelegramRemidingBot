@@ -21,7 +21,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 @Getter
-@Component
+@Component("telegramBot")
 public class TelegramBot extends TelegramLongPollingBot {
 
     private static String tokenFromFile() {
@@ -33,8 +33,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         return null;
     }
 
-    @Value("${bot.username}")
-    private String botUsername;
+    private final String botUsername = "Reminder";
     private final String botToken = tokenFromFile();
     private final String COMMAND_PREFIX = "/";
     private final CommandContainer commandContainer;
@@ -98,9 +97,9 @@ public class TelegramBot extends TelegramLongPollingBot {
                 Remind remind = new Remind(chatId,
                         getRemindContentFromUserInput(input),
                         getDateFromUserInput(input).replaceAll("\\p{P}", "\\."));
-                isContains = new RemindServiceImpl(new RemindDAOImpl()).isContainsInDB(remind);
+                isContains = this.sendRemind.remindService().isContainsInDB(remind);
                  if(!isContains){
-                    if (new RemindServiceImpl(new RemindDAOImpl()).saveRemind(remind)) {
+                    if (this.sendRemind.remindService().saveRemind(remind)) {
                         this.sendMessageService.sendMessage(chatId, "Напоминание успешно" +
                                 " добавлено.");
                         clearingCommandStorage();

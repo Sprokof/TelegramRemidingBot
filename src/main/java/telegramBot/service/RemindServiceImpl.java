@@ -2,6 +2,9 @@ package telegramBot.service;
 
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Component;
 import telegramBot.dao.RemindDAOImpl;
 import telegramBot.entity.Remind;
 
@@ -9,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+@Component("remindServiceBean")
+@Scope("prototype")
 public class RemindServiceImpl implements RemindService{
     private RemindDAOImpl remindDAO;
 

@@ -19,14 +19,12 @@ public class RemindForTanya {
         Remind remind = new RemindServiceImpl(new RemindDAOImpl()).getRemindById((undeletedNoticeIndex));
         if(sendMessageService.sendMessage(remind.getUserChatID(),
                 remind.getMaintenance())) countSend ++ ;
-
             String[] thisDate = remind.getRemindDate().split("");
             if(countSend == 2||(SendRemind.currentTime().equals("23"))){
             new RemindServiceImpl(new RemindDAOImpl()).updateDate(remind,
-                    SendRemind.nextDate(remind.getRemindDate().split("")));
+                    SendRemind.nextDate(thisDate));
             countSend = 0;}
     }
-
     public static String dateToSend(){
     return new RemindServiceImpl(new RemindDAOImpl()).getRemindById(undeletedNoticeIndex).getRemindDate();}
 
