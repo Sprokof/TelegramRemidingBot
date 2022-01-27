@@ -13,17 +13,21 @@ public class RemindForTanya {
             new SendMessageServiceImpl(new TelegramBot());
 
     public static final int undeletedNoticeIndex = 1;
+    public static int countSend = 0;
 
     public static void send(){
         Remind remind = new RemindServiceImpl(new RemindDAOImpl()).getRemindById((undeletedNoticeIndex));
-        sendMessageService.sendMessage(remind.getUserChatID(),
-                remind.getMaintenance());
+        if(sendMessageService.sendMessage(remind.getUserChatID(),
+                remind.getMaintenance())) countSend ++ ;
+
             String[] thisDate = remind.getRemindDate().split("");
+            if(countSend == 2||(SendRemind.currentTime().equals("23"))){
             new RemindServiceImpl(new RemindDAOImpl()).updateDate(remind,
                     SendRemind.nextDate(remind.getRemindDate().split("")));
+            countSend = 0;}
     }
 
-    public static String date(){
+    public static String dateToSend(){
     return new RemindServiceImpl(new RemindDAOImpl()).getRemindById(undeletedNoticeIndex).getRemindDate();}
 
 

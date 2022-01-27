@@ -100,7 +100,7 @@ public class SendRemind {
                 }
             }
         }
-        executeDate = RemindForTanya.date();
+        executeDate = RemindForTanya.dateToSend();
         if (isConditionsToSendToTanya(executeDate, currentDate())) {
             RemindForTanya.send();
         }
@@ -114,7 +114,8 @@ public class SendRemind {
 
     private boolean isConditionsToSendToTanya(String executeDate, String currentDate) {
         return (currentDate.equals(executeDate)) &&
-                (Integer.parseInt(currentTime()) >= 6 && Integer.parseInt(currentTime()) <= 22);
+                ((Integer.parseInt(currentTime()) >= 6 && Integer.parseInt(currentTime()) <= 10)||
+                (Integer.parseInt(currentTime()) >= 17 && Integer.parseInt(currentTime()) <= 22));
     }
 
     private boolean isConditionsToSendDaily(String executeDate, String currentDate, Remind remind) {
@@ -159,7 +160,7 @@ public class SendRemind {
         return String.format("%s.%s.%s", day, month, year);
     }
 
-    private static String currentTime() {
+    public static String currentTime() {
         String result;
         String[] tempTimes = Calendar.getInstance().toString().split(",");
         if (tempTimes[21].equals("AM_PM=1")) {
