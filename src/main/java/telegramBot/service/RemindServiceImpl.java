@@ -78,7 +78,13 @@ public class RemindServiceImpl implements RemindService{
     public static RemindServiceImpl remindService(){
         return new RemindServiceImpl(new RemindDAOImpl());
     }
-        }
+
+    @Override
+    public void updateMaintenance(Remind remind, String newMaintenance) {
+        remind.setMaintenance(newMaintenance);
+        this.remindDAO.update(remind);
+    }
+}
 
 
 

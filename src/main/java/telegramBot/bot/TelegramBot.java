@@ -1,7 +1,6 @@
 package telegramBot.bot;
 
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -9,7 +8,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import telegramBot.service.RemindServiceImpl;
 import telegramBot.validate.Validate;
 import telegramBot.command.CommandContainer;
-import telegramBot.dao.RemindDAOImpl;
 import telegramBot.entity.Remind;
 import telegramBot.sendRemind.SendRemind;
 import telegramBot.service.SendMessageServiceImpl;
@@ -27,7 +25,8 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private static String tokenFromFile() {
         try {
-            return new BufferedReader(new InputStreamReader(new FileInputStream("C:/Users/user/Desktop/token.txt"))).readLine();
+            return new BufferedReader(new InputStreamReader(
+                    new FileInputStream("C:/Users/user/Desktop/token.txt"))).readLine();
         } catch (IOException e) {
             e.printStackTrace();
         }

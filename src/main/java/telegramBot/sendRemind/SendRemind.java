@@ -115,8 +115,8 @@ public class SendRemind {
 
     private boolean isConditionsToSendToTanya(String executeDate, String currentDate) {
         return (currentDate.equals(executeDate)) &&
-                ((Integer.parseInt(currentTime()) >= 6 && Integer.parseInt(currentTime()) <= 10)||
-                (Integer.parseInt(currentTime()) >= 17 && Integer.parseInt(currentTime()) <= 22));
+                ((Integer.parseInt(currentTime()) >= 6 && Integer.parseInt(currentTime()) <= 10)
+            ||(Integer.parseInt(currentTime()) >= 17 && Integer.parseInt(currentTime()) <= 22));
     }
 
     private boolean isConditionsToSendDaily(String executeDate, String currentDate, Remind remind) {
