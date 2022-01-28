@@ -13,7 +13,6 @@ import telegramBot.service.SendMessageServiceImpl;
 import java.util.*;
 
 public class SendRemind {
-    private static ClassPathXmlApplicationContext context;
     public static final HashMap<String, String> lastDayInMonth = new HashMap<>();
 
     static{
@@ -50,13 +49,13 @@ public class SendRemind {
             }
         catch (InterruptedException e){e.printStackTrace();
         }}};
-        timer.scheduleAtFixedRate(task, 2500, 60000);
+        timer.scheduleAtFixedRate(task, 3500, 60000);
     }
 
 
     private synchronized int[] getIdOfAllReminds() throws InterruptedException {
         List<Remind> reminds;
-        while ((reminds = new RemindServiceImpl(new RemindDAOImpl()).
+        while ((reminds = RemindServiceImpl.remindService().
                 getAllRemindsFromDB()).size() <= 1) {
             wait();
         }
@@ -78,26 +77,26 @@ public class SendRemind {
         return ides;
     }
 
-    private void findRemindToSend() throws InterruptedException {
+    private synchronized void findRemindToSend() throws InterruptedException {
         int[] remindId = getIdOfAllReminds();
         String executeDate;
         stop();
         for (int index = 0; index < remindId.length; index++) {
             if (noDelete(remindId[index])) continue;
-            Remind remind = new RemindServiceImpl(new RemindDAOImpl()).getRemindById(remindId[index]);
+            Remind remind = RemindServiceImpl.remindService().getRemindById(remindId[index]);
             executeDate = remind.getRemindDate();
             if (isConditionsToSendOneTime(executeDate, currentDate(), remind)) {
                 String maintenance = (Character.toLowerCase(remind.getMaintenance().
                         charAt(0))+remind.getMaintenance().substring(1));
                 if (this.service.sendMessage(remind.getUserChatID(),
                         REMIND_MESSAGE + maintenance+".")) {
-                    remindService().deleteRemind(remindId, index, getIdOfAllReminds());
+                    RemindServiceImpl.remindService().deleteRemind(remindId, index, getIdOfAllReminds());
                 }
             }
         else if(isConditionsToSendDaily(executeDate, currentDate(), remind)){
                 if (this.service.sendMessage(remind.getUserChatID(),
                         REMIND_MESSAGE + deleteRegularMarker(remind)+".")) {
-                    remindService().updateDate(remind,
+                    RemindServiceImpl.remindService().updateDate(remind,
                         nextDate(remind.getRemindDate().split("")));
                 }
             }
@@ -220,13 +219,7 @@ public class SendRemind {
             }
         }
 
-       public RemindServiceImpl remindService(){
-       context = new ClassPathXmlApplicationContext("applicationContext.xml");
-       RemindServiceImpl remindService = (RemindServiceImpl) context.getBean("remindServiceBean");
-       context.close();
-       return remindService;
 
-       }
     }
 
 

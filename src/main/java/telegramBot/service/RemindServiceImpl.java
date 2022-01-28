@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-@Component("remindServiceBean")
-@Scope("prototype")
 public class RemindServiceImpl implements RemindService{
     private RemindDAOImpl remindDAO;
 
@@ -33,8 +31,6 @@ public class RemindServiceImpl implements RemindService{
             this.remindDAO.deleteByID(arrayId[index]);
         } catch (IndexOutOfBoundsException | NullPointerException e) {
             System.out.println("delete sent notice");
-            wait(2000);
-            notify();
             arrayId = newArrayId;
         }
     }
@@ -78,6 +74,10 @@ public class RemindServiceImpl implements RemindService{
         for(Remind rem:reminds){
             if(rem.equals(remind)){return true;}}
         return false;}
+
+    public static RemindServiceImpl remindService(){
+        return new RemindServiceImpl(new RemindDAOImpl());
+    }
         }
 
 

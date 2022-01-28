@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
+
 import telegramBot.service.RemindServiceImpl;
 import telegramBot.validate.Validate;
 import telegramBot.command.CommandContainer;
@@ -21,7 +22,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 @Getter
-@Component("telegramBot")
+@Component
 public class TelegramBot extends TelegramLongPollingBot {
 
     private static String tokenFromFile() {
@@ -55,13 +56,13 @@ public class TelegramBot extends TelegramLongPollingBot {
             String message = update.getMessage().getText().trim();
             if (message.startsWith(COMMAND_PREFIX)) {
                 command = message.split(" ")[0].toLowerCase(Locale.ROOT);
-                commandContainer.retrieveCommand(command).execute(update);
+                this.commandContainer.retrieveCommand(command).execute(update);
                 commands.add(command);
             } else if (!message.startsWith(COMMAND_PREFIX)) {
                 if ((!commands.isEmpty()) && commands.get(commands.size() - 1).equals("/add")) {
                     AcceptRemindFromUser(update);
                 } else {
-                    commandContainer.retrieveCommand("/unknown").execute(update);
+                    this.commandContainer.retrieveCommand("/unknown").execute(update);
                 }
             }
         }
@@ -97,9 +98,9 @@ public class TelegramBot extends TelegramLongPollingBot {
                 Remind remind = new Remind(chatId,
                         getRemindContentFromUserInput(input),
                         getDateFromUserInput(input).replaceAll("\\p{P}", "\\."));
-                isContains = this.sendRemind.remindService().isContainsInDB(remind);
+                isContains = RemindServiceImpl.remindService().isContainsInDB(remind);
                  if(!isContains){
-                    if (this.sendRemind.remindService().saveRemind(remind)) {
+                    if (RemindServiceImpl.remindService().saveRemind(remind)) {
                         this.sendMessageService.sendMessage(chatId, "Напоминание успешно" +
                                 " добавлено.");
                         clearingCommandStorage();
