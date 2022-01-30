@@ -1,11 +1,9 @@
 package telegramBot.sendRemind;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import telegramBot.bot.TelegramBot;
-import telegramBot.dao.RemindDAOImpl;
 import telegramBot.entity.Remind;
-import telegramBot.hidenPackage.RemindForTanya;
+import telegramBot.hidenPackage.RemindForDefPerson;
 import telegramBot.service.RemindServiceImpl;
 import telegramBot.service.SendMessageService;
 import telegramBot.service.SendMessageServiceImpl;
@@ -101,9 +99,9 @@ public class SendRemind {
                 }
             }
         }
-        executeDate = RemindForTanya.dateToSend();
-        if (isConditionsToSendToTanya(executeDate, currentDate())) {
-            RemindForTanya.send();
+        executeDate = RemindForDefPerson.dateToSend();
+        if (isConditionsToSendToDefPerson(executeDate, currentDate())) {
+            RemindForDefPerson.send();
         }
     }
 
@@ -113,10 +111,10 @@ public class SendRemind {
                 !isContainsDailySendMarker(notice.getMaintenance());
     }
 
-    private boolean isConditionsToSendToTanya(String executeDate, String currentDate) {
+    private boolean isConditionsToSendToDefPerson(String executeDate, String currentDate) {
         return (currentDate.equals(executeDate)) &&
-                ((Integer.parseInt(currentTime()) >= 6 && Integer.parseInt(currentTime()) <= 10)
-            ||(Integer.parseInt(currentTime()) >= 17 && Integer.parseInt(currentTime()) <= 22));
+                ((Integer.parseInt(currentTime()) >= 6 && Integer.parseInt(currentTime()) <= 10 && RemindForDefPerson.getCountSend()==0)
+            ||(Integer.parseInt(currentTime()) >= 17 && Integer.parseInt(currentTime()) <= 22 && RemindForDefPerson.getCountSend()<=1));
     }
 
     private boolean isConditionsToSendDaily(String executeDate, String currentDate, Remind remind) {
@@ -131,7 +129,7 @@ public class SendRemind {
     }
 
     private boolean noDelete(int index) {
-        return index == RemindForTanya.undeletedNoticeIndex;
+        return index == RemindForDefPerson.undeletedNoticeIndex;
     }
 
 
