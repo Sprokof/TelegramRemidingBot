@@ -55,7 +55,7 @@ public class SendRemind {
 
     private synchronized int[] getIdOfAllReminds() throws InterruptedException {
         List<Remind> reminds;
-        while ((reminds = RemindServiceImpl.remindService().
+        while ((reminds = RemindServiceImpl.newRemindService().
                 getAllRemindsFromDB()).size() <= 1) {
             wait();
         }
@@ -83,20 +83,20 @@ public class SendRemind {
         stop();
         for (int index = 0; index < remindId.length; index++) {
             if (noDelete(remindId[index])) continue;
-            Remind remind = RemindServiceImpl.remindService().getRemindById(remindId[index]);
+            Remind remind = RemindServiceImpl.newRemindService().getRemindById(remindId[index]);
             executeDate = remind.getRemindDate();
             if (isConditionsToSendOneTime(executeDate, currentDate(), remind)) {
                 String maintenance = (Character.toLowerCase(remind.getMaintenance().
                         charAt(0))+remind.getMaintenance().substring(1));
                 if (this.service.sendMessage(remind.getUserChatID(),
                         REMIND_MESSAGE + maintenance+".")) {
-                    RemindServiceImpl.remindService().deleteRemind(remindId, index, getIdOfAllReminds());
+                    RemindServiceImpl.newRemindService().deleteRemind(remindId, index, getIdOfAllReminds());
                 }
             }
         else if(isConditionsToSendDaily(executeDate, currentDate(), remind)){
                 if (this.service.sendMessage(remind.getUserChatID(),
                         REMIND_MESSAGE + deleteRegularMarker(remind)+".")) {
-                    RemindServiceImpl.remindService().updateDate(remind,
+                    RemindServiceImpl.newRemindService().updateDate(remind,
                         nextDate(remind.getRemindDate().split("")));
                 }
             }

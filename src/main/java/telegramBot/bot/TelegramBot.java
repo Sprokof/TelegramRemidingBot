@@ -97,9 +97,9 @@ public class TelegramBot extends TelegramLongPollingBot {
                 Remind remind = new Remind(chatId,
                         getRemindContentFromUserInput(input),
                         getDateFromUserInput(input).replaceAll("\\p{P}", "\\."));
-                isContains = RemindServiceImpl.remindService().isContainsInDB(remind);
+                isContains = RemindServiceImpl.newRemindService().isContainsInDB(remind);
                  if(!isContains){
-                    if (RemindServiceImpl.remindService().saveRemind(remind)) {
+                    if (RemindServiceImpl.newRemindService().saveRemind(remind)) {
                         this.sendMessageService.sendMessage(chatId, "Напоминание успешно" +
                                 " добавлено.");
                         clearingCommandStorage();

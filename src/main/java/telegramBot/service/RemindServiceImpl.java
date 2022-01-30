@@ -75,7 +75,7 @@ public class RemindServiceImpl implements RemindService{
             if(rem.equals(remind)){return true;}}
         return false;}
 
-    public static RemindServiceImpl remindService(){
+    public static RemindServiceImpl newRemindService(){
         return new RemindServiceImpl(new RemindDAOImpl());
     }
 
