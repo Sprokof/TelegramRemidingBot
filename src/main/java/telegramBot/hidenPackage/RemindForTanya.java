@@ -35,7 +35,8 @@ public class RemindForTanya {
     }}
 
     public static String dateToSend(){
-    return new RemindServiceImpl(new RemindDAOImpl()).getRemindById(undeletedNoticeIndex).getRemindDate();}
+    return new RemindServiceImpl(new RemindDAOImpl()).getRemindById(undeletedNoticeIndex).
+            getRemindDate();}
 
 
 

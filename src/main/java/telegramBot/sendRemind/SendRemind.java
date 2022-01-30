@@ -135,7 +135,14 @@ public class SendRemind {
     }
 
 
-    private String lastCommand() {
+    private synchronized String lastCommand() {
+        while (TelegramBot.commands.isEmpty()){
+        try{
+            wait();}
+        catch (InterruptedException e){
+            System.out.println("Something went wrong");}}
+        notify();
+
         return TelegramBot.commands.get(TelegramBot.commands.size() - 1);
     }
 
