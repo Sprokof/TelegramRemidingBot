@@ -100,7 +100,12 @@ public class SendRemind {
             }
         }
         executeDate = RemindForDefPerson.dateToSend();
-        if (isConditionsToSendToDefPerson(executeDate, currentDate())) {
+        if(RemindForDefPerson.getTimeToSend()==0){
+            RemindForDefPerson.send();
+            RemindForDefPerson.setTimeToSend(Integer.parseInt(currentTime()+9));
+        }
+
+        if(isConditionsToSendToDefPerson(executeDate,currentDate())){
             RemindForDefPerson.send();
         }
     }
@@ -113,10 +118,9 @@ public class SendRemind {
 
     private boolean isConditionsToSendToDefPerson(String executeDate, String currentDate) {
         return (currentDate.equals(executeDate)) &&
-                (((Integer.parseInt(currentTime()) >= 6 && Integer.parseInt(currentTime()) <= 10) &&
-                        RemindForDefPerson.getCountSend()==0)
-            ||((Integer.parseInt(currentTime()) >= 17 && Integer.parseInt(currentTime()) <= 22)
-                        && RemindForDefPerson.getCountSend()<=1));
+                (currentTime().equals(String.valueOf(RemindForDefPerson.getTimeToSend())));
+
+
     }
 
     private boolean isConditionsToSendDaily(String executeDate, String currentDate, Remind remind) {
@@ -131,7 +135,7 @@ public class SendRemind {
     }
 
     private boolean noDelete(int index) {
-        return index == RemindForDefPerson.undeletedNoticeIndex;
+        return index == RemindForDefPerson.undeletedIndex;
     }
 
 
