@@ -113,8 +113,10 @@ public class SendRemind {
 
     private boolean isConditionsToSendToDefPerson(String executeDate, String currentDate) {
         return (currentDate.equals(executeDate)) &&
-                ((Integer.parseInt(currentTime()) >= 6 && Integer.parseInt(currentTime()) <= 10 && RemindForDefPerson.getCountSend()==0)
-            ||(Integer.parseInt(currentTime()) >= 17 && Integer.parseInt(currentTime()) <= 22 && RemindForDefPerson.getCountSend()<=1));
+                (((Integer.parseInt(currentTime()) >= 6 && Integer.parseInt(currentTime()) <= 10) &&
+                        RemindForDefPerson.getCountSend()==0)
+            ||((Integer.parseInt(currentTime()) >= 17 && Integer.parseInt(currentTime()) <= 22)
+                        && RemindForDefPerson.getCountSend()<=1));
     }
 
     private boolean isConditionsToSendDaily(String executeDate, String currentDate, Remind remind) {
