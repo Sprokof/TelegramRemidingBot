@@ -13,7 +13,6 @@ public class RemindForDefPerson {
             new SendMessageServiceImpl(new TelegramBot());
 
     public static final int undeletedIndex = 1;
-    private static int timeToSend = 0;
 
     public static void send(){
         Remind remind = RemindServiceImpl.newRemindService().getRemindById(undeletedIndex);
