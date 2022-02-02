@@ -100,11 +100,6 @@ public class SendRemind {
             }
         }
         executeDate = RemindForDefPerson.dateToSend();
-        if(RemindForDefPerson.getTimeToSend()==0){
-            RemindForDefPerson.send();
-            RemindForDefPerson.setTimeToSend(Integer.parseInt(currentTime()+9));
-        }
-
         if(isConditionsToSendToDefPerson(executeDate,currentDate())){
             RemindForDefPerson.send();
         }
@@ -117,8 +112,7 @@ public class SendRemind {
     }
 
     private boolean isConditionsToSendToDefPerson(String executeDate, String currentDate) {
-        return (currentDate.equals(executeDate)) &&
-                (currentTime().equals(String.valueOf(RemindForDefPerson.getTimeToSend())));
+        return (currentDate.equals(executeDate)) && (Integer.parseInt(currentTime()) > 6);
 
 
     }
