@@ -59,8 +59,17 @@ public class TelegramBot extends TelegramLongPollingBot {
                 commands.add(command);
             } else if (!message.startsWith(COMMAND_PREFIX)) {
                 if ((!commands.isEmpty()) && commands.get(commands.size() - 1).equals("/add")) {
-                    AcceptRemindFromUser(update);
-                } else {
+                    acceptRemindFromUser(update);}
+                else if((!commands.isEmpty()) && commands.get(commands.size() - 1).equals("/show")){
+                    if(acceptDateFromUser(update)!=null){
+                        String userChatId = acceptDateFromUser(update).split("\\,")[0];
+                        String date = acceptDateFromUser(update).split("\\,")[1];
+                    try{
+                        this.sendRemind.showRemindsByDate(userChatId, date);}
+                    catch (InterruptedException e){e.printStackTrace();}
+                    }
+                }
+                else {
                     this.commandContainer.retrieveCommand("/unknown").execute(update);
                 }
             }
@@ -88,7 +97,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         return input.substring(0, input.length() - getDateFromUserInput(input).length());
     }
 
-    private void AcceptRemindFromUser(Update update) {
+    private void acceptRemindFromUser(Update update) {
         String chatId = update.getMessage().getChatId().toString();
         String input = update.getMessage().getText();
         boolean isContains;
@@ -110,7 +119,8 @@ public class TelegramBot extends TelegramLongPollingBot {
                                         "После введите команду '/add' еще раз для повторного добавления.");
                     }
                 }
-                 else{ this.sendMessageService.sendMessage(chatId,
+                 else{
+                     this.sendMessageService.sendMessage(chatId,
                          "Данное напоминание было добавлено ранее.");}
             } catch (Exception e) {
                 e.printStackTrace();
@@ -129,9 +139,23 @@ public class TelegramBot extends TelegramLongPollingBot {
         if (textWithRightDate) {
             return Validate.date(getDateFromUserInput(input).split("\\p{P}")[0],
                     getDateFromUserInput(input).split("\\p{P}")[1],
-                    getDateFromUserInput(input).split("\\p{P}")[2]);
-        } else {
+                    getDateFromUserInput(input).split("\\p{P}")[2]);}
+
+        else {
             return false;
+        }
+    }
+
+    private String acceptDateFromUser(Update update){
+        String input = update.getMessage().getText();
+        Pattern p = Pattern.compile("[0-9]{2}\\p{P}[0-9]{2}\\p{P}[0-9]{4}");
+        boolean isDate = p.matcher(input).find();
+        if (isDate) {
+        String[] dateArray = input.split("\\p{P}");
+            Validate.date(dateArray[0], dateArray[1], dateArray[2]);
+            return update.getMessage().getChatId()+","+update.getMessage().getText();
+        } else {
+             return null;
         }
     }
 

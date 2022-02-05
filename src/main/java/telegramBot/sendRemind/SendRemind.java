@@ -224,8 +224,18 @@ public class SendRemind {
             }
         }
 
+    public boolean showRemindsByDate(String userChatId, String date) throws InterruptedException{
+        List<Remind> reminds = RemindServiceImpl.
+                newRemindService().getAllRemindsOnInputDate(userChatId, date);
+        int index = 0;
+        service.sendMessage(userChatId, "Через пару секунд пришлю все напоминания...");
+        Thread.sleep(2000);
+        while (index != reminds.size()){
+            if(service.sendMessage(userChatId, reminds.get(index).getMaintenance())){
+                index ++;
+            }}
+        return true;}}
 
-    }
 
 
 

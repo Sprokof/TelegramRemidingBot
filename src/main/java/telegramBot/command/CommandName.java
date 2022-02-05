@@ -6,7 +6,9 @@ public enum CommandName {
     UNKNOWN("/unknown"),
     ADD("/add"),
     RESTART("/restart"),
+    SHOW("/show"),
     HELP("/help");
+
 
 
     private String commandName;
