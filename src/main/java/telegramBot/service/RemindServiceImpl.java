@@ -84,33 +84,7 @@ public class RemindServiceImpl implements RemindService{
         remind.setMaintenance(newMaintenance);
         this.remindDAO.update(remind);
     }
-
-    @Override
-    public List<Remind> getAllRemindsOnInputDate(String userChatId, String date) {
-        Session session;
-        List<?> temp = null;
-        try {
-            session = this.remindDAO.getSessionFactory().getCurrentSession();
-            session.beginTransaction();
-            temp = session.createSQLQuery("SELECT id," +
-                            "MAINTENANCE, REMIND_DATE, USER_CHAT_ID " +
-                            "from REMINDERS WHERE USER_CHAT_ID " +
-                            "="+userChatId+"AND"+"REMIND_DATE="+date).
-                    addEntity(Remind.class).list();
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            this.remindDAO.getSessionFactory().close();
-        }
-        List<Remind> reminds = new ArrayList<>();
-        Iterator<?> iterator = temp.listIterator();
-        while (iterator.hasNext()){
-            reminds.add((Remind) iterator.next());
-        }
-        return reminds;
-    }
-    }
+}
 
 
 

@@ -12,5 +12,4 @@ public interface RemindService {
     List<Remind> getAllRemindsFromDB();
     Remind getRemindById(int id);
     boolean isContainsInDB(Remind remind);
-    List<Remind> getAllRemindsOnInputDate(String userChatId, String date);
 }

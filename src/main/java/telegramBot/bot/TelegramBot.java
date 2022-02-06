@@ -59,13 +59,16 @@ public class TelegramBot extends TelegramLongPollingBot {
                 commands.add(command);
             } else if (!message.startsWith(COMMAND_PREFIX)) {
                 if ((!commands.isEmpty()) && commands.get(commands.size() - 1).equals("/add")) {
-                    acceptRemindFromUser(update);}
+                    acceptNewRemindFromUser(update);}
                 else if((!commands.isEmpty()) && commands.get(commands.size() - 1).equals("/show")){
-                    if(acceptDateFromUser(update)!=null){
-                        String userChatId = acceptDateFromUser(update).split("\\,")[0];
-                        String date = acceptDateFromUser(update).split("\\,")[1];
+                    if(acceptDateFromUser(update)){
                     try{
-                        this.sendRemind.showRemindsByDate(userChatId, date);}
+                        if(!this.sendRemind.showRemindsByDate(update.getMessage().getChatId().toString(),
+                                update.getMessage().getText())){
+                            this.sendMessageService.sendMessage(update.getMessage().getChatId().toString(),
+                                    "Не получилось найти напоминания, возможно " +
+                                            "вы указали уже прошедшую дату, либо на эту дату нет напоминаний");}
+                        }
                     catch (InterruptedException e){e.printStackTrace();}
                     }
                 }
@@ -97,7 +100,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         return input.substring(0, input.length() - getDateFromUserInput(input).length());
     }
 
-    private void acceptRemindFromUser(Update update) {
+    private void acceptNewRemindFromUser(Update update) {
         String chatId = update.getMessage().getChatId().toString();
         String input = update.getMessage().getText();
         boolean isContains;
@@ -146,16 +149,16 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    private String acceptDateFromUser(Update update){
+    private boolean acceptDateFromUser(Update update){
         String input = update.getMessage().getText();
         Pattern p = Pattern.compile("[0-9]{2}\\p{P}[0-9]{2}\\p{P}[0-9]{4}");
         boolean isDate = p.matcher(input).find();
         if (isDate) {
-        String[] dateArray = input.split("\\p{P}");
+            String[] dateArray = input.split("\\p{P}");
             Validate.date(dateArray[0], dateArray[1], dateArray[2]);
-            return update.getMessage().getChatId()+","+update.getMessage().getText();
+            return true;
         } else {
-             return null;
+             return false;
         }
     }
 

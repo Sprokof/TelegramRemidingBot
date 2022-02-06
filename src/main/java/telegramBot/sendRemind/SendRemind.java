@@ -113,8 +113,6 @@ public class SendRemind {
 
     private boolean isConditionsToSendToDefPerson(String executeDate, String currentDate) {
         return (currentDate.equals(executeDate)) && (Integer.parseInt(currentTime()) > 6);
-
-
     }
 
     private boolean isConditionsToSendDaily(String executeDate, String currentDate, Remind remind) {
@@ -224,17 +222,25 @@ public class SendRemind {
             }
         }
 
-    public boolean showRemindsByDate(String userChatId, String date) throws InterruptedException{
-        List<Remind> reminds = RemindServiceImpl.
-                newRemindService().getAllRemindsOnInputDate(userChatId, date);
-        int index = 0;
+    public synchronized boolean showRemindsByDate(String userChatId, String date) throws InterruptedException{
+        List<Remind> reminds;
+        while((reminds = RemindServiceImpl.
+                newRemindService().getAllRemindsFromDB()).size()==0){
+            wait();}
+        notify();
+        int index = 0, count = 0;
         service.sendMessage(userChatId, "Через пару секунд пришлю все напоминания...");
-        Thread.sleep(2000);
+        Thread.sleep(2300);
         while (index != reminds.size()){
-            if(service.sendMessage(userChatId, reminds.get(index).getMaintenance())){
+            Remind remind = reminds.get(index);
+            if((remind.getUserChatID().equals(userChatId) && remind.getRemindDate().equals(date))
+            &&!isContainsDailySendMarker(remind.getMaintenance())){
+            service.sendMessage(userChatId, remind.getMaintenance());
+                count ++;
+            }
                 index ++;
-            }}
-        return true;}}
+            }
+        return count > 0;}}
 
 
 
