@@ -7,8 +7,8 @@ public class HelpCommand implements Command{
     public static final String STOP_COMMAND = "Поддерживаю следующие команды.\n" +
             "/add - добавление напоминания на исполнение.\n" +
             "/stop - остановка напоминаний.\n" +
-            "/restart  - возообнавление напоминаний."+
-            "/show - показ всех напоминаний на текущую дату";
+            "/restart  - возообнавление напоминаний.\n"+
+            "/show - показ всех напоминаний на заданную дату";
     private final SendMessageService sendMessageService;
 
     public HelpCommand(SendMessageService sendMessageService){
