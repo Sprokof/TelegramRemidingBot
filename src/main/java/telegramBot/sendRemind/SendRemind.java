@@ -112,7 +112,7 @@ public class SendRemind {
     }
 
     private boolean isConditionsToSendToDefPerson(String executeDate, String currentDate) {
-        return (currentDate.equals(executeDate)) && (Integer.parseInt(currentTime()) > 6);
+        return (currentDate.equals(executeDate)) && (Integer.parseInt(currentTime()) >= 6);
     }
 
     private boolean isConditionsToSendDaily(String executeDate, String currentDate, Remind remind) {
