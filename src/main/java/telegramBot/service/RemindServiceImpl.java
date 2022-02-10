@@ -28,11 +28,16 @@ public class RemindServiceImpl implements RemindService{
     @Override
     public synchronized void deleteRemind(int[] arrayId, int index, int[] newArrayId) throws InterruptedException{
         try {
-            this.remindDAO.deleteByID(arrayId[index]);
+            this.remindDAO.deleteByID(index);
         } catch (IndexOutOfBoundsException | NullPointerException e) {
-            System.out.println("delete sent notice");
+            System.out.println("deleted object from DB");
             arrayId = newArrayId;
         }
+    }
+
+    @Override
+    public void deleteRemind(int index) {
+        this.remindDAO.deleteByID(index);
     }
 
     @Override
@@ -85,10 +90,7 @@ public class RemindServiceImpl implements RemindService{
         this.remindDAO.update(remind);
     }
 
-    @Override
-    public void deleteRemind(int index) {
-        this.remindDAO.deleteByID(index);
-    }
+
 }
 
 

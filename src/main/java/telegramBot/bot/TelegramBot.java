@@ -1,6 +1,7 @@
 package telegramBot.bot;
 
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -33,11 +34,13 @@ public class TelegramBot extends TelegramLongPollingBot {
         return null;
     }
 
-    private final String botUsername = "Reminder";
+    @Value("${bot.username}")
+    private String botUsername;
     private final String botToken = tokenFromFile();
     private final String COMMAND_PREFIX = "/";
     private final CommandContainer commandContainer;
-    public static final List<String> commands = new ArrayList<>();
+    @Getter
+    private static final List<String> commands = new ArrayList<>();
     private final SendMessageServiceImpl sendMessageService;
     private final SendRemind sendRemind;
 
@@ -114,7 +117,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     if (RemindServiceImpl.newRemindService().saveRemind(remind)) {
                         this.sendMessageService.sendMessage(chatId, "Напоминание успешно" +
                                 " добавлено.");
-                        clearingCommandStorage();
+                        clearingCommandList();
                     } else {
                         this.sendMessageService.sendMessage(chatId,
                                 "Напоминание не было добавлено, проверьте формат даты (dd.mm.yyyy)" +
@@ -162,7 +165,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    private void clearingCommandStorage(){
+    private void clearingCommandList(){
         int index = commands.size()-1;
         while(index != 0){
             commands.remove(index);

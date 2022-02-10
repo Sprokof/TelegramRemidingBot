@@ -93,22 +93,22 @@ public class SendRemind {
 
         if(!remindsOneTime.isEmpty() && remindsSeveralTime.isEmpty()){
             Remind remind = remindsOneTime.get(0);
-            if(remindsOneTime.size() > 1){
-            String maintenance = messageForSeveralRemind(remindId,(remindsOneTime.toArray(Remind[]::new)));
-                if(this.service.sendMessage(remind.getUserChatID(), maintenance)){
-                remindsOneTime.clear();}
-
+            if(remindsOneTime.size() > 1) {
+                String maintenance = messageForSeveralRemind(remindId, (remindsOneTime.toArray(Remind[]::new)));
+                if (this.service.sendMessage(remind.getUserChatID(), maintenance)) {
+                    remindsOneTime.clear();
                 }
+            }
 
-            else if(remindsOneTime.size() == 1){
+            else{
             String maintenance = (Character.toLowerCase(remind.getMaintenance().
                     charAt(0))+remind.getMaintenance().substring(1));
-                if (this.service.sendMessage(remindsOneTime.get(0).getUserChatID(),
+            int indexOfDeleteRemind = Integer.parseInt(remind.toString().
+                    substring(remind.toString().indexOf("=") + 1,
+                            remind.toString().indexOf(",")));
+                if (this.service.sendMessage(remind.getUserChatID(),
                     REMIND_MESSAGE + maintenance+".")) {
-                    int indexToDelete = Integer.parseInt(remind.toString().
-                        substring(remind.toString().indexOf("=") + 1,
-                                remind.toString().indexOf(",")));
-                    RemindServiceImpl.newRemindService().deleteRemind(remindId, indexToDelete, getIdOfAllReminds());
+                    RemindServiceImpl.newRemindService().deleteRemind(remindId, indexOfDeleteRemind, getIdOfAllReminds());
                 remindsOneTime.clear();
                 }
             }
@@ -122,7 +122,7 @@ public class SendRemind {
                 }
         }
 
-            else if(remindsSeveralTime.size() == 1){
+            else{
                 String maintenanceWithoutRegularMarker = String.format(Character.toLowerCase(
                     deleteRegularMarker(remind).charAt(0))+"%s",
                     deleteRegularMarker(remind).substring(1));
@@ -168,14 +168,16 @@ public class SendRemind {
 
 
     private synchronized String lastCommand() {
-        while (TelegramBot.commands.isEmpty()){
+        while (TelegramBot.getCommands().isEmpty()){
         try{
             wait();}
         catch (InterruptedException e){
-            System.out.println("Something went wrong");}}
+            System.out.println("Something went wrong");}
+        }
         notify();
 
-        return TelegramBot.commands.get(TelegramBot.commands.size() - 1);
+        int lastIndex = TelegramBot.getCommands().size() - 1;
+        return TelegramBot.getCommands().get(lastIndex);
     }
 
     private void stop() {
@@ -239,7 +241,7 @@ public class SendRemind {
 
     private static String deleteRegularMarker(Remind remind){
         return remind.getMaintenance().substring(remind.getMaintenance().indexOf(" ")+1);
-        }
+    }
 
         public static String toNextMonth(String date){
         String[] currentDate = date.split("\\.");{
@@ -259,9 +261,11 @@ public class SendRemind {
     public synchronized boolean showRemindsByDate(String userChatId, String date) throws InterruptedException{
         List<Remind> reminds;
         while((reminds = RemindServiceImpl.
-                newRemindService().getAllRemindsFromDB()).size()==0){
-            wait();}
+                newRemindService().getAllRemindsFromDB()).size() <= 1 ){
+            wait();
+        }
         notify();
+
         int index = 0, count = 0;
         service.sendMessage(userChatId, "Через пару секунд пришлю все напоминания...");
         Thread.sleep(2300);
@@ -276,25 +280,23 @@ public class SendRemind {
             }
         return count > 0;}
 
-    private String messageForSeveralRemind(int[] arrayId, Remind[] reminds) throws InterruptedException{
+    private String messageForSeveralRemind(int[] arrayWithId, Remind[] reminds) throws InterruptedException{
         String messageToSend = "Позвольте напомнить, что вам нужно сделать следующее:\n";
-        int[] numbers = new int[reminds.length];
-        for(int i  = 1; i < numbers.length; i ++){ numbers[i] = i; }
         for(int i = 0; i < reminds.length; i++){
-            messageToSend += numbers[i]+". "+reminds[i].getMaintenance()+"."+"\n";
+            int num = (i+1);
+            messageToSend += num+". "+reminds[i].getMaintenance()+"."+"\n";
         RemindServiceImpl.newRemindService().deleteRemind(Integer.parseInt(reminds[i].toString().
                 substring(reminds[i].toString().indexOf("=") + 1, reminds[i].toString().indexOf(","))));
-        arrayId = getIdOfAllReminds();}
+        arrayWithId = getIdOfAllReminds();}
         return messageToSend;
         }
 
 
-    private String messageForSeveralRemindWithDailyRate(Remind[] reminds) throws InterruptedException{
+    private String messageForSeveralRemindWithDailyRate(Remind[] reminds) {
         String messageToSend = "Позвольте напомнить, что вам нужно сделать следующее:\n";
-        int[] numbers = new int[reminds.length];
-        for(int i  = 1; i < numbers.length; i ++){ numbers[i] = i; }
         for(int i = 0; i < reminds.length; i++){
-            messageToSend += numbers[i]+". "+deleteRegularMarker(reminds[i])+"."+"\n";
+            int num = (i+1);
+            messageToSend += num+". "+deleteRegularMarker(reminds[i])+"."+"\n";
             RemindServiceImpl.newRemindService().updateDate(reminds[i],
                     nextDate(reminds[i].getRemindDate().split("")));}
         return messageToSend;
