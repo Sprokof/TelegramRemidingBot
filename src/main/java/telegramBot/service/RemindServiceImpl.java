@@ -84,6 +84,11 @@ public class RemindServiceImpl implements RemindService{
         remind.setMaintenance(newMaintenance);
         this.remindDAO.update(remind);
     }
+
+    @Override
+    public void deleteRemind(int index) {
+        this.remindDAO.deleteByID(index);
+    }
 }
 
 
