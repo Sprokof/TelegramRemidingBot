@@ -91,7 +91,7 @@ public class SendRemind {
                 remindsSeveralTime.add(remind);}
         }
 
-        if(!remindsOneTime.isEmpty() && remindsSeveralTime.isEmpty()){
+        if(!remindsOneTime.isEmpty()){
             Remind remind = remindsOneTime.get(0);
             if(remindsOneTime.size() > 1) {
                 String maintenance = messageForSeveralRemind(remindId, (remindsOneTime.toArray(Remind[]::new)));
@@ -113,7 +113,7 @@ public class SendRemind {
                 }
             }
         }
-        else if(!remindsSeveralTime.isEmpty() && remindsOneTime.isEmpty()){
+        if(!remindsSeveralTime.isEmpty()){
             Remind remind = remindsSeveralTime.get(0);
             if(remindsSeveralTime.size() > 1) {
             String maintenance = messageForSeveralRemindWithDailyRate(remindsSeveralTime.toArray(Remind[]::new));
