@@ -113,6 +113,7 @@ public class SendRemind {
                 }
             }
         }
+
         if(!remindsSeveralTime.isEmpty()){
             Remind remind = remindsSeveralTime.get(0);
             if(remindsSeveralTime.size() > 1) {
@@ -296,7 +297,11 @@ public class SendRemind {
         String messageToSend = "Позвольте напомнить, что вам нужно сделать следующее:\n";
         for(int i = 0; i < reminds.length; i++){
             int num = (i+1);
-            messageToSend += num+". "+deleteRegularMarker(reminds[i])+"."+"\n";
+            String s = String.format(Character.
+                    toUpperCase(deleteRegularMarker(reminds[i]).charAt(0))+"%s", deleteRegularMarker(
+                            reminds[i]).substring(1));
+            
+            messageToSend += num+". "+s+"."+"\n";
             RemindServiceImpl.newRemindService().updateDate(reminds[i],
                     nextDate(reminds[i].getRemindDate().split("")));}
         return messageToSend;
