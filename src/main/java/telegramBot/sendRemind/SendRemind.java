@@ -300,7 +300,7 @@ public class SendRemind {
             String s = String.format(Character.
                     toUpperCase(deleteRegularMarker(reminds[i]).charAt(0))+"%s", deleteRegularMarker(
                             reminds[i]).substring(1));
-            
+
             messageToSend += num+". "+s+"."+"\n";
             RemindServiceImpl.newRemindService().updateDate(reminds[i],
                     nextDate(reminds[i].getRemindDate().split("")));}
