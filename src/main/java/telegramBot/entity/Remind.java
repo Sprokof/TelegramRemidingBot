@@ -31,11 +31,29 @@ public class Remind {
     @Getter
     private String remindDate;
 
+    @Column(name = "COUNT_SEND")
+    @Getter
+    @Setter
+    private int countSend;
 
-    public Remind(String userChatID, String maintenance, String remindDate) {
+    @Column(name = "TIME_TO_SEND")
+    @Getter
+    @Setter
+    private String timeToSend;
+
+    @Column(name = "SEND_HOUR")
+    @Getter
+    @Setter
+    private int sendHour;
+
+    public Remind(String userChatID, String maintenance, String remindDate,
+                  int countSend, String timeToSend, int sendHour) {
         this.userChatID = userChatID;
         this.remindDate = remindDate;
-        this.maintenance = maintenance;}
+        this.maintenance = maintenance;
+        this.countSend = countSend;
+        this.timeToSend = timeToSend;
+        this.sendHour = sendHour;}
 
     @Override
     public String toString() {

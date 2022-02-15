@@ -6,11 +6,13 @@ import java.util.List;
 
 public interface RemindService {
     boolean saveRemind(Remind remind);
-    void deleteRemind(int[] arrayId, int index, int[] newArrayId) throws Exception;
     void deleteRemind(int index);
-    void updateDate(Remind remind, String newDate);
-    void updateMaintenance(Remind remind, String newMaintenance);
+    void updateRemindDateField(Remind remind, String newDate);
+    void updateTimeToSendField(Remind remind, boolean flag);
+    void updateCountSendField(Remind remind, int count);
+    void updateSendHourFiled(Remind remind, int hour);
     List<Remind> getAllRemindsFromDB();
     Remind getRemindById(int id);
     boolean isContainsInDB(Remind remind);
+
 }

@@ -2,9 +2,6 @@ package telegramBot.service;
 
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.stereotype.Component;
 import telegramBot.dao.RemindDAOImpl;
 import telegramBot.entity.Remind;
 
@@ -25,15 +22,7 @@ public class RemindServiceImpl implements RemindService{
         return this.remindDAO.save(remind);
     }
 
-    @Override
-    public synchronized void deleteRemind(int[] arrayId, int index, int[] newArrayId) throws InterruptedException{
-        try {
-            this.remindDAO.deleteByID(index);
-        } catch (IndexOutOfBoundsException | NullPointerException e) {
-            System.out.println("deleted object from DB");
-            arrayId = newArrayId;
-        }
-    }
+
 
     @Override
     public void deleteRemind(int index) {
@@ -41,7 +30,7 @@ public class RemindServiceImpl implements RemindService{
     }
 
     @Override
-    public void updateDate(Remind remind, String newDate) {
+    public void updateRemindDateField(Remind remind, String newDate) {
         remind.setRemindDate(newDate);
         this.remindDAO.update(remind);
     }
@@ -54,7 +43,8 @@ public class RemindServiceImpl implements RemindService{
             session = this.remindDAO.getSessionFactory().getCurrentSession();
             session.beginTransaction();
             temp = session.createSQLQuery("SELECT id," +
-                    "MAINTENANCE, REMIND_DATE, USER_CHAT_ID from REMINDERS").
+                    "MAINTENANCE, REMIND_DATE, USER_CHAT_ID, " +
+                            "COUNT_SEND, TIME_TO_SEND, SEND_HOUR from REMINDERS").
                     addEntity(Remind.class).list();
             session.getTransaction().commit();
         } catch (Exception e) {
@@ -77,7 +67,8 @@ public class RemindServiceImpl implements RemindService{
     public boolean isContainsInDB(Remind remind) {
         List<Remind> reminds = getAllRemindsFromDB();
         for(Remind rem:reminds){
-            if(rem.equals(remind)){return true;}}
+            if(rem.equals(remind)){return true;}
+        }
         return false;}
 
     public static RemindServiceImpl newRemindService(){
@@ -85,13 +76,26 @@ public class RemindServiceImpl implements RemindService{
     }
 
     @Override
-    public void updateMaintenance(Remind remind, String newMaintenance) {
-        remind.setMaintenance(newMaintenance);
+    public void updateTimeToSendField(Remind remind, boolean flag) {
+        remind.setTimeToSend(String.valueOf(flag));
         this.remindDAO.update(remind);
     }
 
+    @Override
+    public void updateCountSendField(Remind remind, int count) {
+        remind.setCountSend(count);
+        this.remindDAO.update(remind);
+    }
 
+    @Override
+    public void updateSendHourFiled(Remind remind, int hour) {
+        remind.setSendHour(hour);
+        this.remindDAO.update(remind);
+    }
 }
+
+
+
 
 
 

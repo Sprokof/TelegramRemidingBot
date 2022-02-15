@@ -92,8 +92,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     && String.valueOf(input.charAt(i + 1)).
                     matches("\\p{P}")) {
                 firstIndexOfDate = (i - 1);
-                break;
-            }
+                break; }
         }
         return input.substring(firstIndexOfDate, lastIndexOfDate);
     }
@@ -108,10 +107,12 @@ public class TelegramBot extends TelegramLongPollingBot {
         String input = update.getMessage().getText();
         boolean isContains;
         if (isCorrectInput(input)) {
+            int defaultHour = 0;
             try {
                 Remind remind = new Remind(chatId,
                         getRemindContentFromUserInput(input),
-                        getDateFromUserInput(input).replaceAll("\\p{P}", "\\."));
+                        getDateFromUserInput(input).replaceAll("\\p{P}", "\\."),
+                        0, String.valueOf(true), defaultHour);
                 isContains = RemindServiceImpl.newRemindService().isContainsInDB(remind);
                  if(!isContains){
                     if (RemindServiceImpl.newRemindService().saveRemind(remind)) {

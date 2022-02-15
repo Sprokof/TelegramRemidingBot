@@ -18,7 +18,7 @@ public class RemindForDefPerson {
         Remind remind = RemindServiceImpl.newRemindService().getRemindById(undeletedIndex);
 
         sendMessageService.sendMessage(remind.getUserChatID(),remind.getMaintenance());
-        RemindServiceImpl.newRemindService().updateDate(remind,
+        RemindServiceImpl.newRemindService().updateRemindDateField(remind,
                 SendRemind.nextDate(remind.getRemindDate().split("")));
     }
 
