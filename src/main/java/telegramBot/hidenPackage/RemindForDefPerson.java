@@ -21,6 +21,7 @@ public class RemindForDefPerson {
     private Remind remind;
 
     public static final int undeletedIndex = 1;
+    private static int count = 0;
 
     @Autowired
     public RemindForDefPerson(SendRemind sendRemind){
@@ -32,18 +33,18 @@ public class RemindForDefPerson {
 
     public void send(){
 
-        int count = 0;
         if(sendMessageService.sendMessage(this.remind.getUserChatID(), this.remind.getMaintenance())){
             count = this.remind.getCountSend();
-            RemindServiceImpl.newRemindService().updateCountSendField(this.remind,count+1);
+            RemindServiceImpl.newRemindService().updateCountSendField(this.remind,count++);
             RemindServiceImpl.newRemindService().updateTimeToSendField(this.remind,false);
         }
 
-        if(count == 3){
+        if((count = remind.getCountSend()) == 3){
         RemindServiceImpl.newRemindService().updateRemindDateField(this.remind,
                 SendRemind.nextDate(this.remind.getRemindDate().split("")));
         RemindServiceImpl.newRemindService().updateCountSendField(this.remind,0);
-        RemindServiceImpl.newRemindService().updateTimeToSendField(this.remind, true);}
+        RemindServiceImpl.newRemindService().updateTimeToSendField(this.remind, true);
+        count = 0;}
     }
 
 

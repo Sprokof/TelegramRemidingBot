@@ -384,13 +384,13 @@ public class SendRemind {
     }
 
     public boolean changeRemind(Remind remind, int currentTime, int index){
-        if(((currentTime - remind.getSendHour()) >= 5) && (currentTime < 23)){
+        if(((currentTime - remind.getSendHour()) >= 4) && (currentTime < 23)){
             RemindServiceImpl.newRemindService().updateSendHourFiled(remind, currentTime);
             RemindServiceImpl.newRemindService().updateTimeToSendField(remind, true);
         return true;
         }
-        if(currentTime >= 22 && (remind.getCountSend() <= 2 && remind.getCountSend() >= 1)
-        || currentTime <= 1 && (remind.getCountSend() <= 2)){
+        if(currentTime >= 23 && (remind.getCountSend() <= 3 && remind.getCountSend() >= 0)
+        || currentTime <= 3 && (remind.getCountSend() <= 3 && remind.getCountSend() >= 0)){
             if(isContainsDailySendMarker(remind.getMaintenance()) || noDelete(index)){
                 String date = nextDate(remind.getRemindDate().split(""));
                 RemindServiceImpl.newRemindService().updateRemindDateField(remind, date);
