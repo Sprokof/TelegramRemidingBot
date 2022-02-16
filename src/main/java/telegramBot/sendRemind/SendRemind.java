@@ -170,11 +170,13 @@ public class SendRemind {
                 }
             }
         }
+            if(this.remindForDefPerson.dateToSend().equals(currentDate())){
+                changeRemind(this.remindForDefPerson.getRemind(), currentTime(), RemindForDefPerson.undeletedIndex);
+            }
 
-        executeDate = this.remindForDefPerson.dateToSend();
-        Remind remind = this.remindForDefPerson.getRemind();
-        if (isConditionsToSendToDefPerson(executeDate, currentDate(),remind)) {
-            this.remindForDefPerson.send(executeDate, currentDate());
+        if (isConditionsToSendToDefPerson(this.remindForDefPerson.dateToSend(), currentDate(),
+                this.remindForDefPerson.getRemind())) {
+            this.remindForDefPerson.send();
         }
     }
 
@@ -187,7 +189,8 @@ public class SendRemind {
     }
 
     private boolean isConditionsToSendToDefPerson(String executeDate, String currentDate, Remind remind) {
-        return (currentDate.equals(executeDate)) && (currentTime() >= 5) && remind.getTimeToSend().equals("true") ;
+        return (currentDate.equals(executeDate)) && (currentTime() >= 5) &&
+                remind.getTimeToSend().equals("true") ;
     }
 
     private boolean isConditionsToSendDaily(String executeDate, String currentDate, Remind remind) {
@@ -381,7 +384,7 @@ public class SendRemind {
     }
 
     public boolean changeRemind(Remind remind, int currentTime, int index){
-        if(((currentTime - remind.getSendHour()) >= 5) && (currentTime < 22)){
+        if(((currentTime - remind.getSendHour()) >= 5) && (currentTime < 23)){
             RemindServiceImpl.newRemindService().updateSendHourFiled(remind, currentTime);
             RemindServiceImpl.newRemindService().updateTimeToSendField(remind, true);
         return true;

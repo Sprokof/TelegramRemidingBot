@@ -18,7 +18,7 @@ public class RemindForDefPerson {
     private SendRemind sendRemind;
 
     @Getter
-    private final Remind remind;
+    private Remind remind;
 
     public static final int undeletedIndex = 1;
 
@@ -30,10 +30,7 @@ public class RemindForDefPerson {
     }
 
 
-    public void send(String executeDate, String currentDate){
-
-        if(executeDate.equals(currentDate))
-            this.sendRemind.changeRemind(remind, this.sendRemind.currentTime(), undeletedIndex);
+    public void send(){
 
         int count = 0;
         if(sendMessageService.sendMessage(this.remind.getUserChatID(), this.remind.getMaintenance())){
@@ -51,8 +48,7 @@ public class RemindForDefPerson {
 
 
     public String dateToSend(){
-    return new RemindServiceImpl(new RemindDAOImpl()).getRemindById(undeletedIndex).
-            getRemindDate();}
+    return RemindServiceImpl.newRemindService().getRemindById(undeletedIndex).getRemindDate();}
     }
 
 
