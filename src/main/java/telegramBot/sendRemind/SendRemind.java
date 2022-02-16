@@ -156,7 +156,9 @@ public class SendRemind {
                     RemindServiceImpl.newRemindService().
                             updateRemindDateField(remindsDailyRate.get(0),
                                     nextDate(remindsDailyRate.get(0).getRemindDate().split("")));
+
                     RemindServiceImpl.newRemindService().updateCountSendField(remind, 0);
+
                     RemindServiceImpl.newRemindService().updateTimeToSendField(remind, true);
                     }
 
@@ -325,8 +327,13 @@ public class SendRemind {
         String messageToSend = "Позвольте напомнить, что вам нужно сделать следующее:\n";
         for (int i = 0; i < reminds.length; i++) {
             int num = (i + 1);
+
             messageToSend += num + ") " + reminds[i].getMaintenance() + "." + "\n";
+
             RemindServiceImpl.newRemindService().updateSendHourFiled(reminds[i], currentTime());
+
+            RemindServiceImpl.newRemindService().updateCountSendField(reminds[i], reminds[i].getCountSend()+1);
+
             RemindServiceImpl.newRemindService().updateTimeToSendField(reminds[i], false);
         }
 
@@ -349,7 +356,11 @@ public class SendRemind {
                     reminds[i]).substring(1));
 
             messageToSend += num + ") " + str + "." + "\n";
+
             RemindServiceImpl.newRemindService().updateSendHourFiled(reminds[i], currentTime());
+
+            RemindServiceImpl.newRemindService().updateCountSendField(reminds[i], reminds[i].getCountSend()+1);
+
             RemindServiceImpl.newRemindService().updateTimeToSendField(reminds[i], false);
         }
 
