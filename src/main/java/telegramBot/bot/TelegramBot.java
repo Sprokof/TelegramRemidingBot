@@ -108,11 +108,12 @@ public class TelegramBot extends TelegramLongPollingBot {
         boolean isContains;
         if (isCorrectInput(input)) {
             int defaultHour = 0;
+            int defaultCountSend = 0;
             try {
                 Remind remind = new Remind(chatId,
                         getRemindContentFromUserInput(input),
                         getDateFromUserInput(input).replaceAll("\\p{P}", "\\."),
-                        0, String.valueOf(true), defaultHour);
+                        defaultCountSend, String.valueOf(true), defaultHour);
                 isContains = RemindServiceImpl.newRemindService().isContainsInDB(remind);
                  if(!isContains){
                     if (RemindServiceImpl.newRemindService().saveRemind(remind)) {

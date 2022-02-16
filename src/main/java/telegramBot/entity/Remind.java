@@ -66,10 +66,10 @@ public class Remind {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Remind remind = (Remind) o;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (! (obj instanceof Remind)) return false;
+        Remind remind = (Remind) obj;
         return this.userChatID.equals(remind.userChatID) &&
                 this.maintenance.equals(remind.maintenance) && this.remindDate.
                 equals(remind.remindDate.replaceAll("\\p{P}", "\\."));
