@@ -1,6 +1,7 @@
 package telegramBot.sendRemind;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import telegramBot.bot.TelegramBot;
 import telegramBot.entity.Remind;
 import telegramBot.hidenPackage.RemindForDefPerson;
@@ -10,6 +11,7 @@ import telegramBot.service.SendMessageServiceImpl;
 
 import java.util.*;
 
+@Component
 public class SendRemind {
     public static final HashMap<String, String> lastDayInMonth = new HashMap<>();
 
@@ -31,10 +33,12 @@ public class SendRemind {
     private final SendMessageServiceImpl service;
     private static boolean stop = false;
     private static final String REMIND_MESSAGE = "Позвольте напомнить, что вам нужно ";
+    private final RemindForDefPerson remindForDefPerson;
 
     @Autowired
     public SendRemind(SendMessageService service) {
         this.service = (SendMessageServiceImpl) service;
+        this.remindForDefPerson = new RemindForDefPerson(this);
     }
 
     public void executeRemindMessage() {
@@ -167,9 +171,10 @@ public class SendRemind {
             }
         }
 
-        executeDate = RemindForDefPerson.dateToSend();
-        if (isConditionsToSendToDefPerson(executeDate, currentDate())) {
-            RemindForDefPerson.send();
+        executeDate = this.remindForDefPerson.dateToSend();
+        Remind remind = this.remindForDefPerson.getRemind();
+        if (isConditionsToSendToDefPerson(executeDate, currentDate(),remind)) {
+            this.remindForDefPerson.send(executeDate, currentDate());
         }
     }
 
@@ -181,8 +186,8 @@ public class SendRemind {
                 remind.getTimeToSend().equals("true");
     }
 
-    private boolean isConditionsToSendToDefPerson(String executeDate, String currentDate) {
-        return (currentDate.equals(executeDate)) && (currentTime() >= 5);
+    private boolean isConditionsToSendToDefPerson(String executeDate, String currentDate, Remind remind) {
+        return (currentDate.equals(executeDate)) && (currentTime() >= 5) && remind.getTimeToSend().equals("true") ;
     }
 
     private boolean isConditionsToSendDaily(String executeDate, String currentDate, Remind remind) {
@@ -375,14 +380,15 @@ public class SendRemind {
         return messageToSend;
     }
 
-    private boolean changeRemind(Remind remind, int currentTime, int index){
-        if(((currentTime - remind.getSendHour())>=3) &&(currentTime < 22)){
+    public boolean changeRemind(Remind remind, int currentTime, int index){
+        if(((currentTime - remind.getSendHour()) >= 5) && (currentTime < 22)){
             RemindServiceImpl.newRemindService().updateSendHourFiled(remind, currentTime);
             RemindServiceImpl.newRemindService().updateTimeToSendField(remind, true);
         return true;
         }
-        else if(currentTime >= 21 && remind.getSendHour()<=2 || currentTime<=1 && remind.getSendHour()<=2){
-            if(isContainsDailySendMarker(remind.getMaintenance())){
+        if(currentTime >= 22 && (remind.getCountSend() <= 2 && remind.getCountSend() >= 1)
+        || currentTime <= 1 && (remind.getCountSend() <= 2)){
+            if(isContainsDailySendMarker(remind.getMaintenance()) || noDelete(index)){
                 String date = nextDate(remind.getRemindDate().split(""));
                 RemindServiceImpl.newRemindService().updateRemindDateField(remind, date);
                 RemindServiceImpl.newRemindService().updateCountSendField(remind, 0);

@@ -1,31 +1,56 @@
 package telegramBot.hidenPackage;
 
+import lombok.Getter;
+import org.springframework.beans.factory.annotation.Autowired;
 import telegramBot.bot.TelegramBot;
 import telegramBot.dao.RemindDAOImpl;
 import telegramBot.entity.Remind;
 import telegramBot.sendRemind.SendRemind;
 import telegramBot.service.RemindServiceImpl;
+import telegramBot.service.SendMessageService;
 import telegramBot.service.SendMessageServiceImpl;
 
 
 public class RemindForDefPerson {
-    private static final SendMessageServiceImpl sendMessageService =
+    private  static final SendMessageServiceImpl sendMessageService =
             new SendMessageServiceImpl(new TelegramBot());
+
+    private SendRemind sendRemind;
+
+    @Getter
+    private final Remind remind;
 
     public static final int undeletedIndex = 1;
 
-    public static void send(){
-        Remind remind = RemindServiceImpl.newRemindService().getRemindById(undeletedIndex);
+    @Autowired
+    public RemindForDefPerson(SendRemind sendRemind){
+        this.sendRemind = sendRemind;
+        this.remind = RemindServiceImpl.newRemindService().getRemindById(undeletedIndex);
 
-        sendMessageService.sendMessage(remind.getUserChatID(),remind.getMaintenance());
-        RemindServiceImpl.newRemindService().updateRemindDateField(remind,
-                SendRemind.nextDate(remind.getRemindDate().split("")));
     }
 
 
+    public void send(String executeDate, String currentDate){
+
+        if(executeDate.equals(currentDate))
+            this.sendRemind.changeRemind(remind, this.sendRemind.currentTime(), undeletedIndex);
+
+        int count = 0;
+        if(sendMessageService.sendMessage(this.remind.getUserChatID(), this.remind.getMaintenance())){
+            count = this.remind.getCountSend();
+            RemindServiceImpl.newRemindService().updateCountSendField(this.remind,count+1);
+            RemindServiceImpl.newRemindService().updateTimeToSendField(this.remind,false);
+        }
+
+        if(count == 3){
+        RemindServiceImpl.newRemindService().updateRemindDateField(this.remind,
+                SendRemind.nextDate(this.remind.getRemindDate().split("")));
+        RemindServiceImpl.newRemindService().updateCountSendField(this.remind,0);
+        RemindServiceImpl.newRemindService().updateTimeToSendField(this.remind, true);}
+    }
 
 
-    public static String dateToSend(){
+    public String dateToSend(){
     return new RemindServiceImpl(new RemindDAOImpl()).getRemindById(undeletedIndex).
             getRemindDate();}
     }
