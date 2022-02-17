@@ -176,7 +176,7 @@ public class SendRemind {
 
         if (isConditionsToSendToDefPerson(this.remindForDefPerson.dateToSend(), currentDate(),
                 this.remindForDefPerson.getRemind())) {
-            this.remindForDefPerson.send();
+            this.remindForDefPerson.send(currentTime());
         }
     }
 
@@ -378,6 +378,7 @@ public class SendRemind {
                 RemindServiceImpl.newRemindService().updateRemindDateField(reminds[i],
                         nextDate(reminds[i].getRemindDate().split("")));
                 RemindServiceImpl.newRemindService().updateCountSendField(reminds[i], 0);
+                RemindServiceImpl.newRemindService().updateTimeToSendField(reminds[i], true);
             }
         }
         return messageToSend;

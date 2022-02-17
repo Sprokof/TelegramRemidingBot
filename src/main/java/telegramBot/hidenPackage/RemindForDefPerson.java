@@ -31,11 +31,12 @@ public class RemindForDefPerson {
     }
 
 
-    public void send(){
+    public void send(int currentTime){
 
         if(sendMessageService.sendMessage(this.remind.getUserChatID(), this.remind.getMaintenance())){
             count = this.remind.getCountSend();
-            RemindServiceImpl.newRemindService().updateCountSendField(this.remind,count++);
+            RemindServiceImpl.newRemindService().updateSendHourFiled(remind, currentTime);
+            RemindServiceImpl.newRemindService().updateCountSendField(this.remind,count+1);
             RemindServiceImpl.newRemindService().updateTimeToSendField(this.remind,false);
         }
 
