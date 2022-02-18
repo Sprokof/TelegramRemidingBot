@@ -2,7 +2,6 @@ package telegramBot.command;
 
 import com.google.common.collect.ImmutableMap;
 import telegramBot.service.SendMessageService;
-import telegramBot.service.SendMessageServiceImpl;
 
 import static telegramBot.command.CommandName.*;
 
@@ -16,7 +15,7 @@ public class CommandContainer {
                 put(START.getCommandName(), new StartCommand(sendMessage)).
                 put(ADD.getCommandName(), new AddCommand(sendMessage)).
                 put(RESTART.getCommandName(), new RestartCommand(sendMessage)).
-                put(HELP.getCommandName(), new HelpCommand(sendMessage)).
+                put(INSTR.getCommandName(), new InstrCommand(sendMessage)).
                 put(SHOW.getCommandName(), new ShowCommand(sendMessage)).
                 build();
         this.unknownCommand = new UnknownCommand(sendMessage);

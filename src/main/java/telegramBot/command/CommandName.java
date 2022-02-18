@@ -7,7 +7,7 @@ public enum CommandName {
     ADD("/add"),
     RESTART("/restart"),
     SHOW("/show"),
-    HELP("/help");
+    INSTR("/instr");
 
 
 

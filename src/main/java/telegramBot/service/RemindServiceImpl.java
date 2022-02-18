@@ -88,9 +88,18 @@ public class RemindServiceImpl implements RemindService{
     }
 
     @Override
+    public void updateMaintenanceField(Remind remind, String maintenance) {
+        remind.setMaintenance(maintenance);
+        this.remindDAO.update(remind);
+    }
+
+    @Override
     public void updateSendHourFiled(Remind remind, int hour) {
         remind.setSendHour(hour);
         this.remindDAO.update(remind);
+
+
+
     }
 }
 

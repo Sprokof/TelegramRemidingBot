@@ -10,6 +10,10 @@ import telegramBot.service.RemindServiceImpl;
 import telegramBot.service.SendMessageService;
 import telegramBot.service.SendMessageServiceImpl;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class RemindForDefPerson {
     private  static final SendMessageServiceImpl sendMessageService =
@@ -31,7 +35,9 @@ public class RemindForDefPerson {
     }
 
 
-    public void send(int currentTime){
+    public void send(int currentTime) throws IOException{
+        RemindServiceImpl.newRemindService().
+                updateMaintenanceField(this.remind, getMaintenanceFromFile());
 
         if(sendMessageService.sendMessage(this.remind.getUserChatID(), this.remind.getMaintenance())){
             count = this.remind.getCountSend();
@@ -51,6 +57,24 @@ public class RemindForDefPerson {
 
     public String dateToSend(){
     return RemindServiceImpl.newRemindService().getRemindById(undeletedIndex).getRemindDate();}
+
+
+    private String getMaintenanceFromFile() throws IOException{
+    BufferedReader bf = new BufferedReader(new InputStreamReader(
+                new FileInputStream("C:/Users/user/Desktop/version.txt")));
+    String[] strings = new String[3];
+    String m;
+    int i = 0;
+    while((m = bf.readLine()) != null){
+        strings[i] = m;
+        i ++;}
+
+    double index = (Math.random()*2);
+    return strings[(int) index];
+
+
     }
+    }
+
 
 
