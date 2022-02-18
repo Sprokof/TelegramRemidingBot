@@ -387,7 +387,6 @@ public class SendRemind {
 
     private void updateRemindFieldsToNextSendTime(Remind remind, int count){
         RemindServiceImpl.newRemindService().updateCountSendField(remind, count);
-        RemindServiceImpl.newRemindService().updateCountSendField(remind, count);
         RemindServiceImpl.newRemindService().updateTimeToSendField(remind, false);
         RemindServiceImpl.newRemindService().updateSendHourFiled(remind, currentTime());
     }
