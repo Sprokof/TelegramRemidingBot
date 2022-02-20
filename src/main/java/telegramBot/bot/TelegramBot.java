@@ -74,6 +74,11 @@ public class TelegramBot extends TelegramLongPollingBot {
                         }
                     catch (InterruptedException e){e.printStackTrace();}
                     }
+                    else{
+                        this.sendMessageService.sendMessage(update.getMessage().getChatId().toString(),
+                                "Вероятно вы ошиблись в формате даты. Повторите команду /show и " +
+                                        "введите дату в верном формате");
+                    }
                 }
                 else {
                     this.commandContainer.retrieveCommand("/unknown").execute(update);
