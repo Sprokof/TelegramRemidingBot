@@ -375,9 +375,6 @@ public class SendRemind {
             else{
             RemindServiceImpl.newRemindService().deleteRemind(index);
             return true;}}
-        else{
-            RemindServiceImpl.newRemindService().deleteRemind(index);
-            }
         return false;
             }
 
