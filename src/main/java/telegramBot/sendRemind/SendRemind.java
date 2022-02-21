@@ -374,8 +374,10 @@ public class SendRemind {
             return true;}
             else{
             RemindServiceImpl.newRemindService().deleteRemind(index);
-            return true;}
-        }
+            return true;}}
+        else{
+            RemindServiceImpl.newRemindService().deleteRemind(index);
+            }
         return false;
             }
 
@@ -383,6 +385,7 @@ public class SendRemind {
         RemindServiceImpl.newRemindService().updateRemindDateField(remind, date);
         RemindServiceImpl.newRemindService().updateCountSendField(remind, 0);
         RemindServiceImpl.newRemindService().updateTimeToSendField(remind, true);
+        RemindServiceImpl.newRemindService().updateSendHourFiled(remind,0);
     }
 
     private void updateRemindFieldsToNextSendTime(Remind remind, int count){
