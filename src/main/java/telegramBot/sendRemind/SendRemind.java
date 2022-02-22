@@ -49,6 +49,7 @@ public class SendRemind {
             public void run() {
                 try {
                     mainSendMethod();
+                    deleteNotUpdatedRemind();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -391,8 +392,20 @@ public class SendRemind {
         RemindServiceImpl.newRemindService().updateSendHourFiled(remind, currentTime());
     }
 
+    private void deleteNotUpdatedRemind(){
+        List<Remind> reminds = RemindServiceImpl.newRemindService().getAllRemindsFromDB();
+        reminds.forEach((r)-> {
+            if(nextDate(r.getRemindDate().split("")).equals(currentDate())){
+                int id = Integer.parseInt(r.toString().
+                        substring(r.toString().indexOf("=") + 1, r.toString().indexOf(",")));
+                RemindServiceImpl.newRemindService().deleteRemind(id);}});
 
-        }
+            }
+
+    }
+
+
+
 
 
 
