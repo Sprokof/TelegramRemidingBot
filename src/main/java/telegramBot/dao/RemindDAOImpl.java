@@ -10,7 +10,7 @@ import telegramBot.entity.Remind;
 
 @NoArgsConstructor
 @Component
-public class RemindDAOImpl implements RemindDAO {
+public class RemindDAOImpl implements DAO {
     @Getter
     private final SessionFactory sessionFactory = new Configuration().
             configure("hibernate.cfg.xml").addAnnotatedClass(Remind.class).buildSessionFactory();
@@ -32,12 +32,12 @@ public class RemindDAOImpl implements RemindDAO {
     return true;}
 
     @Override
-    public boolean save(Remind remind) {
+    public boolean save(Object o) {
         Session session;
         try{
             session = this.sessionFactory.getCurrentSession();
             session.beginTransaction();
-            session.save(remind);
+            session.save((Remind) o);
             session.getTransaction().commit();}
         catch (Exception e){
             e.printStackTrace();}
@@ -46,12 +46,12 @@ public class RemindDAOImpl implements RemindDAO {
         return true;}
 
     @Override
-    public boolean update(Remind remind) {
+    public boolean update(Object o) {
         Session session;
         try{
             session = this.sessionFactory.getCurrentSession();
             session.beginTransaction();
-            session.update(remind);
+            session.update((Remind) o);
             session.getTransaction().commit();}
         catch (Exception e){
             e.printStackTrace();}

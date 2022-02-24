@@ -42,9 +42,7 @@ public class RemindServiceImpl implements RemindService{
         try {
             session = this.remindDAO.getSessionFactory().getCurrentSession();
             session.beginTransaction();
-            temp = session.createSQLQuery("SELECT id," +
-                    "MAINTENANCE, REMIND_DATE, USER_CHAT_ID, " +
-                            "COUNT_SEND, TIME_TO_SEND, SEND_HOUR from REMINDERS").
+            temp = session.createSQLQuery("SELECT * from REMINDERS").
                     addEntity(Remind.class).list();
             session.getTransaction().commit();
         } catch (Exception e) {
@@ -76,32 +74,41 @@ public class RemindServiceImpl implements RemindService{
     }
 
     @Override
-    public void updateTimeToSendField(Remind remind, boolean flag) {
-        remind.setTimeToSend(String.valueOf(flag));
-        this.remindDAO.update(remind);
-    }
-
-    @Override
-    public void updateCountSendField(Remind remind, int count) {
-        remind.setCountSend(count);
-        this.remindDAO.update(remind);
-    }
-
-    @Override
     public void updateMaintenanceField(Remind remind, String maintenance) {
         remind.setMaintenance(maintenance);
         this.remindDAO.update(remind);
     }
 
     @Override
-    public void updateSendHourFiled(Remind remind, int hour) {
-        remind.setSendHour(hour);
+    public void updateTimeToSendField(Remind remind, boolean flag) {
+        remind.setTimeToSend(String.valueOf(flag));
         this.remindDAO.update(remind);
 
+    }
 
+    @Override
+    public void updateCountSendField(Remind remind, int count) {
+        remind.setCountSendOfRemind(count);
+        this.remindDAO.update(remind);
+    }
+
+    @Override
+    public void updateSendHourField(Remind remind, int hour) {
+        remind.setLastSendHour(hour);
+        this.remindDAO.update(remind);
+    }
+
+    @Override
+    public List<Remind> getRemindsByChatId(String chatId){
+        List<Remind> resultedList = new ArrayList<>();
+        for(Remind remind : getAllRemindsFromDB()){
+            if(remind.getChatIdToSend().equals(chatId)){
+                resultedList.add(remind);}
+        }
+        return resultedList;
 
     }
-}
+    }
 
 
 

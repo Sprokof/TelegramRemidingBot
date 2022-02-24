@@ -1,5 +1,6 @@
 package telegramBot.bot;
 
+import com.sun.istack.NotNull;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -52,41 +53,42 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     @Override
-    public void onUpdateReceived(Update update) {
+    public void onUpdateReceived(@NotNull Update update) {
         String command = "";
         if (update.hasMessage() && update.getMessage().hasText()) {
             String message = update.getMessage().getText().trim();
             if (message.startsWith(COMMAND_PREFIX)) {
                 command = message.split(" ")[0].toLowerCase(Locale.ROOT);
                 this.commandContainer.retrieveCommand(command).execute(update);
-                commands.add(command);
-            } else if (!message.startsWith(COMMAND_PREFIX)) {
-                if ((!commands.isEmpty()) && commands.get(commands.size() - 1).equals("/add")) {
-                    acceptNewRemindFromUser(update);}
-                else if((!commands.isEmpty()) && commands.get(commands.size() - 1).equals("/show")){
-                    if(acceptDateFromUser(update)){
-                    try{
-                        if(!this.sendRemind.showRemindsByDate(update.getMessage().getChatId().toString(),
-                                update.getMessage().getText())){
-                            this.sendMessageService.sendMessage(update.getMessage().getChatId().toString(),
-                                    "Не получилось найти напоминания, возможно " +
-                                            "вы указали уже прошедшую дату, либо на эту дату нет напоминаний");}
+            commands.add(command);
+        } else {
+            if (!message.startsWith(COMMAND_PREFIX)) {
+                    if ((!commands.isEmpty()) && commands.get(commands.size() - 1).equals("/add")) {
+                        acceptNewRemindFromUser(update);}
+                    else if((!commands.isEmpty()) && commands.get(commands.size() - 1).equals("/show")){
+                        if(acceptDateFromUser(update)){
+                        try{
+                            if(!this.sendRemind.showRemindsByDate(update.getMessage().getChatId().toString(),
+                                    update.getMessage().getText())){
+                                this.sendMessageService.sendMessage(update.getMessage().getChatId().toString(),
+                                        "Не получилось найти напоминания, возможно " +
+                                                "вы указали уже прошедшую дату, либо на эту дату нет напоминаний");}
+                            }
+                        catch (InterruptedException e){e.printStackTrace();}
                         }
-                    catch (InterruptedException e){e.printStackTrace();}
+                        else{
+                            this.sendMessageService.sendMessage(update.getMessage().getChatId().toString(),
+                                    "Вероятно вы ошиблись в формате даты. Повторите команду /show и " +
+                                            "введите дату в верном формате");
+                        }
                     }
-                    else{
-                        this.sendMessageService.sendMessage(update.getMessage().getChatId().toString(),
-                                "Вероятно вы ошиблись в формате даты. Повторите команду /show и " +
-                                        "введите дату в верном формате");
+                    else {
+                        this.commandContainer.retrieveCommand("/unknown").execute(update);
                     }
                 }
-                else {
-                    this.commandContainer.retrieveCommand("/unknown").execute(update);
-                }
-            }
         }
-        this.sendRemind.executeRemindMessage();
-    }
+        }
+        this.sendRemind.executeRemindMessage();}
 
 
     private String getDateFromUserInput(String input) {
@@ -112,19 +114,15 @@ public class TelegramBot extends TelegramLongPollingBot {
         String input = update.getMessage().getText();
         boolean isContains;
         if (isCorrectInput(input)) {
-            int defaultHour = 0;
-            int defaultCountSend = 0;
+            String defaultFlag = String.valueOf(true);
             try {
-                Remind remind = new Remind(chatId,
-                        getRemindContentFromUserInput(input),
-                        getDateFromUserInput(input).replaceAll("\\p{P}", "\\."),
-                        defaultCountSend, String.valueOf(true), defaultHour);
+                Remind remind = new Remind(chatId,getRemindContentFromUserInput(input),
+                        getDateFromUserInput(input).replaceAll("\\p{P}", "\\."), defaultFlag, 0, 0);
                 isContains = RemindServiceImpl.newRemindService().isContainsInDB(remind);
                  if(!isContains){
-                    if (RemindServiceImpl.newRemindService().saveRemind(remind)) {
+                    if (saveRemind(remind)) {
                         this.sendMessageService.sendMessage(chatId, "Напоминание успешно" +
                                 " добавлено.");
-                        clearingCommandList();
                     } else {
                         this.sendMessageService.sendMessage(chatId,
                                 "Напоминание не было добавлено, проверьте формат даты (dd.mm.yyyy) ." +
@@ -144,6 +142,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                             "Возможно, что вы указали уже прошедшую дату. " +
                             "После введите команду /add для повторного добавления.");
         }
+        commands.clear();
     }
 
     private boolean isCorrectInput(String input) {
@@ -172,12 +171,10 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    private void clearingCommandList(){
-        int index = commands.size()-1;
-        while(index != 0){
-            commands.remove(index);
-            index --;}
-        }
+
+    private boolean saveRemind(Remind remind){
+        return RemindServiceImpl.newRemindService().saveRemind(remind);
+    }
     }
 
 

@@ -3,11 +3,9 @@ package telegramBot.hidenPackage;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import telegramBot.bot.TelegramBot;
-import telegramBot.dao.RemindDAOImpl;
 import telegramBot.entity.Remind;
 import telegramBot.sendRemind.SendRemind;
 import telegramBot.service.RemindServiceImpl;
-import telegramBot.service.SendMessageService;
 import telegramBot.service.SendMessageServiceImpl;
 
 import java.io.BufferedReader;
@@ -32,6 +30,7 @@ public class RemindForDefPerson {
         this.sendRemind = sendRemind;
         this.remind = RemindServiceImpl.newRemindService().getRemindById(undeletedIndex);
 
+
     }
 
 
@@ -39,14 +38,14 @@ public class RemindForDefPerson {
         RemindServiceImpl.newRemindService().
                 updateMaintenanceField(this.remind, getMaintenanceFromFile());
 
-        if(sendMessageService.sendMessage(this.remind.getUserChatID(), this.remind.getMaintenance())){
-            count = this.remind.getCountSend();
-            RemindServiceImpl.newRemindService().updateSendHourFiled(remind, currentTime);
+        if(sendMessageService.sendMessage(this.remind.getChatIdToSend(), this.remind.getMaintenance())){
+            count = this.remind.getCountSendOfRemind();
+            RemindServiceImpl.newRemindService().updateSendHourField(this.remind, currentTime);
             RemindServiceImpl.newRemindService().updateCountSendField(this.remind,count+1);
             RemindServiceImpl.newRemindService().updateTimeToSendField(this.remind,false);
         }
 
-        if((count = remind.getCountSend()) == 3){
+        if((count = this.remind.getCountSendOfRemind()) == 3){
         RemindServiceImpl.newRemindService().updateRemindDateField(this.remind,
                 SendRemind.nextDate(this.remind.getRemindDate().split("")));
         RemindServiceImpl.newRemindService().updateCountSendField(this.remind,0);

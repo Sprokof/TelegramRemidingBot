@@ -5,64 +5,50 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 @Table(name = "REMINDERS")
 @NoArgsConstructor
+@Getter
+@Setter
 public class Remind {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "USER_CHAT_ID")
-    @Setter
-    @Getter
-    private String userChatID;
-
-    @Column(name = "MAINTENANCE")
-    @Setter
-    @Getter
-    private String maintenance;
-
-    @Column(name = "REMIND_DATE")
-    @Setter
-    @Getter
-    private String remindDate;
-
-    @Column(name = "COUNT_SEND")
-    @Getter
-    @Setter
-    private int countSend;
-
+    @Column(name = "CHAT_ID_TO_SEND")
+    private String chatIdToSend;
     @Column(name = "TIME_TO_SEND")
-    @Getter
-    @Setter
     private String timeToSend;
+    @Column(name = "MAINTENANCE")
+    private String maintenance;
+    @Column(name = "REMIND_DATE")
+    private String remindDate;
+    @Column(name = "LAST_SEND_HOUR")
+    private int lastSendHour;
+    @Column(name = "COUNT_SEND_OF_REMIND")
+    private int countSendOfRemind;
 
-    @Column(name = "SEND_HOUR")
-    @Getter
-    @Setter
-    private int sendHour;
 
-    public Remind(String userChatID, String maintenance, String remindDate,
-                  int countSend, String timeToSend, int sendHour) {
-        this.userChatID = userChatID;
-        this.remindDate = remindDate;
+
+
+    public Remind(String chatIdToSend, String maintenance, String remindDate,
+                  String timeToSend, int countSendOfRemind, int lastSendHour){
+        this.chatIdToSend = chatIdToSend;
         this.maintenance = maintenance;
-        this.countSend = countSend;
+        this.remindDate = remindDate;
         this.timeToSend = timeToSend;
-        this.sendHour = sendHour;}
+        this.countSendOfRemind = countSendOfRemind;
+        this.lastSendHour = lastSendHour;
+    }
 
     @Override
     public String toString() {
         return "Remind{" +
                 "id=" + id +
-                ", maintenance='" + maintenance + '\'' +
-                ", noticeDate='" + remindDate + '\'' +
-                ", userChatID='" + userChatID + '\'' +
-                '}';
+                ", maintenance=" + maintenance + '\'' +
+                ", remindDate=" + remindDate + '\'';
     }
 
     @Override
@@ -70,14 +56,17 @@ public class Remind {
         if (this == obj) return true;
         if (! (obj instanceof Remind)) return false;
         Remind remind = (Remind) obj;
-        return this.userChatID.equals(remind.userChatID) &&
-                this.maintenance.equals(remind.maintenance) && this.remindDate.
+        return this.maintenance.equals(remind.maintenance) && this.remindDate.
                 equals(remind.remindDate.replaceAll("\\p{P}", "\\."));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, maintenance, remindDate, userChatID);
+        char[] chArray = this.maintenance.toCharArray();
+        int result = (int)Character.toUpperCase(chArray[0]);
+        for(int i = 1; i<chArray.length; i++){
+            result+=(int)chArray[i];}
+        return result;
     }
 }
 
