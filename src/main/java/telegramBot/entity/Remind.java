@@ -30,9 +30,6 @@ public class Remind {
     @Column(name = "COUNT_SEND_OF_REMIND")
     private int countSendOfRemind;
 
-
-
-
     public Remind(String chatIdToSend, String maintenance, String remindDate,
                   String timeToSend, int countSendOfRemind, int lastSendHour){
         this.chatIdToSend = chatIdToSend;

@@ -4,6 +4,7 @@ import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import telegramBot.dao.RemindDAOImpl;
 import telegramBot.entity.Remind;
+import telegramBot.sendRemind.SendRemind;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -99,13 +100,17 @@ public class RemindServiceImpl implements RemindService{
     }
 
     @Override
-    public List<Remind> getRemindsByChatId(String chatId){
+    public List<Remind> getAllExecutingRemindsByChatId(String chatId, String currentDate){
         List<Remind> resultedList = new ArrayList<>();
         for(Remind remind : getAllRemindsFromDB()){
-            if(remind.getChatIdToSend().equals(chatId)){
+            if(remind.getChatIdToSend().equals(chatId) &&
+                    remind.getRemindDate().replaceAll("\\p{P}", "\\.").
+                            equals(currentDate) && remind.getTimeToSend().equals("true")
+                    && !SendRemind.isStop()){
                 resultedList.add(remind);}
         }
-        return resultedList;
+        if(SendRemind.currentTime() >= 0) return resultedList;
+        return null;
 
     }
     }

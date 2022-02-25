@@ -1,6 +1,8 @@
 package telegramBot.sendRemind;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import telegramBot.bot.TelegramBot;
 import telegramBot.entity.Remind;
@@ -13,6 +15,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Component
+@Scope("singleton")
 public class SendRemind {
     public static final HashMap<String, String> lastDayInMonth = new HashMap<>();
 
@@ -32,19 +35,15 @@ public class SendRemind {
     }
 
     private final SendMessageServiceImpl service;
+    @Getter
     private static boolean stop = false;
     private static final String REMIND_MESSAGE = "Позвольте напомнить, что вам нужно ";
     private final RemindForDefPerson remindForDefPerson;
-    private final List<List<Remind>> remindsInOneDay;
-    private final List<List<Remind>> remindsDailyRate;
-
 
     @Autowired
-    public SendRemind(SendMessageService service) {
+    public SendRemind(SendMessageService service){
         this.service = (SendMessageServiceImpl) service;
         this.remindForDefPerson = new RemindForDefPerson(this);
-        this.remindsInOneDay = new ArrayList<>();
-        this.remindsDailyRate = new ArrayList<>();
     }
 
     public void executeRemindMessage() {
@@ -55,19 +54,19 @@ public class SendRemind {
                 try {
                     mainSendMethod();
                     deleteNotUpdatedRemind();
+                    System.out.println("...");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
         };
-        timer.scheduleAtFixedRate(task, 3500, 60000);
+        timer.scheduleAtFixedRate(task, 0, 15000);
     }
-
 
     private synchronized int[] getIdOfAllReminds() throws InterruptedException {
         List<Remind> reminds;
         while ((reminds = RemindServiceImpl.newRemindService().
-                getAllRemindsFromDB()).size() <= 1) {
+                getAllRemindsFromDB()).size() <=1 ) {
             wait();
         }
         notify();
@@ -88,36 +87,34 @@ public class SendRemind {
         return ides;
     }
 
-    private synchronized void mainSendMethod() throws InterruptedException {
-        int[] remindId = getIdOfAllReminds();
+    public void mainSendMethod() throws InterruptedException{
+    int[] remindId = getIdOfAllReminds();
         String executeDate;
+        List<Remind> remindsInOneDay = new ArrayList<>();
+        List<Remind> remindsDailyRate = new ArrayList<>();
         stop();
         for (int index = 0; index < remindId.length; index++) {
             if (noDelete(remindId[index])) continue;
             Remind remind = RemindServiceImpl.newRemindService().getRemindById(remindId[index]);
             executeDate = remind.getRemindDate();
-                if(executeDate.equals(currentDate())) {
-                    if(changeRemind(remind, currentTime(), remindId[index]))
-                        remind = null;
-                }
-
-            if(remind != null){
-            List<Remind> reminds = RemindServiceImpl.newRemindService().
-                    getRemindsByChatId(remind.getChatIdToSend());
-            for(Remind r : reminds)
-            if (isConditionsToSendOneTime(executeDate, currentDate(), r)) {
-                remindsInOneDay.add(returnList(r));
-            } else if (isConditionsToSendDaily(executeDate, currentDate(), r)) {
-                remindsDailyRate.add(returnList(r));
+            if (executeDate.equals(currentDate())) {
+                changeRemind(remind, currentTime(), remindId[index]);
             }
-        }}
 
-        if (!remindsInOneDay.isEmpty()) {
-           sendRemindsInOneDay(this.remindsInOneDay);}
-        if (!remindsDailyRate.isEmpty()) {
-            try{
-                sendRemindWithDailyRate(this.remindsDailyRate);}
-            catch (InterruptedException e){e.printStackTrace();}
+            List<Remind> reminds = RemindServiceImpl.newRemindService().
+                    getAllExecutingRemindsByChatId(remind.getChatIdToSend(), currentDate());
+            if (reminds != null) {
+                sortReminds(reminds, remindsInOneDay, remindsDailyRate);
+            }
+
+            if (!remindsInOneDay.isEmpty()) {
+                sendRemindsInOneDay(remindsInOneDay);
+            }
+
+            if (!remindsDailyRate.isEmpty()) {
+                sendRemindWithDailyRate(remindsDailyRate);
+            }
+
         }
 
             if(this.remindForDefPerson.dateToSend().equals(currentDate())){
@@ -130,29 +127,31 @@ public class SendRemind {
         try{
             this.remindForDefPerson.send(currentTime());}
         catch (IOException e){e.printStackTrace();}
-        }}
-
-
-    private boolean isConditionsToSendOneTime(String executeDate, String currentDate, Remind remind) {
-        if(remind == null) return false;
-        return executeDate.replaceAll("\\p{P}", "\\.").equals(currentDate)
-                && !stop && currentTime() >= 5 &&
-                !isContainsDailySendMarker(remind.getMaintenance()) &&
-                remind.getTimeToSend().equals("true");
+        }
     }
+
+
+    private synchronized void sortReminds(List<Remind> reminds, List<Remind> one, List<Remind> daily) {
+        while(reminds.isEmpty()) {
+    try{
+            wait();}
+    catch (InterruptedException e) { e.printStackTrace();}}
+
+        notify();
+        for (Remind remind : reminds) {
+            if (!isContainsDailySendMarker(remind.getMaintenance())) {
+                one.add(remind);
+            } else if (isContainsDailySendMarker(remind.getMaintenance()))
+                daily.add(remind);}
+
+        }
+
 
     private boolean isConditionsToSendToDefPerson(String executeDate, String currentDate, Remind remind) {
         return (currentDate.equals(executeDate)) && (currentTime() >= 5) &&
                 remind.getTimeToSend().equals("true") ;
     }
 
-    private boolean isConditionsToSendDaily(String executeDate, String currentDate, Remind remind) {
-        if(remind == null) return false;
-        return executeDate.replaceAll("\\p{P}", "\\.").equals(currentDate)
-                && !stop && currentTime() >= 5 &&
-                isContainsDailySendMarker(remind.getMaintenance()) &&
-                remind.getTimeToSend().equals("true");
-    }
 
     private boolean isContainsDailySendMarker(String maintenance) {
         return (maintenance.split("")[0].
@@ -200,7 +199,7 @@ public class SendRemind {
         return String.format("%s.%s.%s", day, month, year);
     }
 
-    public int currentTime() {
+    public static int currentTime() {
         String hour;
         String[] tempTimes = Calendar.getInstance().toString().split(",");
         if (tempTimes[21].equals("AM_PM=1")) {
@@ -325,22 +324,22 @@ public class SendRemind {
         return messageToSend;
     }
 
-    public boolean changeRemind(Remind remind, int currentTime, int index){
+    public void changeRemind(Remind remind, int currentTime, int index){
+    if(remind.getTimeToSend().equals("false")){
         if(((currentTime - remind.getLastSendHour()) >= 4) && (currentTime < 23)){
             RemindServiceImpl.newRemindService().updateSendHourField(remind, currentTime);
             RemindServiceImpl.newRemindService().updateTimeToSendField(remind, true);
-        return true;
+        }
         }
         if(currentTime >= 23 && (remind.getCountSendOfRemind() <= 3 && remind.getCountSendOfRemind() >= 1)
         || currentTime <= 3 && (remind.getCountSendOfRemind() <= 3 && remind.getCountSendOfRemind() >= 1)){
             if(isContainsDailySendMarker(remind.getMaintenance()) || noDelete(index)){
                 String date = nextDate(remind.getRemindDate().split(""));
                 updateRemindFieldsToNextDay(remind, date);
-            return true;}
+            }
             else{
             RemindServiceImpl.newRemindService().deleteRemind(index);
-            return true;}}
-        return false;
+            }}
             }
 
     private void updateRemindFieldsToNextDay(Remind remind, String date){
@@ -356,7 +355,7 @@ public class SendRemind {
         RemindServiceImpl.newRemindService().updateSendHourField(remind, currentTime());
     }
 
-    private void deleteNotUpdatedRemind(){
+    public void deleteNotUpdatedRemind(){
         List<Remind> reminds = RemindServiceImpl.newRemindService().getAllRemindsFromDB();
         reminds.forEach((r)-> {
             if(nextDate(r.getRemindDate().split("")).equals(currentDate())){
@@ -365,81 +364,65 @@ public class SendRemind {
 
             }
 
-    private synchronized void sendRemindWithDailyRate(final List<List<Remind>> reminds) throws InterruptedException{
-        if(!this.remindsInOneDay.isEmpty()){
-            while(!this.remindsInOneDay.isEmpty()){
-                wait();
-            }
-        notify(); }
-
-        Remind remind = reminds.get(0).get(0);
+    private void sendRemindWithDailyRate(final List<Remind> reminds){
+    if(reminds.size() > 1){
         for (int i = 0; i < reminds.size(); i++) {
-            if (reminds.get(i).size() > 1)
-                if (reminds.get(0).size() > 1) {
-                String maintenance = messageForSeveralRemindWithDailyRate(reminds.get(i).
-                        toArray(Remind[]::new));
-                if (this.service.sendMessage(remind.getChatIdToSend(), maintenance)) {
-                    reminds.clear();
-                }
-            } else {
-                String maintenanceWithoutRegularMarker = String.format(Character.toLowerCase(
+            Remind remind  = reminds.get(i);
+                String maintenance = messageForSeveralRemindWithDailyRate(reminds.toArray(Remind[]::new));
+                this.service.sendMessage(remind.getChatIdToSend(), maintenance);}
+
+            }
+    else {
+            Remind remind = reminds.get(0);
+            String maintenanceWithoutRegularMarker = String.format(Character.toLowerCase(
                                 deleteRegularMarker(remind).charAt(0)) + "%s",
                         deleteRegularMarker(remind).substring(1));
                 if (this.service.sendMessage(remind.getChatIdToSend(),
                         REMIND_MESSAGE + maintenanceWithoutRegularMarker + ".")) {
-                    updateRemindFieldsToNextSendTime(remind, remind.getCountSendOfRemind()+1);
+                    updateRemindFieldsToNextSendTime(remind, reminds.get(0).
+                            getCountSendOfRemind()+1);
 
                     if(remind.getCountSendOfRemind() == 3){
                         String date = nextDate(remind.getRemindDate().split(""));
                         updateRemindFieldsToNextDay(remind, date);
                     }
-
-                    reminds.clear();
                 }
             }
         }
+
+    private void sendRemindsInOneDay(final List<Remind> reminds){
+    if(reminds.size() > 1){
+        for (int i = 0; i < reminds.size(); i++) {
+            Remind remind = reminds.get(i);
+            String maintenance = messageForSeveralRemind(reminds.toArray(Remind[]::new));
+            this.service.sendMessage(remind.getChatIdToSend(), maintenance);
+        }
     }
 
-    private void sendRemindsInOneDay(final List<List<Remind>> reminds) {
-        Remind remind = reminds.get(0).get(0);
-        for (int i = 0; i < reminds.size(); i++) {
-            if (reminds.get(i).size() > 1) {
-                String maintenance = messageForSeveralRemind(reminds.get(i).toArray(Remind[]::new));
-                if (this.service.sendMessage(remind.getChatIdToSend(), maintenance)) {
-                    reminds.clear();
-                }
-            } else {
-                String maintenance = (Character.toLowerCase(remind.getMaintenance().
+    else {
+            Remind remind = reminds.get(0);
+            String maintenance = (Character.toLowerCase(remind.getMaintenance().
                         charAt(0)) + remind.getMaintenance().substring(1));
-
                 int indexOfDeleteRemind = getIdOfRemind(remind);
-
                 if (this.service.sendMessage(remind.getChatIdToSend(),
                         REMIND_MESSAGE + maintenance + ".")) {
-                    updateRemindFieldsToNextSendTime(remind, remind.getCountSendOfRemind() + 1);
+                    updateRemindFieldsToNextSendTime(remind,
+                            remind.getCountSendOfRemind() + 1);
 
                     if (remind.getCountSendOfRemind() == 3) {
                         RemindServiceImpl.newRemindService().deleteRemind(indexOfDeleteRemind);
                     }
-
-                    reminds.clear();
                 }
             }
         }
-    }
-
-
-    private List<Remind> returnList(Remind remind){
-        List<Remind> reminds = new ArrayList<>();
-        reminds.add(remind);
-        return reminds;
-    }
 
     private int getIdOfRemind(Remind remind){
         return Integer.parseInt(remind.toString().
                 substring(remind.toString().indexOf("=") + 1,
                         remind.toString().indexOf(",")));
     }
+
+
 
 }
 
