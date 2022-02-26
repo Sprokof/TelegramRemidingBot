@@ -66,9 +66,9 @@ public class TelegramBot extends TelegramLongPollingBot {
                 commands.add(command);
             } else {
                 if (!message.startsWith(COMMAND_PREFIX)) {
-                    if ((!commands.isEmpty()) && lastCommand().equals("/add")) {
+                    if (lastCommand().equals("/add")) {
                         acceptNewRemindFromUser(update);
-                    } else if ((!commands.isEmpty()) && lastCommand().equals("/show")) {
+                    } else if (lastCommand().equals("/show")) {
                         if (acceptDateFromUser(update)) {
                             try {
                                 if (!this.sendRemind.showRemindsByDate(update.getMessage().getChatId().toString(),
@@ -199,7 +199,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     private synchronized String lastCommand() {
-        while (TelegramBot.getCommands().isEmpty()) {
+        while (commands.isEmpty()) {
             try {
                 wait();
             } catch (InterruptedException e) {

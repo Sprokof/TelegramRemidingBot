@@ -69,8 +69,6 @@ public class RemindForDefPerson {
 
     double index = (Math.random()*2);
     return strings[(int) index];
-
-
     }
     }
 
