@@ -11,7 +11,7 @@ public interface RemindService {
     void updateMaintenanceField(Remind remind, String maintenance);
     List<Remind> getAllRemindsFromDB();
     Remind getRemindById(int id);
-    List<Remind> getAllExecutingRemindsByChatId(String chatId, String currentDate);
+    List<Remind> getAllExecutingRemindsByChatId(String chatId);
     boolean isContainsInDB(Remind remind);
     void updateTimeToSendField(Remind remind, boolean flag);
     void updateCountSendField(Remind remind, int count);

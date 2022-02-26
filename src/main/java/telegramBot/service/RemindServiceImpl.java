@@ -6,6 +6,7 @@ import telegramBot.dao.RemindDAOImpl;
 import telegramBot.entity.Remind;
 import telegramBot.sendRemind.SendRemind;
 
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -100,17 +101,16 @@ public class RemindServiceImpl implements RemindService{
     }
 
     @Override
-    public List<Remind> getAllExecutingRemindsByChatId(String chatId, String currentDate){
+    public List<Remind> getAllExecutingRemindsByChatId(String chatId) {
         List<Remind> resultedList = new ArrayList<>();
         for(Remind remind : getAllRemindsFromDB()){
             if(remind.getChatIdToSend().equals(chatId) &&
                     remind.getRemindDate().replaceAll("\\p{P}", "\\.").
-                            equals(currentDate) && remind.getTimeToSend().equals("true")){
+                            equals(SendRemind.currentDate()) && remind.getTimeToSend().equals("true")){
                 resultedList.add(remind);}
         }
         if(SendRemind.currentTime() >= 5) return resultedList;
         return null;
-
     }
     }
 

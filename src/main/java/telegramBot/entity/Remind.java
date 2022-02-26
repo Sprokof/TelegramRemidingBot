@@ -53,7 +53,7 @@ public class Remind {
         if (this == obj) return true;
         if (! (obj instanceof Remind)) return false;
         Remind remind = (Remind) obj;
-        return this.maintenance.equals(remind.maintenance) && this.remindDate.
+        return this.maintenance.equals(remind.maintenance) && this.remindDate.replaceAll("\\p{P}", "\\.").
                 equals(remind.remindDate.replaceAll("\\p{P}", "\\."));
     }
 

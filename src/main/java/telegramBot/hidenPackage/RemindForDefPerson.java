@@ -30,9 +30,7 @@ public class RemindForDefPerson {
         this.sendRemind = sendRemind;
         this.remind = RemindServiceImpl.newRemindService().getRemindById(undeletedIndex);
 
-
     }
-
 
     public void send(int currentTime) throws IOException{
         RemindServiceImpl.newRemindService().
@@ -50,7 +48,8 @@ public class RemindForDefPerson {
                 SendRemind.nextDate(this.remind.getRemindDate().split("")));
         RemindServiceImpl.newRemindService().updateCountSendField(this.remind,0);
         RemindServiceImpl.newRemindService().updateTimeToSendField(this.remind, true);
-        count = 0;}
+        count = 0;
+        }
     }
 
 
