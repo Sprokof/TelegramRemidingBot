@@ -1,6 +1,7 @@
 package telegramBot.command;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
+import telegramBot.bot.TelegramBot;
 import telegramBot.service.SendMessageService;
 
 public class StartCommand implements Command{
@@ -23,6 +24,7 @@ public class StartCommand implements Command{
         if(counter>0){
             START_COMMAND = "Команда уже была запущена ранее";}
         counter=1;
+        TelegramBot.setRun(true);
         return true;
     }}
 

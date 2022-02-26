@@ -1,6 +1,7 @@
 package telegramBot.bot;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -40,6 +41,9 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final String COMMAND_PREFIX = "/";
     private final CommandContainer commandContainer;
     @Getter
+    @Setter
+    private static boolean isRun = true;
+    @Getter
     private static final List<String> commands = new ArrayList<>();
     private final SendMessageServiceImpl sendMessageService;
     private final SendRemind sendRemind;
@@ -48,8 +52,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     public TelegramBot() {
         this.sendMessageService = new SendMessageServiceImpl(this);
         this.commandContainer = new CommandContainer(sendMessageService);
-        this.sendRemind = new SendRemind(new SendMessageServiceImpl(this));
-
+        this.sendRemind = new SendRemind(sendMessageService);
     }
 
     @Override
@@ -63,9 +66,9 @@ public class TelegramBot extends TelegramLongPollingBot {
                 commands.add(command);
             } else {
                 if (!message.startsWith(COMMAND_PREFIX)) {
-                    if ((!commands.isEmpty()) && commands.get(commands.size() - 1).equals("/add")) {
+                    if ((!commands.isEmpty()) && lastCommand().equals("/add")) {
                         acceptNewRemindFromUser(update);
-                    } else if ((!commands.isEmpty()) && commands.get(commands.size() - 1).equals("/show")) {
+                    } else if ((!commands.isEmpty()) && lastCommand().equals("/show")) {
                         if (acceptDateFromUser(update)) {
                             try {
                                 if (!this.sendRemind.showRemindsByDate(update.getMessage().getChatId().toString(),
@@ -73,6 +76,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                                     this.sendMessageService.sendMessage(update.getMessage().getChatId().toString(),
                                             "Не получилось найти напоминания, возможно " +
                                                     "вы указали уже прошедшую дату, либо на эту дату нет напоминаний");
+                                    TelegramBot.setRun(true);
                                 }
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
@@ -81,6 +85,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                             this.sendMessageService.sendMessage(update.getMessage().getChatId().toString(),
                                     "Вероятно вы ошиблись в формате даты. Повторите команду /show и " +
                                             "введите дату в верном формате");
+                            TelegramBot.setRun(true);
                         }
                     } else {
                         this.commandContainer.retrieveCommand("/unknown").execute(update);
@@ -88,7 +93,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 }
             }
         }
-        this.sendRemind.executeRemindMessage();
+        executeRemind();
     }
 
     private String getDateFromUserInput(String input) {
@@ -124,15 +129,17 @@ public class TelegramBot extends TelegramLongPollingBot {
                     if (saveRemind(remind)) {
                         this.sendMessageService.sendMessage(chatId, "Напоминание успешно" +
                                 " добавлено.");
+                        TelegramBot.setRun(true);
                     } else {
                         this.sendMessageService.sendMessage(chatId,
                                 "Напоминание не было добавлено, проверьте формат даты (dd.mm.yyyy) ." +
                                         "Возможно, вы указали уже прошедшую дату. " +
-                                        "После введите команду /add для повторного добавления.");
-                    }
+                                        "После введите команду /add для повторного добавления."); }
+                                TelegramBot.setRun(true);
                 } else {
                     this.sendMessageService.sendMessage(chatId,
                             "Данное напоминание было добавлено ранее.");
+                    TelegramBot.setRun(true);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -142,6 +149,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     "Напоминание не было добавлено, проверьте формат даты (dd.mm.yyyy) . " +
                             "Возможно, что вы указали уже прошедшую дату. " +
                             "После введите команду /add для повторного добавления.");
+            TelegramBot.setRun(true);
         }
         commands.clear();
     }
@@ -176,9 +184,38 @@ public class TelegramBot extends TelegramLongPollingBot {
         return RemindServiceImpl.newRemindService().saveRemind(remind);
     }
 
+    private void executeRemind() {
+        new Thread(() -> {
+            try {
+                while (isRun) {
+                    TelegramBot.this.sendRemind.send();
+                    word();
+                    Thread.sleep(300000);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    private synchronized String lastCommand() {
+        while (TelegramBot.getCommands().isEmpty()) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                System.out.println("Something went wrong");
+            }
+        }
+        notify();
+
+        int lastIndex = TelegramBot.getCommands().size() - 1;
+        return TelegramBot.getCommands().get(lastIndex);
+    }
+
+    private void word(){
+        System.out.println("...COMPLETE...");
+    }
 }
-
-
 
 
 

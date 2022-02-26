@@ -1,6 +1,7 @@
 package telegramBot.command;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
+import telegramBot.bot.TelegramBot;
 import telegramBot.service.SendMessageService;
 
 public class ShowCommand implements Command{
@@ -14,7 +15,9 @@ public class ShowCommand implements Command{
 
     @Override
     public boolean execute(Update update) {
+        TelegramBot.setRun(false);
         return this.sendMessageService.sendMessage(update.getMessage().getChatId().toString(),
                 SHOW_MESSAGE);
+
     }
 }

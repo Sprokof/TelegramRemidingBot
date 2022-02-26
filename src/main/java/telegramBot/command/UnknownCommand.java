@@ -1,6 +1,7 @@
 package telegramBot.command;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
+import telegramBot.bot.TelegramBot;
 import telegramBot.service.SendMessageService;
 
 public class UnknownCommand implements Command{

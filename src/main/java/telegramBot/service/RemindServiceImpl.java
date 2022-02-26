@@ -105,11 +105,10 @@ public class RemindServiceImpl implements RemindService{
         for(Remind remind : getAllRemindsFromDB()){
             if(remind.getChatIdToSend().equals(chatId) &&
                     remind.getRemindDate().replaceAll("\\p{P}", "\\.").
-                            equals(currentDate) && remind.getTimeToSend().equals("true")
-                    && !SendRemind.isStop()){
+                            equals(currentDate) && remind.getTimeToSend().equals("true")){
                 resultedList.add(remind);}
         }
-        if(SendRemind.currentTime() >= 0) return resultedList;
+        if(SendRemind.currentTime() >= 5) return resultedList;
         return null;
 
     }
