@@ -46,7 +46,7 @@ public class SendRemind {
     private synchronized int[] getIdOfAllReminds() throws InterruptedException {
         List<Remind> reminds;
         while ((reminds = RemindServiceImpl.newRemindService().
-                getAllRemindsFromDB()).size() <= 1) {
+                getAllRemindsFromDB()).size() == 0) {
             wait();
         }
         notify();
@@ -362,9 +362,10 @@ public class SendRemind {
                 if (remind.getCountSendOfRemind() == 3) {
                     String date = nextDate(remind.getRemindDate().split(""));
                     updateRemindFieldsToNextDay(remind, date);
+                    reminds.clear();
                 }
-            } reminds.clear(); }
-
+            }
+        }
         return true;
 
     }
@@ -378,7 +379,8 @@ public class SendRemind {
             for (int i = 0; i < reminds.size(); i++) {
                 String maintenance = messageOnce(reminds.toArray(Remind[]::new));
                 this.service.sendMessage(remind.getChatIdToSend(), maintenance);
-            reminds.clear();}
+                reminds.clear();
+            }
 
         } else {
             String maintenance = (Character.toLowerCase(remind.getMaintenance().
@@ -388,13 +390,15 @@ public class SendRemind {
                     REMIND_MESSAGE + maintenance + ".")) {
                 updateRemindFieldsToNextSendTime(remind,
                         remind.getCountSendOfRemind() + 1);
+                reminds.clear();
             }
 
             if (remind.getCountSendOfRemind() == 3) {
                 RemindServiceImpl.newRemindService().deleteRemind(indexOfDeleteRemind);
+            }
+        }
+            return true;
 
-            } reminds.clear();}
-        return true;
     }
 
     private int getIdOfRemind(Remind remind) {
