@@ -66,27 +66,25 @@ public class SendRemind {
 
     public void send() throws InterruptedException {
         int[] remindId = getIdOfAllReminds();
-        List<Remind> remindsToExecute = null;
         List<Remind> reminds = new ArrayList<>();
         for (int index = 0; index < remindId.length; index++) {
             if (noDelete(remindId[index])) continue;
             Remind remind = RemindServiceImpl.newRemindService().getRemindById(remindId[index]);
             if (remind.getRemindDate().equals(currentDate())) {
-                if (changedRemind(remind, currentTime(), remindId[index])) {
-                    reminds.add(remind);
-                }
-                if (alreadyAddedRemind(remind)) {
+                if (changedRemind(remind, currentTime(), remindId[index]) || alreadyAddedRemind(remind)) {
                     reminds.add(remind);
                 }
             }
         }
 
         for (Remind remind : reminds) {
-            while ((remindsToExecute = RemindServiceImpl.newRemindService().
+            List<Remind> executeReminds = null;
+            while ((executeReminds = RemindServiceImpl.newRemindService().
                     getAllExecutingRemindsByChatId(remind.getChatIdToSend())).size() != 0) {
+                int o = 0, d = 1;
                 while (true) {
-                    List<Remind> once = sortReminds(remindsToExecute).get(0);
-                    List<Remind> daily = sortReminds(remindsToExecute).get(1);
+                    List<Remind> once = sortReminds(executeReminds).get(o);
+                    List<Remind> daily = sortReminds(executeReminds).get(d);
 
                     if (sendRemindsInOneDay(once)) {
                         break;
@@ -401,7 +399,7 @@ public class SendRemind {
 
     }
 
-    private int getIdOfRemind(Remind remind) {
+     private int getIdOfRemind(Remind remind) {
         return Integer.parseInt(remind.toString().
                 substring(remind.toString().indexOf("=") + 1,
                         remind.toString().indexOf(",")));
