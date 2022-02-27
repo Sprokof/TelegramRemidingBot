@@ -101,12 +101,19 @@ public class RemindServiceImpl implements RemindService{
     }
 
     @Override
+    public void updateIsStopField(Remind remind, boolean flag) {
+        remind.setIsStop(String.valueOf(flag));
+        this.remindDAO.update(remind);
+    }
+
+    @Override
     public List<Remind> getAllExecutingRemindsByChatId(String chatId) {
         List<Remind> resultedList = new ArrayList<>();
         for(Remind remind : getAllRemindsFromDB()){
             if(remind.getChatIdToSend().equals(chatId) &&
                     remind.getRemindDate().replaceAll("\\p{P}", "\\.").
-                            equals(SendRemind.currentDate()) && remind.getTimeToSend().equals("true")){
+                            equals(SendRemind.currentDate()) &&
+                    remind.getTimeToSend().equals("true") && remind.getIsStop().equals("false")){
                 resultedList.add(remind);}
         }
         if(SendRemind.currentTime() >= 5) return resultedList;

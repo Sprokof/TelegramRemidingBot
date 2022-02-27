@@ -123,23 +123,23 @@ public class TelegramBot extends TelegramLongPollingBot {
             String defaultFlag = String.valueOf(true);
             try {
                 Remind remind = new Remind(chatId, getRemindContentFromUserInput(input),
-                        getDateFromUserInput(input).replaceAll("\\p{P}", "\\."), defaultFlag, 0, 0);
+                        getDateFromUserInput(input).
+                                replaceAll("\\p{P}", "\\."),
+                        defaultFlag, 0, 0, String.valueOf(false));
                 isContains = RemindServiceImpl.newRemindService().isContainsInDB(remind);
                 if (!isContains) {
                     if (saveRemind(remind)) {
                         this.sendMessageService.sendMessage(chatId, "Напоминание успешно" +
                                 " добавлено.");
-                        TelegramBot.setRun(true);
                     } else {
                         this.sendMessageService.sendMessage(chatId,
                                 "Напоминание не было добавлено, проверьте формат даты (dd.mm.yyyy) ." +
                                         "Возможно, вы указали уже прошедшую дату. " +
-                                        "После введите команду /add для повторного добавления."); }
-                                TelegramBot.setRun(true);
+                                        "После введите команду /add для повторного добавления.");
+                    }
                 } else {
                     this.sendMessageService.sendMessage(chatId,
                             "Данное напоминание было добавлено ранее.");
-                    TelegramBot.setRun(true);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -179,7 +179,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-
     private boolean saveRemind(Remind remind) {
         return RemindServiceImpl.newRemindService().saveRemind(remind);
     }
@@ -189,7 +188,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             try {
                 while (isRun) {
                     TelegramBot.this.sendRemind.send();
-                    word();
+                    printComplete();
                     Thread.sleep(300000);
                 }
             } catch (InterruptedException e) {
@@ -212,10 +211,23 @@ public class TelegramBot extends TelegramLongPollingBot {
         return TelegramBot.getCommands().get(lastIndex);
     }
 
-    private void word(){
+    private void printComplete() {
         System.out.println("...COMPLETE...");
     }
+
+    public static void toSleep() {
+        TelegramBot.setRun(false);
+        try {
+            Thread.sleep(60000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        TelegramBot.setRun(true);
+    }
+
 }
+
+
 
 
 

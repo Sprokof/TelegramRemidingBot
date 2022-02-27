@@ -16,5 +16,6 @@ public interface RemindService {
     void updateTimeToSendField(Remind remind, boolean flag);
     void updateCountSendField(Remind remind, int count);
     void updateSendHourField(Remind remind, int hour);
+    void updateIsStopField(Remind remind, boolean flag);
 
 }

@@ -245,7 +245,6 @@ public class SendRemind {
             }
             index++;
         }
-        TelegramBot.setRun(true);
         return count > 0;
     }
 
@@ -404,10 +403,10 @@ public class SendRemind {
     }
 
     private boolean alreadyAddedRemind(Remind remind) {
-        return remind.getCountSendOfRemind() == 0 &&
-                remind.getTimeToSend().equals("true") && remind.getLastSendHour() == 0;
+        return (remind.getCountSendOfRemind() == 0 &&
+                remind.getTimeToSend().equals("true") && remind.getLastSendHour() == 0)
+                && remind.getIsStop().equals("false");
     }
-
 }
 
 

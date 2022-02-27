@@ -17,6 +17,7 @@ public class Remind {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+
     @Column(name = "CHAT_ID_TO_SEND")
     private String chatIdToSend;
     @Column(name = "TIME_TO_SEND")
@@ -29,9 +30,12 @@ public class Remind {
     private int lastSendHour;
     @Column(name = "COUNT_SEND_OF_REMIND")
     private int countSendOfRemind;
+    @Column(name = "IS_STOP")
+    private String isStop;
 
     public Remind(String chatIdToSend, String maintenance, String remindDate,
-                  String timeToSend, int countSendOfRemind, int lastSendHour){
+                  String timeToSend, int countSendOfRemind, int lastSendHour, String isStop){
+        this.isStop = isStop;
         this.chatIdToSend = chatIdToSend;
         this.maintenance = maintenance;
         this.remindDate = remindDate;

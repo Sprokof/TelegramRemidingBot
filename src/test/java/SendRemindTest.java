@@ -9,8 +9,8 @@ public class SendRemindTest {
     public void toNextMonth() {
         String nextDate = "01.02.2022";
         assertEquals(nextDate, SendRemind.toNextMonth("31.01.2022"));
-        nextDate = "01.12.2022";
-        assertEquals(nextDate, SendRemind.toNextMonth("30.11.2022"));
+        nextDate = "01.03.2022";
+        assertEquals(nextDate, SendRemind.toNextMonth("28.02.2022"));
     }
 
 }
