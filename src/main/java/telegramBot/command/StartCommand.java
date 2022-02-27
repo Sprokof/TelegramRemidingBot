@@ -24,7 +24,6 @@ public class StartCommand implements Command{
         if(counter>0){
             START_COMMAND = "Команда уже была запущена ранее";}
         counter=1;
-        TelegramBot.setRun(true);
         return true;
     }}
 

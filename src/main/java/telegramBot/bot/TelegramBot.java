@@ -149,7 +149,6 @@ public class TelegramBot extends TelegramLongPollingBot {
                     "Напоминание не было добавлено, проверьте формат даты (dd.mm.yyyy) . " +
                             "Возможно, что вы указали уже прошедшую дату. " +
                             "После введите команду /add для повторного добавления.");
-            TelegramBot.setRun(true);
         }
         commands.clear();
     }
