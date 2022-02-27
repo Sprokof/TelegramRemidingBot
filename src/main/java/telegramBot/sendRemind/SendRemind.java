@@ -304,10 +304,8 @@ public class SendRemind {
             if (isContainsDailySendMarker(remind.getMaintenance()) || noDelete(index)) {
                 String date = nextDate(remind.getRemindDate().split(""));
                 updateRemindFieldsToNextDay(remind, date);
-                flag = true;
             } else {
                 RemindServiceImpl.newRemindService().deleteRemind(index);
-                flag = true;
             }
         }
         return flag;
