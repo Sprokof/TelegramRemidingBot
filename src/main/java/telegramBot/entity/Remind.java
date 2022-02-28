@@ -16,32 +16,18 @@ public class Remind {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-
-    @Column(name = "CHAT_ID_TO_SEND")
-    private String chatIdToSend;
-    @Column(name = "TIME_TO_SEND")
-    private String timeToSend;
     @Column(name = "MAINTENANCE")
     private String maintenance;
     @Column(name = "REMIND_DATE")
     private String remindDate;
-    @Column(name = "LAST_SEND_HOUR")
-    private int lastSendHour;
-    @Column(name = "COUNT_SEND_OF_REMIND")
-    private int countSendOfRemind;
-    @Column(name = "IS_STOP")
-    private String isStop;
 
-    public Remind(String chatIdToSend, String maintenance, String remindDate,
-                  String timeToSend, int countSendOfRemind, int lastSendHour, String isStop){
-        this.isStop = isStop;
-        this.chatIdToSend = chatIdToSend;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "details_id")
+    private Details details;
+
+    public Remind(String maintenance, String remindDate){
         this.maintenance = maintenance;
         this.remindDate = remindDate;
-        this.timeToSend = timeToSend;
-        this.countSendOfRemind = countSendOfRemind;
-        this.lastSendHour = lastSendHour;
     }
 
     @Override

@@ -27,7 +27,7 @@ public class RestartCommand implements Command{
 
     private void restart(String chatId){
         for(Remind r: RemindServiceImpl.newRemindService().getAllRemindsFromDB()){
-            if(r.getChatIdToSend().equals(chatId))
+            if(r.getDetails().getChatIdToSend().equals(chatId))
                 RemindServiceImpl.newRemindService().updateIsStopField(r, false);}
     }
 

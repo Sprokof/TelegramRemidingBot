@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import telegramBot.entity.Details;
 import telegramBot.service.RemindServiceImpl;
 import telegramBot.validate.Validate;
 import telegramBot.command.CommandContainer;
@@ -121,15 +122,16 @@ public class TelegramBot extends TelegramLongPollingBot {
         String input = update.getMessage().getText();
         boolean isContains;
         if (isCorrectInput(input)) {
-            String defaultFlag = String.valueOf(true);
             try {
-                Remind remind = new Remind(chatId, getRemindContentFromUserInput(input),
+                Remind remind = new Remind(getRemindContentFromUserInput(input),
                         getDateFromUserInput(input).
-                                replaceAll("\\p{P}", "\\."),
-                        defaultFlag, 0, 0, String.valueOf(false));
+                                replaceAll("\\p{P}", "\\."));
+                Details details = new Details(chatId, "true",
+                        0,0, "false");
+
                 isContains = RemindServiceImpl.newRemindService().isContainsInDB(remind);
                 if (!isContains) {
-                    if (saveRemind(remind)) {
+                    if (saveRemindAndDetails(remind, details)) {
                         this.sendMessageService.sendMessage(chatId, "Напоминание успешно" +
                                 " добавлено.");
                     } else {
@@ -181,8 +183,8 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    private boolean saveRemind(Remind remind) {
-        return RemindServiceImpl.newRemindService().saveRemind(remind);
+    private boolean saveRemindAndDetails(Remind remind, Details details) {
+        return RemindServiceImpl.newRemindService().saveRemind(remind, details);
     }
 
     private void executeRemind() {
@@ -200,7 +202,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     private synchronized String lastCommand(String chatId) {
-        while (messages.get(chatId).isEmpty()) {
+        while (messages.get(chatId).isEmpty() || messages.get(chatId).size() < 2) {
             try {
                 wait();
             } catch (InterruptedException e) {

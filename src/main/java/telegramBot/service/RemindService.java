@@ -1,11 +1,12 @@
 package telegramBot.service;
 
+import telegramBot.entity.Details;
 import telegramBot.entity.Remind;
 
 import java.util.List;
 
 public interface RemindService {
-    boolean saveRemind(Remind remind);
+    boolean saveRemind(Remind remind, Details details);
     void deleteRemind(int index);
     void updateRemindDateField(Remind remind, String newDate);
     void updateMaintenanceField(Remind remind, String maintenance);

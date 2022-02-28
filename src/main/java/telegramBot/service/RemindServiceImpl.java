@@ -3,6 +3,7 @@ package telegramBot.service;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import telegramBot.dao.RemindDAOImpl;
+import telegramBot.entity.Details;
 import telegramBot.entity.Remind;
 import telegramBot.sendRemind.SendRemind;
 
@@ -20,11 +21,9 @@ public class RemindServiceImpl implements RemindService{
     }
 
     @Override
-    public boolean saveRemind(Remind remind) {
-        return this.remindDAO.save(remind);
+    public boolean saveRemind(Remind remind, Details details) {
+        return this.remindDAO.save(remind, details);
     }
-
-
 
     @Override
     public void deleteRemind(int index) {
@@ -83,26 +82,26 @@ public class RemindServiceImpl implements RemindService{
 
     @Override
     public void updateTimeToSendField(Remind remind, boolean flag) {
-        remind.setTimeToSend(String.valueOf(flag));
+        remind.getDetails().setTimeToSend(String.valueOf(flag));
         this.remindDAO.update(remind);
 
     }
 
     @Override
     public void updateCountSendField(Remind remind, int count) {
-        remind.setCountSendOfRemind(count);
+        remind.getDetails().setCountSendOfRemind(count);
         this.remindDAO.update(remind);
     }
 
     @Override
     public void updateSendHourField(Remind remind, int hour) {
-        remind.setLastSendHour(hour);
+        remind.getDetails().setLastSendHour(hour);
         this.remindDAO.update(remind);
     }
 
     @Override
     public void updateIsStopField(Remind remind, boolean flag) {
-        remind.setIsStop(String.valueOf(flag));
+        remind.getDetails().setIsStop(String.valueOf(flag));
         this.remindDAO.update(remind);
     }
 
@@ -110,10 +109,10 @@ public class RemindServiceImpl implements RemindService{
     public List<Remind> getAllExecutingRemindsByChatId(String chatId) {
         List<Remind> resultedList = new ArrayList<>();
         for(Remind remind : getAllRemindsFromDB()){
-            if(remind.getChatIdToSend().equals(chatId) &&
+            if(remind.getDetails().getChatIdToSend().equals(chatId) &&
                     remind.getRemindDate().replaceAll("\\p{P}", "\\.").
                             equals(SendRemind.currentDate()) &&
-                    remind.getTimeToSend().equals("true") && remind.getIsStop().equals("false")){
+                    remind.getDetails().getTimeToSend().equals("true") && remind.getDetails().getIsStop().equals("false")){
                 resultedList.add(remind);}
         }
         if(SendRemind.currentTime() >= 5) return resultedList;

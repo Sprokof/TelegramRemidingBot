@@ -6,6 +6,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.springframework.stereotype.Component;
+import telegramBot.entity.Details;
 import telegramBot.entity.Remind;
 
 @NoArgsConstructor
@@ -13,7 +14,8 @@ import telegramBot.entity.Remind;
 public class RemindDAOImpl implements DAO {
     @Getter
     private final SessionFactory sessionFactory = new Configuration().
-            configure("hibernate.cfg.xml").addAnnotatedClass(Remind.class).buildSessionFactory();
+            configure("hibernate.cfg.xml").addAnnotatedClass(Remind.class).
+            addAnnotatedClass(Details.class).buildSessionFactory();
 
     @Override
     public boolean deleteByID(int id) {
@@ -32,12 +34,14 @@ public class RemindDAOImpl implements DAO {
     return true;}
 
     @Override
-    public boolean save(Object o) {
+    public boolean save(Object obj1, Object obj2) {
+        Remind remind = (Remind) obj1;
+        remind.setDetails((Details) obj2);
         Session session;
         try{
             session = this.sessionFactory.getCurrentSession();
             session.beginTransaction();
-            session.save((Remind) o);
+            session.save((Remind) remind);
             session.getTransaction().commit();}
         catch (Exception e){
             e.printStackTrace();}

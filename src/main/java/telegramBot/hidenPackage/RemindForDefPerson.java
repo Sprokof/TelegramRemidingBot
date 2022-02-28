@@ -36,14 +36,14 @@ public class RemindForDefPerson {
         RemindServiceImpl.newRemindService().
                 updateMaintenanceField(this.remind, getMaintenanceFromFile());
 
-        if(sendMessageService.sendMessage(this.remind.getChatIdToSend(), this.remind.getMaintenance())){
-            count = this.remind.getCountSendOfRemind();
+        if(sendMessageService.sendMessage(this.remind.getDetails().getChatIdToSend(), this.remind.getMaintenance())){
+            count = this.remind.getDetails().getCountSendOfRemind();
             RemindServiceImpl.newRemindService().updateSendHourField(this.remind, currentTime);
             RemindServiceImpl.newRemindService().updateCountSendField(this.remind,count+1);
             RemindServiceImpl.newRemindService().updateTimeToSendField(this.remind,false);
         }
 
-        if((count = this.remind.getCountSendOfRemind()) == 3){
+        if((count = this.remind.getDetails().getCountSendOfRemind()) == 3){
         RemindServiceImpl.newRemindService().updateRemindDateField(this.remind,
                 SendRemind.nextDate(this.remind.getRemindDate().split("")));
         RemindServiceImpl.newRemindService().updateCountSendField(this.remind,0);

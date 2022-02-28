@@ -24,7 +24,7 @@ public class StopCommand implements Command {
 
     private void stop(String chatId){
         for(Remind r: RemindServiceImpl.newRemindService().getAllRemindsFromDB()){
-            if(r.getChatIdToSend().equals(chatId))
+            if(r.getDetails().getChatIdToSend().equals(chatId))
                 RemindServiceImpl.newRemindService().updateIsStopField(r, true);}
         }
     }
