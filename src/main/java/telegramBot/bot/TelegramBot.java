@@ -138,6 +138,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                                         "Возможно, вы указали уже прошедшую дату. " +
                                         "После введите команду /add для повторного добавления.");
                     }
+
                 } else {
                     this.sendMessageService.sendMessage(chatId,
                             "Данное напоминание было добавлено ранее.");
@@ -150,6 +151,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     "Напоминание не было добавлено, проверьте формат даты (dd.mm.yyyy) . " +
                             "Возможно, что вы указали уже прошедшую дату. " +
                             "После введите команду /add для повторного добавления.");
+            messages.get(chatId).clear();
         }
 
     }
@@ -207,7 +209,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
         notify();
 
-        int lastIndex = messages.get(chatId).size()-1;
+        int lastIndex = messages.get(chatId).size()-2;
         return messages.get(chatId).get(lastIndex);
     }
 

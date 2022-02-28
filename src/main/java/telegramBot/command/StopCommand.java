@@ -7,7 +7,7 @@ import telegramBot.service.RemindServiceImpl;
 import telegramBot.service.SendMessageService;
 
 public class StopCommand implements Command {
-    public static final String STOP_COMMAND = "Вы остановили напоминания. /restart - для возобновления";
+    public static final String STOP_COMMAND = "Вы остановили напоминания. /restart - для возообновления";
     private final SendMessageService sendMessageService;
 
 
