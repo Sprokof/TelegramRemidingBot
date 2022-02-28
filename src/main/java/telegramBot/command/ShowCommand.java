@@ -15,9 +15,6 @@ public class ShowCommand implements Command{
 
     @Override
     public boolean execute(Update update) {
-        if(this.sendMessageService.sendMessage(update.getMessage().getChatId().toString(), SHOW_MESSAGE)){
-            TelegramBot.toSleep();
-        }
-        return true;
+        return this.sendMessageService.sendMessage(update.getMessage().getChatId().toString(), SHOW_MESSAGE);
         }
 }

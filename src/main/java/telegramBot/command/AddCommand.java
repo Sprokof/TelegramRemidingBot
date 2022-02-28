@@ -19,7 +19,6 @@ public class AddCommand implements Command{
     @Override
     public boolean execute(Update update) {
         if(this.sendMessageService.sendMessage(update.getMessage().getChatId().toString(), ADD_COMMAND)){
-            TelegramBot.toSleep();
         }
         return true;}
 
