@@ -6,7 +6,8 @@
 Лонг-пулл телеграмм бот, реализующий функционал напоминалки, с
 приминением Spring boot, Lombok, PostgreSQL, Hibernate.
 На скриншоте ниже показан принципип работы основного функционала.
-![Lu7fZYSf5aA](https://user-images.githubusercontent.com/90979711/155952592-60213cbe-5535-4708-a04c-d864095ca329.jpg)
+![c1UHJ3JD084](https://user-images.githubusercontent.com/90979711/155953533-aa7aaac6-96a3-46be-bb39-53dc021dea47.jpg)
+![oAbBgTNKbj8](https://user-images.githubusercontent.com/90979711/155953563-b9dbfc83-41d9-4d3d-909e-9c6b8f3098f3.jpg)
 
 
 
