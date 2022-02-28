@@ -1,7 +1,6 @@
 package telegramBot.bot;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -24,10 +23,10 @@ import java.util.regex.Pattern;
 @Getter
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
-    private final static Map<String, List<String>> commands;
+    private final static Map<String, List<String>> messages;
 
     static{
-        commands = new HashMap<>();
+        messages = new HashMap<>();
     }
 
 
@@ -63,13 +62,14 @@ public class TelegramBot extends TelegramLongPollingBot {
         String chatId;
         if (update.hasMessage() && update.getMessage().hasText()) {
             chatId = update.getMessage().getChatId().toString();
-            commands.putIfAbsent(chatId, new ArrayList<String>());
+            messages.putIfAbsent(chatId, new ArrayList<String>());
             String message = update.getMessage().getText().trim();
             if (message.startsWith(COMMAND_PREFIX)) {
                 command = message.split(" ")[0].toLowerCase(Locale.ROOT);
                 this.commandContainer.retrieveCommand(command).execute(update);
-                commands.get(chatId).add(command);
+                messages.get(chatId).add(command);
             } else {
+                messages.get(chatId).add(message);
                 if (lastCommand(chatId).equals("/add")) {
                     acceptNewRemindFromUser(update);
                 } else if (lastCommand(chatId).equals("/show")) {
@@ -90,6 +90,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                                         "введите дату в верном формате");
                     }
                 }
+                else this.commandContainer.retrieveCommand("/unknown").execute(update);
             }
         }
 
@@ -150,7 +151,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                             "Возможно, что вы указали уже прошедшую дату. " +
                             "После введите команду /add для повторного добавления.");
         }
-        commands.clear();
+
     }
 
     private boolean isCorrectInput(String input) {
@@ -197,7 +198,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     private synchronized String lastCommand(String chatId) {
-        while (commands.get(chatId).isEmpty()) {
+        while (messages.get(chatId).isEmpty()) {
             try {
                 wait();
             } catch (InterruptedException e) {
@@ -206,8 +207,8 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
         notify();
 
-        int lastIndex = commands.get(chatId).size()-1;
-        return commands.get(chatId).get(lastIndex);
+        int lastIndex = messages.get(chatId).size()-1;
+        return messages.get(chatId).get(lastIndex);
     }
 
     private void printComplete() {
