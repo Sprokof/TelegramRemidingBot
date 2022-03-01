@@ -32,22 +32,18 @@ public class RemindForDefPerson {
 
     }
 
-    public void send(int currentTime) throws IOException{
+    public void send() throws IOException{
         RemindServiceImpl.newRemindService().
                 updateMaintenanceField(this.remind, getMaintenanceFromFile());
 
         if(sendMessageService.sendMessage(this.remind.getDetails().getChatIdToSend(), this.remind.getMaintenance())){
             count = this.remind.getDetails().getCountSendOfRemind();
-            RemindServiceImpl.newRemindService().updateSendHourField(this.remind, currentTime);
-            RemindServiceImpl.newRemindService().updateCountSendField(this.remind,count+1);
-            RemindServiceImpl.newRemindService().updateTimeToSendField(this.remind,false);
+            this.sendRemind.updateRemindFieldsToNextSendTime(remind, remind.getDetails().getCountSendOfRemind()+1);
         }
 
         if((count = this.remind.getDetails().getCountSendOfRemind()) == 3){
-        RemindServiceImpl.newRemindService().updateRemindDateField(this.remind,
-                SendRemind.nextDate(this.remind.getRemindDate().split("")));
-        RemindServiceImpl.newRemindService().updateCountSendField(this.remind,0);
-        RemindServiceImpl.newRemindService().updateTimeToSendField(this.remind, true);
+            String date = SendRemind.nextDate(remind.getRemindDate().split(""));
+            this.sendRemind.updateRemindFieldsToNextDay(remind, date);
         count = 0;
         }
     }

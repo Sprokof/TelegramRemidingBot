@@ -115,8 +115,9 @@ public class RemindServiceImpl implements RemindService{
                     remind.getDetails().getTimeToSend().equals("true") && remind.getDetails().getIsStop().equals("false")){
                 resultedList.add(remind);}
         }
-        if(SendRemind.currentTime() >= 5) return resultedList;
-        return null;
+
+                 if(SendRemind.currentTime() < 5) resultedList = new ArrayList<>();
+        return resultedList;
     }
     }
 

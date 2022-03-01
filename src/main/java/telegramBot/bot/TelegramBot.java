@@ -202,7 +202,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     private synchronized String lastCommand(String chatId) {
-        while (messages.get(chatId).isEmpty() || messages.get(chatId).size() < 2) {
+        while (messages.get(chatId).isEmpty()) {
             try {
                 wait();
             } catch (InterruptedException e) {
@@ -211,8 +211,8 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
         notify();
 
-        int lastIndex = messages.get(chatId).size()-2;
-        return messages.get(chatId).get(lastIndex);
+        int lastCommandIndex = messages.get(chatId).size()-2;
+        return messages.get(chatId).get(lastCommandIndex);
     }
 
     private void printComplete() {
