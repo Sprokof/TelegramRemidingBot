@@ -211,7 +211,8 @@ public class SendRemind {
         Thread.sleep(2300);
         while (index != reminds.size()) {
             Remind remind = reminds.get(index);
-            if ((remind.getDetails().getChatIdToSend().equals(userChatId) && remind.getRemindDate().equals(date))
+            if ((remind.getDetails().getChatIdToSend().equals(userChatId) &&
+                    remind.getRemindDate().equals(date.replaceAll("\\p{P}", "\\.")))
                     && !isContainsDailySendMarker(remind.getMaintenance())) {
                 service.sendMessage(userChatId, remind.getMaintenance());
                 count++;

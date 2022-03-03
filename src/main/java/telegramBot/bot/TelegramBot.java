@@ -24,10 +24,10 @@ import java.util.regex.Pattern;
 @Getter
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
-    private final static Map<String, List<String>> messages;
+    private final static Map<String, List<String>> commands;
 
     static{
-        messages = new HashMap<>();
+        commands = new HashMap<>();
     }
 
 
@@ -63,14 +63,14 @@ public class TelegramBot extends TelegramLongPollingBot {
         String chatId;
         if (update.hasMessage() && update.getMessage().hasText()) {
             chatId = update.getMessage().getChatId().toString();
-            messages.putIfAbsent(chatId, new ArrayList<String>());
-            String message = update.getMessage().getText().trim();
+            commands.putIfAbsent(chatId, new ArrayList<String>());
+            String message  = update.getMessage().getText().trim();
             if (message.startsWith(COMMAND_PREFIX)) {
                 command = message.split(" ")[0].toLowerCase(Locale.ROOT);
                 this.commandContainer.retrieveCommand(command).execute(update);
-                messages.get(chatId).add(command);
-            } else {
-                messages.get(chatId).add(message);
+                commands.get(chatId).add(command);
+            }
+            else {
                 if (lastCommand(chatId).equals("/add")) {
                     acceptNewRemindFromUser(update);
                 } else if (lastCommand(chatId).equals("/show")) {
@@ -91,10 +91,8 @@ public class TelegramBot extends TelegramLongPollingBot {
                                         "введите дату в верном формате");
                     }
                 }
-                else this.commandContainer.retrieveCommand("/unknown").execute(update);
             }
         }
-
         executeRemind();
     }
 
@@ -153,7 +151,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     "Напоминание не было добавлено, проверьте формат даты (dd.mm.yyyy) . " +
                             "Возможно, что вы указали уже прошедшую дату. " +
                             "После введите команду /add для повторного добавления.");
-            messages.get(chatId).clear();
+            commands.get(chatId).clear();
         }
 
     }
@@ -179,8 +177,8 @@ public class TelegramBot extends TelegramLongPollingBot {
             Validate.date(dateArray[0], dateArray[1], dateArray[2]);
             return true;
         } else {
-            return false;
-        }
+            return false; }
+
     }
 
     private boolean saveRemindAndDetails(Remind remind, Details details) {
@@ -202,7 +200,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     private synchronized String lastCommand(String chatId) {
-        while (messages.get(chatId).isEmpty()) {
+        while (commands.get(chatId).isEmpty()) {
             try {
                 wait();
             } catch (InterruptedException e) {
@@ -211,8 +209,8 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
         notify();
 
-        int lastCommandIndex = messages.get(chatId).size()-2;
-        return messages.get(chatId).get(lastCommandIndex);
+        int lastCommandIndex = commands.get(chatId).size()-1;
+        return commands.get(chatId).get(lastCommandIndex);
     }
 
     private void printComplete() {
