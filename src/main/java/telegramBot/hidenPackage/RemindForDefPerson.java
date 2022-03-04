@@ -33,10 +33,11 @@ public class RemindForDefPerson {
     }
 
     public void send() throws IOException{
+    String[] parts = TelegramBot.delimOnParts(getMaintenanceFromFile());
         RemindServiceImpl.newRemindService().
-                updateMaintenanceField(this.remind, getMaintenanceFromFile());
+                updateMaintenanceField(this.remind, parts[0], parts[1]);
 
-        if(sendMessageService.sendMessage(this.remind.getDetails().getChatIdToSend(), this.remind.getMaintenance())){
+        if(sendMessageService.sendMessage(this.remind.getDetails().getChatIdToSend(), parts[0]+parts[1])){
             count = this.remind.getDetails().getCountSendOfRemind();
             this.sendRemind.updateRemindFieldsToNextSendTime(remind, remind.getDetails().getCountSendOfRemind()+1);
         }

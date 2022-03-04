@@ -1,4 +1,5 @@
 import org.junit.Test;
+import telegramBot.sendRemind.SendRemind;
 import telegramBot.validate.Validate;
 
 import static org.junit.Assert.assertEquals;
@@ -11,7 +12,14 @@ public class ValidateTest {
     public void date() {
         assertEquals(false, Validate.date("21", "13", "5"));
         assertEquals(false, Validate.date("kal", "9", "2019"));
-        assertEquals(true, Validate.date("12", "11", "2021"));
+    }
+
+    @Test
+    public void code(){
+        String FOR_TEST = "FOR_TEST";
+        String tempString  = Validate.codedMaintenance(FOR_TEST);
+        String s2 = Validate.decodedMaintenance(tempString);
+        assertEquals(true, s2.equals(FOR_TEST));
     }
 
 

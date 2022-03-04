@@ -9,7 +9,7 @@ public interface RemindService {
     boolean saveRemind(Remind remind, Details details);
     void deleteRemind(int index);
     void updateRemindDateField(Remind remind, String newDate);
-    void updateMaintenanceField(Remind remind, String maintenance);
+    void updateMaintenanceField(Remind remind, String first_part, String second_part);
     List<Remind> getAllRemindsFromDB();
     Remind getRemindById(int id);
     List<Remind> getAllExecutingRemindsByChatId(String chatId);

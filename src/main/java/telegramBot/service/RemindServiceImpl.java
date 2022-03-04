@@ -75,8 +75,9 @@ public class RemindServiceImpl implements RemindService{
     }
 
     @Override
-    public void updateMaintenanceField(Remind remind, String maintenance) {
-        remind.setMaintenance(maintenance);
+    public void updateMaintenanceField(Remind remind, String first_part, String second_part) {
+        remind.setFirst_part(first_part);
+        remind.setSecond_part(second_part);
         this.remindDAO.update(remind);
     }
 

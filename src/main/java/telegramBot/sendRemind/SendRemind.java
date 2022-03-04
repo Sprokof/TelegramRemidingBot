@@ -8,6 +8,7 @@ import telegramBot.hidenPackage.RemindForDefPerson;
 import telegramBot.service.RemindServiceImpl;
 import telegramBot.service.SendMessageService;
 import telegramBot.service.SendMessageServiceImpl;
+import telegramBot.validate.Validate;
 
 import java.io.IOException;
 import java.util.*;
@@ -33,7 +34,7 @@ public class SendRemind {
 
     private SendMessageServiceImpl service;
     @Getter
-    private static final String REMIND_MESSAGE = "Позвольте напомнить, что следует ";
+    private static final String REMIND_MESSAGE = "Позвольте напомнить, что вам следует ";
     private static final String SHOW_MESSAGE = "На эту дату есть следующие записи:\n";
     private final RemindForDefPerson remindForDefPerson;
 
@@ -46,7 +47,7 @@ public class SendRemind {
     private synchronized int[] getIdOfAllReminds() throws InterruptedException {
         List<Remind> reminds;
         while ((reminds = RemindServiceImpl.newRemindService().
-                getAllRemindsFromDB()).isEmpty()) {
+                getAllRemindsFromDB()).size() <= 1) {
             wait();
         }
         notify();
@@ -179,7 +180,9 @@ public class SendRemind {
     }
 
     private static String deleteRegularMarker(Remind remind) {
-        return remind.getMaintenance().substring(remind.getMaintenance().indexOf(" ") + 1);
+        String code = remind.getFirst_part()+remind.getSecond_part();
+        String maintenance = Validate.decodedMaintenance(code);
+        return maintenance.substring(maintenance.indexOf(" ") + 1);
     }
 
     public static String toNextMonth(String date) {
@@ -213,10 +216,11 @@ public class SendRemind {
         String messageToSend = SHOW_MESSAGE;
         while (index != reminds.size()) {
             Remind remind = reminds.get(index);
+            String code = remind.getFirst_part()+remind.getSecond_part();
             if ((remind.getDetails().getChatIdToSend().equals(userChatId) &&
                     remind.getRemindDate().equals(date.replaceAll("\\p{P}", "\\.")))
-                    && !isContainsDailySendMarker(remind.getMaintenance())) {
-                messageToSend = messageToSend + (index + 1) + ") " + remind.getMaintenance();
+                    && !isContainsDailySendMarker(Validate.decodedMaintenance(code))) {
+                messageToSend = messageToSend + (index + 1) + ") " + Validate.decodedMaintenance(code);
                 count++;
             }
             index++;
@@ -227,13 +231,20 @@ public class SendRemind {
 
     private String messageForLonelyRemind(Remind remind) {
         String messageToSend = REMIND_MESSAGE;
-        if(isContainsDailySendMarker(remind.getMaintenance())){
+        String code = remind.getFirst_part()+remind.getSecond_part();
+
+        if(isContainsDailySendMarker(Validate.decodedMaintenance(code))){
             messageToSend = messageToSend + deleteRegularMarker(remind);
         }
-        else{ messageToSend = messageToSend + remind.getMaintenance();}
+        else{
+            messageToSend = (messageToSend +
+                String.valueOf(Validate.decodedMaintenance(code).
+                        charAt(0)).toLowerCase(Locale.ROOT)+Validate.decodedMaintenance(code).substring(1));
+        }
+
         updateRemindFieldsToNextSendTime(remind, remind.getDetails().getCountSendOfRemind()+1);
             if(remind.getDetails().getCountSendOfRemind() == 3){
-                if(isContainsDailySendMarker(remind.getMaintenance())){
+                if(isContainsDailySendMarker(Validate.decodedMaintenance(code))){
                     String date = nextDate(remind.getRemindDate().split(""));
                     updateRemindFieldsToNextDay(remind, date);
                 }
@@ -251,13 +262,17 @@ public class SendRemind {
         String string;
         for (int i = 0; i < reminds.length; i++) {
             Remind remind = reminds[i];
+            String code = remind.getFirst_part()+remind.getSecond_part();
             int num = (i + 1);
-            if(isContainsDailySendMarker(remind.getMaintenance())){
+            if(isContainsDailySendMarker(Validate.decodedMaintenance(code))){
             string  = String.format(Character.
                     toUpperCase(deleteRegularMarker(remind).charAt(0)) + "%s", deleteRegularMarker(
                     remind).substring(1));
             }
-            else string = remind.getMaintenance();
+           else {
+               string = String.valueOf(Validate.decodedMaintenance(code).
+                    charAt(0)).toLowerCase(Locale.ROOT)+Validate.decodedMaintenance(code).substring(1);
+           }
 
             messageToSend = messageToSend + num + ") " + string + "." + "\n";
             updateRemindFieldsToNextSendTime(reminds[i],
@@ -267,7 +282,9 @@ public class SendRemind {
 
         for (int i = 0; i < reminds.length; i++) {
             Remind remind = reminds[i];
-            if ((isContainsDailySendMarker(remind.getMaintenance()))) {
+            String code = remind.getFirst_part()+remind.getSecond_part();
+
+            if ((isContainsDailySendMarker(Validate.decodedMaintenance(code)))) {
                 if (remind.getDetails().getCountSendOfRemind() == 3) {
                     String date = nextDate(reminds[i].getRemindDate().split(""));
                     updateRemindFieldsToNextDay(reminds[i], date);
@@ -298,7 +315,9 @@ public class SendRemind {
                 || currentTime <= 3 && (remind.getDetails().getCountSendOfRemind() <= 3 &&
                 remind.getDetails().getCountSendOfRemind() >= 1)) {
 
-            if (isContainsDailySendMarker(remind.getMaintenance()) || noDelete(index)) {
+            String code = remind.getFirst_part()+remind.getSecond_part();
+
+            if (isContainsDailySendMarker(Validate.decodedMaintenance(code)) || noDelete(index)) {
                 String date = nextDate(remind.getRemindDate().split(""));
                 updateRemindFieldsToNextDay(remind, date);
             } else {
@@ -341,13 +360,13 @@ public class SendRemind {
 
         if (reminds.size() > 1) {
                maintenance  = messageForAggregateRemind(reminds.toArray(Remind[]::new));
+           reminds.clear();
                 this.service.sendMessage(chatId, maintenance);
-                reminds.clear();
         }
         else {
                 maintenance = messageForLonelyRemind(remind);
+           reminds.clear();
                 this.service.sendMessage(chatId, maintenance);
-                    reminds.clear();
                 }
         return true; }
 

@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 public class TelegramBot extends TelegramLongPollingBot {
     private final static Map<String, List<String>> commands;
 
-    static{
+    static {
         commands = new HashMap<>();
     }
 
@@ -64,13 +64,12 @@ public class TelegramBot extends TelegramLongPollingBot {
         if (update.hasMessage() && update.getMessage().hasText()) {
             chatId = update.getMessage().getChatId().toString();
             commands.putIfAbsent(chatId, new ArrayList<String>());
-            String message  = update.getMessage().getText().trim();
+            String message = update.getMessage().getText().trim();
             if (message.startsWith(COMMAND_PREFIX)) {
                 command = message.split(" ")[0].toLowerCase(Locale.ROOT);
                 this.commandContainer.retrieveCommand(command).execute(update);
                 commands.get(chatId).add(command);
-            }
-            else {
+            } else {
                 if (lastCommand(chatId).equals("/add")) {
                     acceptNewRemindFromUser(update);
                 } else if (lastCommand(chatId).equals("/show")) {
@@ -121,11 +120,15 @@ public class TelegramBot extends TelegramLongPollingBot {
         boolean isContains;
         if (isCorrectInput(input)) {
             try {
-                Remind remind = new Remind(getRemindContentFromUserInput(input),
+                String content = getRemindContentFromUserInput(input);
+                String code = Validate.codedMaintenance(content);
+
+                Remind remind = new Remind(delimOnParts(code)[0], delimOnParts(code)[1],
                         getDateFromUserInput(input).
                                 replaceAll("\\p{P}", "\\."));
+
                 Details details = new Details(chatId, "true",
-                        0,0, "false");
+                        0, 0, "false");
 
                 isContains = RemindServiceImpl.newRemindService().isContainsInDB(remind);
                 if (!isContains) {
@@ -177,7 +180,8 @@ public class TelegramBot extends TelegramLongPollingBot {
             Validate.date(dateArray[0], dateArray[1], dateArray[2]);
             return true;
         } else {
-            return false; }
+            return false;
+        }
 
     }
 
@@ -209,7 +213,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
         notify();
 
-        int lastCommandIndex = commands.get(chatId).size()-1;
+        int lastCommandIndex = commands.get(chatId).size() - 1;
         return commands.get(chatId).get(lastCommandIndex);
     }
 
@@ -217,6 +221,13 @@ public class TelegramBot extends TelegramLongPollingBot {
         System.out.println("...COMPLETE...");
     }
 
+    public static String[] delimOnParts(String codedMaintenance) {
+        String[] result = new String[2];
+        result[0] = codedMaintenance.substring(0, codedMaintenance.length() / 2);
+        result[1] = codedMaintenance.substring(codedMaintenance.length() / 2);
+        return result;
+
+    }
 }
 
 

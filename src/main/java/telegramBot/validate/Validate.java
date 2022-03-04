@@ -6,12 +6,14 @@ public class Validate {
 
     public static boolean date(String day, String month, String year){
         int result = 0;
-        int dd = Integer.parseInt(day.trim());
-        int mm = Integer.parseInt(month.trim());
-        int yyyy = Integer.parseInt(year.trim());
-
-        try{
-            if(day.startsWith("0")) {
+        int dd = 0;
+        int mm = 0;
+        int yyyy = 0;
+    try{
+        dd = Integer.parseInt(day.trim());
+        mm = Integer.parseInt(month);
+        yyyy = Integer.parseInt(year.trim());
+         if(day.startsWith("0")) {
                 dd = Integer.parseInt(day.substring(1));}
             if(dd < 32 && dd >= 1){
             result ++;}
@@ -38,5 +40,19 @@ public class Validate {
         String mouth = String.valueOf(Integer.parseInt(tempDates[14].substring(tempDates[14].indexOf("=")+1))+1);
         String year = tempDates[13].substring(tempDates[13].indexOf("=")+1);
         return String.format("%s.%s.%s", day, mouth, year).split("\\.");
-    }}
+    }
+
+    public static String codedMaintenance(String maintenance){
+        char[] chars = maintenance.toCharArray();
+        String codedMaintenance = "";
+        for(char c : chars){ codedMaintenance += (int)c + "/"; }
+        return codedMaintenance;
+    }
+    public static String decodedMaintenance(String codedMaintenance){
+        String[] intStrings = codedMaintenance.split("\\/");
+        String decodedMaintenance = "";
+        for(String i : intStrings){ decodedMaintenance += (char)Integer.parseInt(i); }
+        return decodedMaintenance;
+    }
+}
 

@@ -3,6 +3,7 @@ package telegramBot.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import telegramBot.validate.Validate;
 
 import javax.persistence.*;
 
@@ -16,8 +17,10 @@ public class Remind {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "MAINTENANCE")
-    private String maintenance;
+    @Column(name = "FIRST_PART_OF_MAINTENANCE")
+    private String first_part;
+    @Column(name = "SECOND_PART_OF_MAINTENANCE")
+    private String second_part;
     @Column(name = "REMIND_DATE")
     private String remindDate;
 
@@ -25,8 +28,9 @@ public class Remind {
     @JoinColumn(name = "details_id")
     private Details details;
 
-    public Remind(String maintenance, String remindDate){
-        this.maintenance = maintenance;
+    public Remind(String first_part, String second_part, String remindDate){
+        this.first_part = first_part;
+        this.second_part = second_part;
         this.remindDate = remindDate;
     }
 
@@ -34,7 +38,7 @@ public class Remind {
     public String toString() {
         return "Remind{" +
                 "id=" + id +
-                ", maintenance=" + maintenance + '\'' +
+                ", maintenance=" + (this.first_part + this.second_part) + '\'' +
                 ", remindDate=" + remindDate + '\'';
     }
 
@@ -43,13 +47,14 @@ public class Remind {
         if (this == obj) return true;
         if (! (obj instanceof Remind)) return false;
         Remind remind = (Remind) obj;
-        return this.maintenance.equals(remind.maintenance) && this.remindDate.replaceAll("\\p{P}", "\\.").
+        return (this.first_part+this.second_part).
+                equals(remind.first_part+remind.second_part) && this.remindDate.replaceAll("\\p{P}", "\\.").
                 equals(remind.remindDate.replaceAll("\\p{P}", "\\."));
     }
 
     @Override
     public int hashCode() {
-        char[] chArray = this.maintenance.toCharArray();
+        char[] chArray = Validate.decodedMaintenance(this.first_part+this.second_part).toCharArray();
         int result = (int)Character.toUpperCase(chArray[0]);
         for(int i = 1; i<chArray.length; i++){
             result+=(int)chArray[i];}
