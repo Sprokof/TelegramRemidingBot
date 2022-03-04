@@ -191,7 +191,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 while (true) {
                     TelegramBot.this.sendRemind.send();
                     printComplete();
-                    Thread.sleep(420000);
+                    Thread.sleep(700000);
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();

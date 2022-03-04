@@ -7,8 +7,7 @@ import telegramBot.service.SendMessageService;
 public class StartCommand implements Command{
     private int counter = 1;
     public static String START_COMMAND = "Я бот, реализующий напоминательную функцию. Для получения информации " +
-            "об принципе моей работе " +
-            "введите команду /instr";
+            "об моей работе введите команду /instr";
 
     private final SendMessageService sendMessageService;
 

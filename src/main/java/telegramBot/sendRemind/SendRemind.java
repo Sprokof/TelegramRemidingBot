@@ -33,7 +33,8 @@ public class SendRemind {
 
     private SendMessageServiceImpl service;
     @Getter
-    private static final String REMIND_MESSAGE = "Позвольте напомнить, что вам нужно ";
+    private static final String REMIND_MESSAGE = "Позвольте напомнить, что следует ";
+    private static final String SHOW_MESSAGE = "На эту дату есть следующие записи:\n";
     private final RemindForDefPerson remindForDefPerson;
 
     @Autowired
@@ -201,29 +202,31 @@ public class SendRemind {
     public synchronized boolean showRemindsByDate(String userChatId, String date) throws InterruptedException {
         List<Remind> reminds;
         while ((reminds = RemindServiceImpl.
-                newRemindService().getAllRemindsFromDB()).size() <= 1) {
+                newRemindService().getAllRemindsFromDB()).isEmpty()) {
             wait();
         }
         notify();
 
         int index = 0, count = 0;
-        service.sendMessage(userChatId, "Через пару секунд пришлю все напоминания...");
-        Thread.sleep(2300);
+        service.sendMessage(userChatId, "Через пару секунд пришлю напоминания на " + dayAndMonth(date));
+        Thread.sleep(4700);
+        String messageToSend = SHOW_MESSAGE;
         while (index != reminds.size()) {
             Remind remind = reminds.get(index);
             if ((remind.getDetails().getChatIdToSend().equals(userChatId) &&
                     remind.getRemindDate().equals(date.replaceAll("\\p{P}", "\\.")))
                     && !isContainsDailySendMarker(remind.getMaintenance())) {
-                service.sendMessage(userChatId, remind.getMaintenance());
+                messageToSend = messageToSend + (index + 1) + ") " + remind.getMaintenance();
                 count++;
             }
             index++;
         }
+                if(count != 0) service.sendMessage(userChatId, messageToSend);
         return count > 0;
     }
 
     private String messageForLonelyRemind(Remind remind) {
-        String messageToSend = "Позвольте напомнить, что вам следует " ;
+        String messageToSend = REMIND_MESSAGE;
         if(isContainsDailySendMarker(remind.getMaintenance())){
             messageToSend = messageToSend + deleteRegularMarker(remind);
         }
@@ -244,7 +247,7 @@ public class SendRemind {
 
 
     private String messageForAggregateRemind(Remind[] reminds) {
-        String messageToSend = "Позвольте напомнить, что вам следует сделать следующее:\n";
+        String messageToSend = REMIND_MESSAGE + "сделать следующее:\n";
         String string;
         for (int i = 0; i < reminds.length; i++) {
             Remind remind = reminds[i];
@@ -359,6 +362,45 @@ public class SendRemind {
         return (remind.getDetails().getCountSendOfRemind() == 0 &&
                 remind.getDetails().getTimeToSend().equals("true") && remind.getDetails().getLastSendHour() == 0)
                 && remind.getDetails().getIsStop().equals("false");
+    }
+
+
+    private String detachMonthFromInputDate(String date){
+        String intView = date.split("\\p{P}")[1];
+        String month = null;
+        switch (intView){
+            case "01": month = "январь"; break;
+            case "02": month = "февраль"; break;
+            case "03": month = "март"; break;
+            case "04": month = "апрель"; break;
+            case "05": month = "май"; break;
+            case "06": month = "июнь"; break;
+            case "07": month = "июль"; break;
+            case "08": month = "август"; break;
+            case "09": month = "сентябрь"; break;
+            case "10": month = "октябрь"; break;
+            case "11": month = "ноябрь"; break;
+            case "12": month = "декабрь"; break;
+        }
+        return month;
+
+        }
+
+
+    private String dayAndMonth(String date){
+        String month = detachMonthFromInputDate(date);
+        if(month.charAt(month.length()-1) == 'ь' || month.equals("май")){
+            month = (month.substring(0, month.length()-1) + "я");
+        }
+        else{
+        month = (month.substring(0, month.length()) + "а");}
+
+        String day = date.split("\\p{P}")[0];
+        if(day.startsWith("0")){
+            day = String.valueOf(day.charAt(1)); }
+
+        return String.format("%s %s", day, month);
+
     }
 
 }

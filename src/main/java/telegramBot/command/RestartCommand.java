@@ -6,12 +6,12 @@ import telegramBot.entity.Remind;
 import telegramBot.service.RemindServiceImpl;
 import telegramBot.service.SendMessageService;
 
-public class RestartCommand implements Command{
+public class RestartCommand implements Command {
     public static String RESTART_COMMAND = "Вы возообновили напоминания.";
 
     private SendMessageService sendMessageService;
 
-    public RestartCommand(SendMessageService sendMessageService){
+    public RestartCommand(SendMessageService sendMessageService) {
 
         this.sendMessageService = sendMessageService;
     }
@@ -19,17 +19,24 @@ public class RestartCommand implements Command{
     @Override
     public boolean execute(Update update) {
         String chatId = update.getMessage().getChatId().toString();
-        if(this.sendMessageService.sendMessage(chatId, RESTART_COMMAND)){
-            restart(chatId);
-        }
+        if (!restart(chatId))
+            RESTART_COMMAND = "Невозможно возообновить активные напоминания.";
+
+        this.sendMessageService.sendMessage(chatId, RESTART_COMMAND);
         return true;
     }
 
-    private void restart(String chatId){
-        for(Remind r: RemindServiceImpl.newRemindService().getAllRemindsFromDB()){
-            if(r.getDetails().getChatIdToSend().equals(chatId))
-                RemindServiceImpl.newRemindService().updateIsStopField(r, false);}
-    }
+    private boolean restart(String chatId) {
+        int count = 0;
+        for (Remind r : RemindServiceImpl.newRemindService().getAllRemindsFromDB()) {
+            if (r.getDetails().getChatIdToSend().equals(chatId) &&
+                    r.getDetails().getIsStop().equals("true")) {
+                RemindServiceImpl.newRemindService().updateIsStopField(r, false);
+                count++;
+            }
+        }
+        return count > 0;
 
+    }
 }
 
