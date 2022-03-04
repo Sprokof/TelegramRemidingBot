@@ -135,6 +135,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     if (saveRemindAndDetails(remind, details)) {
                         this.sendMessageService.sendMessage(chatId, "Напоминание успешно" +
                                 " добавлено.");
+                        Thread.sleep(500);
                     } else {
                         this.sendMessageService.sendMessage(chatId,
                                 "Напоминание не было добавлено, проверьте формат даты (dd.mm.yyyy) ." +
@@ -154,6 +155,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     "Напоминание не было добавлено, проверьте формат даты (dd.mm.yyyy) . " +
                             "Возможно, что вы указали уже прошедшую дату. " +
                             "После введите команду /add для повторного добавления.");
+
             commands.get(chatId).clear();
         }
 
@@ -222,10 +224,9 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     public static String[] delimOnParts(String codedMaintenance) {
-        String[] result = new String[2];
-        result[0] = codedMaintenance.substring(0, codedMaintenance.length() / 2);
-        result[1] = codedMaintenance.substring(codedMaintenance.length() / 2);
-        return result;
+        return new String[]{
+                codedMaintenance.substring(0, codedMaintenance.length() / 2),
+                codedMaintenance.substring(codedMaintenance.length() / 2)};
 
     }
 }
