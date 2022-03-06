@@ -11,6 +11,7 @@ import telegramBot.sendRemind.SendRemind;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RemindServiceImpl implements RemindService{
     private RemindDAOImpl remindDAO;
@@ -107,18 +108,18 @@ public class RemindServiceImpl implements RemindService{
 
     @Override
     public List<Remind> getAllExecutingRemindsByChatId(String chatId) {
-        List<Remind> resultedList = new ArrayList<>();
-        for(Remind remind : getAllRemindsFromDB()){
-            if(remind.getDetails().getChatIdToSend().equals(chatId) &&
-                    remind.getRemindDate().replaceAll("\\p{P}", "\\.").
-                            equals(SendRemind.currentDate()) &&
-                    remind.getDetails().getTimeToSend().equals("true") && remind.getDetails().getIsStop().equals("false")){
-                resultedList.add(remind);}
-        }
-
-                 if(SendRemind.currentTime() < 5) resultedList = new ArrayList<>();
-        return resultedList;
+        List<Remind> reminds =
+                getAllRemindsFromDB().stream().filter((r) -> {
+                            return r.getDetails().getChatIdToSend().equals(chatId) &&
+                                    r.getRemindDate().replaceAll("\\p{P}", "\\.").equals(SendRemind.currentDate()) &&
+                                    r.getDetails().getTimeToSend().equals("true") && r.getDetails().getIsStop().equals("false");
+                        }).
+                        collect(Collectors.toList());
+        if (SendRemind.currentTime() >= 5) return reminds;
+        return new ArrayList<>();
     }
+
+
     }
 
 
