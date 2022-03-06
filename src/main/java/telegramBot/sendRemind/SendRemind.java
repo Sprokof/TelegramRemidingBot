@@ -3,12 +3,12 @@ package telegramBot.sendRemind;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import telegramBot.crypt.XORCrypt;
 import telegramBot.entity.Remind;
 import telegramBot.hidenPackage.RemindForDefPerson;
 import telegramBot.service.RemindServiceImpl;
 import telegramBot.service.SendMessageService;
 import telegramBot.service.SendMessageServiceImpl;
-import telegramBot.validate.Validate;
 
 import java.io.IOException;
 import java.util.*;
@@ -180,9 +180,9 @@ public class SendRemind {
     }
 
     private static String deleteRegularMarker(Remind remind) {
-        String code = remind.getFirst_part()+remind.getSecond_part();
-        String maintenance = Validate.decodedMaintenance(code);
-        return maintenance.substring(maintenance.indexOf(" ") + 1);
+        String decrypt = XORCrypt.decrypt(XORCrypt.stringToIntArray(remind.
+                getEncryptedMaintenance()), remind.getKey());
+        return decrypt.substring(decrypt.indexOf(" ") + 1);
     }
 
     public static String toNextMonth(String date) {
@@ -216,11 +216,12 @@ public class SendRemind {
         String messageToSend = SHOW_MESSAGE;
         while (index != reminds.size()) {
             Remind remind = reminds.get(index);
-            String code = remind.getFirst_part()+remind.getSecond_part();
+            String decrypt = XORCrypt.decrypt(XORCrypt.stringToIntArray(remind.
+                    getEncryptedMaintenance()), remind.getKey());
             if ((remind.getDetails().getChatIdToSend().equals(userChatId) &&
                     remind.getRemindDate().equals(date.replaceAll("\\p{P}", "\\.")))
-                    && !isContainsDailySendMarker(Validate.decodedMaintenance(code))) {
-                messageToSend = messageToSend + (index + 1) + ") " + Validate.decodedMaintenance(code);
+                    && !isContainsDailySendMarker(decrypt)) {
+                messageToSend = messageToSend + (index + 1) + ") " + decrypt;
                 count++;
             }
             index++;
@@ -231,20 +232,21 @@ public class SendRemind {
 
     private String messageForLonelyRemind(Remind remind) {
         String messageToSend = REMIND_MESSAGE;
-        String code = remind.getFirst_part()+remind.getSecond_part();
+        String decrypt = XORCrypt.decrypt(XORCrypt.stringToIntArray(remind.
+                getEncryptedMaintenance()), remind.getKey());
 
-        if(isContainsDailySendMarker(Validate.decodedMaintenance(code))){
+        if(isContainsDailySendMarker(decrypt)){
             messageToSend = messageToSend + deleteRegularMarker(remind);
         }
         else{
             messageToSend = (messageToSend +
-                String.valueOf(Validate.decodedMaintenance(code).
-                        charAt(0)).toLowerCase(Locale.ROOT)+Validate.decodedMaintenance(code).substring(1));
+                String.valueOf(decrypt.
+                        charAt(0)).toLowerCase(Locale.ROOT)+ decrypt.substring(1));
         }
 
         updateRemindFieldsToNextSendTime(remind, remind.getDetails().getCountSendOfRemind()+1);
             if(remind.getDetails().getCountSendOfRemind() == 3){
-                if(isContainsDailySendMarker(Validate.decodedMaintenance(code))){
+                if(isContainsDailySendMarker(decrypt)){
                     String date = nextDate(remind.getRemindDate().split(""));
                     updateRemindFieldsToNextDay(remind, date);
                 }
@@ -262,16 +264,17 @@ public class SendRemind {
         String string;
         for (int i = 0; i < reminds.length; i++) {
             Remind remind = reminds[i];
-            String code = remind.getFirst_part()+remind.getSecond_part();
+            String decrypt = XORCrypt.decrypt(XORCrypt.stringToIntArray(remind.
+                    getEncryptedMaintenance()), remind.getKey());
             int num = (i + 1);
-            if(isContainsDailySendMarker(Validate.decodedMaintenance(code))){
+            if(isContainsDailySendMarker(decrypt)){
             string  = String.format(Character.
                     toUpperCase(deleteRegularMarker(remind).charAt(0)) + "%s", deleteRegularMarker(
                     remind).substring(1));
             }
            else {
-               string = String.valueOf(Validate.decodedMaintenance(code).
-                    charAt(0)).toLowerCase(Locale.ROOT)+Validate.decodedMaintenance(code).substring(1);
+               string = String.valueOf(decrypt.
+                    charAt(0)).toLowerCase(Locale.ROOT)+ decrypt.substring(1);
            }
 
             messageToSend = messageToSend + num + ") " + string + "." + "\n";
@@ -282,9 +285,11 @@ public class SendRemind {
 
         for (int i = 0; i < reminds.length; i++) {
             Remind remind = reminds[i];
-            String code = remind.getFirst_part()+remind.getSecond_part();
 
-            if ((isContainsDailySendMarker(Validate.decodedMaintenance(code)))) {
+            String decrypted = XORCrypt.decrypt(XORCrypt.stringToIntArray(remind.
+                    getEncryptedMaintenance()), remind.getKey());
+
+            if ((isContainsDailySendMarker(decrypted))) {
                 if (remind.getDetails().getCountSendOfRemind() == 3) {
                     String date = nextDate(reminds[i].getRemindDate().split(""));
                     updateRemindFieldsToNextDay(reminds[i], date);
@@ -315,9 +320,10 @@ public class SendRemind {
                 || currentTime <= 3 && (remind.getDetails().getCountSendOfRemind() <= 3 &&
                 remind.getDetails().getCountSendOfRemind() >= 1)) {
 
-            String code = remind.getFirst_part()+remind.getSecond_part();
+            String decrypt = XORCrypt.decrypt(XORCrypt.stringToIntArray(remind.
+                    getEncryptedMaintenance()), remind.getKey());
 
-            if (isContainsDailySendMarker(Validate.decodedMaintenance(code)) || noDelete(index)) {
+            if (isContainsDailySendMarker(decrypt) || noDelete(index)) {
                 String date = nextDate(remind.getRemindDate().split(""));
                 updateRemindFieldsToNextDay(remind, date);
             } else {

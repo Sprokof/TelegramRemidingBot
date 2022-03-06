@@ -6,9 +6,9 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import telegramBot.crypt.XORCrypt;
 import telegramBot.entity.Details;
 import telegramBot.service.RemindServiceImpl;
-import telegramBot.validate.Validate;
 import telegramBot.command.CommandContainer;
 import telegramBot.entity.Remind;
 import telegramBot.sendRemind.SendRemind;
@@ -120,12 +120,13 @@ public class TelegramBot extends TelegramLongPollingBot {
         boolean isContains;
         if (isCorrectInput(input)) {
             try {
-                String content = getRemindContentFromUserInput(input);
-                String code = Validate.codedMaintenance(content);
+                String key = XORCrypt.keyGenerate();
+                String encrypt = XORCrypt.encrypt(getRemindContentFromUserInput(input), key).
+                        replaceAll("\u0000", "");
 
-                Remind remind = new Remind(delimOnParts(code)[0], delimOnParts(code)[1],
+                Remind remind = new Remind(encrypt,
                         getDateFromUserInput(input).
-                                replaceAll("\\p{P}", "\\."));
+                                replaceAll("\\p{P}", "\\."), key);
 
                 Details details = new Details(chatId, "true",
                         0, 0, "false");
@@ -165,7 +166,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         Pattern p = Pattern.compile("[Aa-zZ\\s][0-9]{2}\\p{P}[0-9]{2}\\p{P}[0-9]{4}");
         boolean textWithRightDate = p.matcher(input).find();
         if (textWithRightDate) {
-            return Validate.date(getDateFromUserInput(input).split("\\p{P}")[0],
+            return validateDate(getDateFromUserInput(input).split("\\p{P}")[0],
                     getDateFromUserInput(input).split("\\p{P}")[1],
                     getDateFromUserInput(input).split("\\p{P}")[2]);
         } else {
@@ -179,13 +180,14 @@ public class TelegramBot extends TelegramLongPollingBot {
         boolean isDate = p.matcher(input).find();
         if (isDate) {
             String[] dateArray = input.split("\\p{P}");
-            Validate.date(dateArray[0], dateArray[1], dateArray[2]);
+            validateDate(dateArray[0], dateArray[1], dateArray[2]);
             return true;
         } else {
             return false;
         }
 
     }
+
 
     private boolean saveRemindAndDetails(Remind remind, Details details) {
         return RemindServiceImpl.newRemindService().saveRemind(remind, details);
@@ -223,13 +225,40 @@ public class TelegramBot extends TelegramLongPollingBot {
         System.out.println("...COMPLETE...");
     }
 
-    public static String[] delimOnParts(String codedMaintenance) {
-        return new String[]{
-                codedMaintenance.substring(0, codedMaintenance.length() / 2),
-                codedMaintenance.substring(codedMaintenance.length() / 2)};
+    private static boolean validateDate(String day, String month, String year){
+        int result = 0;
+        int dd = 0;
+        int mm = 0;
+        int yyyy = 0;
+        try{
+            dd = Integer.parseInt(day.trim());
+            mm = Integer.parseInt(month);
+            yyyy = Integer.parseInt(year.trim());
+            if(day.startsWith("0")) {
+                dd = Integer.parseInt(day.substring(1));}
+            if(dd < 32 && dd >= 1){
+                result ++;}
 
-    }
+            if(month.startsWith("0")) {
+                mm = Integer.parseInt(month.substring(1));}
+            if(mm < 13 && mm >= 1){
+                result ++;}
+
+            if(yyyy >= Integer.parseInt(toDateArray()[2])){
+                result ++;}}
+        catch (NumberFormatException e){ result -- ;}
+        if((dd<Integer.parseInt(toDateArray()[0])&&(mm<Integer.parseInt(toDateArray()[1]))
+                ||(dd<Integer.parseInt(toDateArray()[0])&&(mm<=Integer.parseInt(toDateArray()[1])))
+                ||(dd>=Integer.parseInt(toDateArray()[0])&&(mm<Integer.parseInt(toDateArray()[1]))))) result --;
+
+
+        return  (result == 3) ;}
+
+
+    private static String[] toDateArray(){
+        return SendRemind.currentDate().split("\\."); }
 }
+
 
 
 
