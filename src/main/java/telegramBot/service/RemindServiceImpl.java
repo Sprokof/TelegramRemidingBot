@@ -18,6 +18,7 @@ public class RemindServiceImpl implements RemindService{
 
     @Autowired
     public RemindServiceImpl(RemindDAOImpl remindDAO){
+
         this.remindDAO = remindDAO;
     }
 

@@ -210,7 +210,7 @@ public class SendRemind {
         }
         notify();
 
-        int index = 0, count = 0;
+        int index = 2, count = 0;
         service.sendMessage(userChatId, "Через пару секунд пришлю напоминания на " + dayAndMonth(date));
         Thread.sleep(4700);
         String messageToSend = SHOW_MESSAGE;
