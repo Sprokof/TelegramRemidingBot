@@ -16,7 +16,7 @@ public interface RemindService {
     boolean isContainsInDB(Remind remind);
     void updateTimeToSendField(Remind remind, boolean flag);
     void updateCountSendField(Remind remind, int count);
-    void updateSendHourField(Remind remind, int hour);
+    void updateSendHourField(Remind remind, String time);
     void updateIsStopField(Remind remind, boolean flag);
 
 }

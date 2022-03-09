@@ -21,18 +21,18 @@ public class Details {
     private String chatIdToSend;
     @Column(name = "TIME_TO_SEND")
     private String timeToSend;
-    @Column(name = "LAST_SEND_HOUR")
-    private int lastSendHour;
+    @Column(name = "LAST_SEND_TIME")
+    private String lastSendTime;
     @Column(name = "COUNT_SEND_OF_REMIND")
     private int countSendOfRemind;
     @Column(name = "IS_STOP")
     private String isStop;
 
     public Details(String chatIdToSend, String timeToSend,
-                   int lastSendHour, int countSendOfRemind, String isStop) {
+                   String lastSendTime, int countSendOfRemind, String isStop) {
         this.chatIdToSend = chatIdToSend;
         this.timeToSend = timeToSend;
-        this.lastSendHour = lastSendHour;
+        this.lastSendTime = lastSendTime;
         this.countSendOfRemind = countSendOfRemind;
         this.isStop = isStop;
 

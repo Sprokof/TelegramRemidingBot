@@ -5,12 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import telegramBot.crypt.XORCrypt;
 import telegramBot.entity.Remind;
-import telegramBot.hidenPackage.RemindForDefPerson;
 import telegramBot.service.RemindServiceImpl;
 import telegramBot.service.SendMessageService;
 import telegramBot.service.SendMessageServiceImpl;
 
-import java.io.IOException;
 import java.util.*;
 
 @Component
@@ -36,18 +34,16 @@ public class SendRemind {
     @Getter
     private static final String REMIND_MESSAGE = "Позвольте напомнить, что вам следует ";
     private static final String SHOW_MESSAGE = "На эту дату есть следующие записи:\n";
-    private final RemindForDefPerson remindForDefPerson;
 
     @Autowired
     public SendRemind(SendMessageService service) {
         this.service = (SendMessageServiceImpl) service;
-        this.remindForDefPerson = new RemindForDefPerson(this);
     }
 
     private synchronized int[] getIdOfAllReminds() throws InterruptedException {
         List<Remind> reminds;
         while ((reminds = RemindServiceImpl.newRemindService().
-                getAllRemindsFromDB()).size() <= 1) {
+                getAllRemindsFromDB()).isEmpty()) {
             wait();
         }
         notify();
@@ -69,16 +65,15 @@ public class SendRemind {
         int[] remindId = getIdOfAllReminds();
         List<Remind> reminds = new ArrayList<>();
         for (int index = 0; index < remindId.length; index++) {
-            if (noDelete(remindId[index])) continue;
             Remind remind = RemindServiceImpl.newRemindService().getRemindById(remindId[index]);
             if (remind.getRemindDate().equals(currentDate())) {
-                if (changedRemind(remind, currentTime(), remindId[index]) || alreadyAddedRemind(remind)) {
+                if (changedRemind(remind, remindId[index]) || alreadyAddedRemind(remind)) {
                     reminds.add(remind);
                 }
             }
         }
 
-        reminds.forEach((r)->{
+        reminds.forEach((r) -> {
             List<Remind> waitsExecuteReminds = null;
             while (!(waitsExecuteReminds = RemindServiceImpl.newRemindService().
                     getAllExecutingRemindsByChatId(r.getDetails().getChatIdToSend())).isEmpty()) {
@@ -91,37 +86,14 @@ public class SendRemind {
             }
         });
 
-        if (remindForDefPerson.dateToSend().equals(currentDate())) {
-            changedRemind(remindForDefPerson.getRemind(),currentTime(),
-                    RemindForDefPerson.undeletedIndex);
-        }
-
-        if (isConditionsToSendToDefPerson(remindForDefPerson.dateToSend(), currentDate(),
-                    remindForDefPerson.getRemind())) {
-                try {
-                    remindForDefPerson.send();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
         deleteNotUpdatedRemind();
     }
 
-
-    private boolean isConditionsToSendToDefPerson(String executeDate, String currentDate, Remind remind) {
-        return (currentDate.equals(executeDate)) && (currentTime() >= 5) &&
-                remind.getDetails().getTimeToSend().equals("true");
-    }
 
 
     private boolean isContainsDailySendMarker(String maintenance) {
         return (maintenance.split("")[0].
                 equalsIgnoreCase("Р") && maintenance.split("")[1].equals(" "));
-    }
-
-    private boolean noDelete(int index) {
-        return index == RemindForDefPerson.undeletedIndex;
     }
 
 
@@ -139,17 +111,19 @@ public class SendRemind {
         return String.format("%s.%s.%s", day, month, year);
     }
 
-    public static int currentTime() {
-        String hour;
-        String[] tempTimes = Calendar.getInstance().toString().split(",");
-        if (tempTimes[21].equals("AM_PM=1")) {
-            hour = String.valueOf(Integer.parseInt(tempTimes[22].
-                    substring(tempTimes[22].indexOf("=") + 1)) + 12);
+    public static String currentTime() {
+        String[] calendarsParams = Calendar.getInstance().toString().split(",");
+        String hour; int minutes = Integer.parseInt(calendarsParams[24].
+                substring(calendarsParams[24].indexOf("=")+1));
+
+        if (calendarsParams[21].equals("AM_PM=1")) {
+            hour = String.valueOf(Integer.parseInt(calendarsParams[22].
+                    substring(calendarsParams[22].indexOf("=") + 1)) + 12);
         } else {
-            hour = String.valueOf(Integer.parseInt(tempTimes[22].
-                    substring(tempTimes[22].indexOf("=") + 1)));
+            hour = String.valueOf(Integer.parseInt(calendarsParams[22].
+                    substring(calendarsParams[22].indexOf("=") + 1)));
         }
-        return Integer.parseInt(hour);
+        return String.format("%s:%s", hour, minutes);
     }
 
     public static String nextDate(String[] thisDate) {
@@ -306,24 +280,25 @@ public class SendRemind {
     }
 
 
-    public boolean changedRemind(Remind remind, int currentTime, int index) {
+    public boolean changedRemind(Remind remind, int index) {
         boolean flag = false;
+        double time = toDoubleTime();
         if (remind.getDetails().getTimeToSend().equals("false")) {
-            if (((currentTime - remind.getDetails().getLastSendHour()) >= 4) && (currentTime < 23)) {
-                RemindServiceImpl.newRemindService().updateSendHourField(remind, currentTime);
+            if ((timeDifference(remind.getDetails().getLastSendTime()) >= 4.00) && (time < 23)) {
+                RemindServiceImpl.newRemindService().updateSendHourField(remind, currentTime());
                 RemindServiceImpl.newRemindService().updateTimeToSendField(remind, true);
                 flag = true;
             }
         }
-        if (currentTime >= 23 && (remind.getDetails().getCountSendOfRemind() <= 3 &&
+        if (time >= 23 && (remind.getDetails().getCountSendOfRemind() <= 3 &&
                 remind.getDetails().getCountSendOfRemind() >= 1)
-                || currentTime <= 3 && (remind.getDetails().getCountSendOfRemind() <= 3 &&
+                || time <= 3 && (remind.getDetails().getCountSendOfRemind() <= 3 &&
                 remind.getDetails().getCountSendOfRemind() >= 1)) {
 
             String decrypt = XORCrypt.decrypt(XORCrypt.stringToIntArray(remind.
                     getEncryptedMaintenance()), remind.getKey());
 
-            if (isContainsDailySendMarker(decrypt) || noDelete(index)) {
+            if (isContainsDailySendMarker(decrypt)) {
                 String date = nextDate(remind.getRemindDate().split(""));
                 updateRemindFieldsToNextDay(remind, date);
             } else {
@@ -337,7 +312,7 @@ public class SendRemind {
         RemindServiceImpl.newRemindService().updateRemindDateField(remind, date);
         RemindServiceImpl.newRemindService().updateCountSendField(remind, 0);
         RemindServiceImpl.newRemindService().updateTimeToSendField(remind, true);
-        RemindServiceImpl.newRemindService().updateSendHourField(remind, 0);
+        RemindServiceImpl.newRemindService().updateSendHourField(remind, "-");
     }
 
     public void updateRemindFieldsToNextSendTime(Remind remind, int count) {
@@ -384,9 +359,7 @@ public class SendRemind {
     }
 
     private boolean alreadyAddedRemind(Remind remind) {
-        return (remind.getDetails().getCountSendOfRemind() == 0 &&
-                remind.getDetails().getTimeToSend().equals("true") && remind.getDetails().getLastSendHour() == 0)
-                && remind.getDetails().getIsStop().equals("false");
+        return remind.getDetails().getLastSendTime().equals("-");
     }
 
 
@@ -426,6 +399,16 @@ public class SendRemind {
 
         return String.format("%s %s", day, month);
 
+    }
+
+    public static double timeDifference(String lastSendTime){
+        double current = Double.parseDouble(currentTime().replace(':', '.'));
+        double last = Double.parseDouble(lastSendTime.replace(':', '.'));
+    return current - last;
+    }
+
+    public static double toDoubleTime(){
+       return Double.parseDouble(SendRemind.currentTime().replace(':', '.'));
     }
 
 }

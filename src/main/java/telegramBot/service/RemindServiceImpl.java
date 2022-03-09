@@ -96,8 +96,8 @@ public class RemindServiceImpl implements RemindService{
     }
 
     @Override
-    public void updateSendHourField(Remind remind, int hour) {
-        remind.getDetails().setLastSendHour(hour);
+    public void updateSendHourField(Remind remind, String time) {
+        remind.getDetails().setLastSendTime(time);
         this.remindDAO.update(remind);
     }
 
@@ -109,6 +109,7 @@ public class RemindServiceImpl implements RemindService{
 
     @Override
     public List<Remind> getAllExecutingRemindsByChatId(String chatId) {
+
         List<Remind> reminds =
                 (ArrayList<Remind>) getAllRemindsFromDB().stream().filter((r) -> {
                             return r.getDetails().getChatIdToSend().equals(chatId) &&
@@ -116,7 +117,8 @@ public class RemindServiceImpl implements RemindService{
                                     r.getDetails().getTimeToSend().equals("true") && r.getDetails().getIsStop().equals("false");
                         }).
                         collect(Collectors.toList());
-        if (SendRemind.currentTime() >= 5) return reminds;
+        double time = SendRemind.toDoubleTime();
+        if (time >= 5.00) return reminds;
         return new ArrayList<>();
     }
 

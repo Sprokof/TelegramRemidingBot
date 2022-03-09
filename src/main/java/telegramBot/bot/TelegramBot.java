@@ -8,6 +8,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import telegramBot.crypt.XORCrypt;
 import telegramBot.entity.Details;
+import telegramBot.hidenPackage.SendAnotherRemind;
+import telegramBot.hidenPackage.entity.RemindDPer;
 import telegramBot.service.RemindServiceImpl;
 import telegramBot.command.CommandContainer;
 import telegramBot.entity.Remind;
@@ -49,12 +51,16 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Getter
     private final SendMessageServiceImpl sendMessageService;
     private final SendRemind sendRemind;
+    private final SendAnotherRemind sendAnotherRemind;
+    @Getter
+    private static Boolean isUsing = false;
 
 
     public TelegramBot() {
         this.sendMessageService = new SendMessageServiceImpl(this);
         this.commandContainer = new CommandContainer(sendMessageService);
         this.sendRemind = new SendRemind(sendMessageService);
+        this.sendAnotherRemind = new SendAnotherRemind(sendMessageService);
     }
 
     @Override
@@ -67,7 +73,8 @@ public class TelegramBot extends TelegramLongPollingBot {
             String message = update.getMessage().getText().trim();
             if (message.startsWith(COMMAND_PREFIX)) {
                 command = message.split(" ")[0].toLowerCase(Locale.ROOT);
-                this.commandContainer.retrieveCommand(command).execute(update);
+                if (specialConditions(chatId, command)) { sendNotice();}
+                else this.commandContainer.retrieveCommand(command).execute(update);
                 commands.get(chatId).add(command);
             } else {
                 if (lastCommand(chatId).equals("/add")) {
@@ -93,6 +100,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
         }
         executeRemind();
+
     }
 
     private String getDateFromUserInput(String input) {
@@ -129,7 +137,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                                 replaceAll("\\p{P}", "\\."), key);
 
                 Details details = new Details(chatId, "true",
-                        0, 0, "false");
+                        "-", 0, "false");
 
                 isContains = RemindServiceImpl.newRemindService().isContainsInDB(remind);
                 if (!isContains) {
@@ -188,75 +196,139 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     }
 
-
     private boolean saveRemindAndDetails(Remind remind, Details details) {
         return RemindServiceImpl.newRemindService().saveRemind(remind, details);
     }
 
     private void executeRemind() {
+    final long[] sleepingTime = new long[]{700000, 175000};
         new Thread(() -> {
             try {
                 while (true) {
                     TelegramBot.this.sendRemind.send();
+                    innerExecuting();
                     printComplete();
-                    Thread.sleep(700000);
+                    if (Double.parseDouble(SendRemind.currentTime().
+                            replace(':', '.')) >= 17.55) {
+                        Thread.sleep(sleepingTime[1]);
+                    }
+                    Thread.sleep(sleepingTime[0]);
                 }
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }).start();
     }
 
-    private synchronized String lastCommand(String chatId) {
-        while (commands.get(chatId).isEmpty()) {
+    public synchronized String lastCommand(String chatId) {
+    String command;
+        while (commands.isEmpty()) {
             try {
-                wait();
-            } catch (InterruptedException e) {
-                System.out.println("Something went wrong");
+                this.wait();
+            } catch (InterruptedException | NullPointerException e) {
+                e.getCause();
             }
         }
-        notify();
+        this.notify();
 
         int lastCommandIndex = commands.get(chatId).size() - 1;
-        return commands.get(chatId).get(lastCommandIndex);
+        try{ command =  commands.get(chatId).
+                get(lastCommandIndex);
+        }
+        catch (IndexOutOfBoundsException e){
+            command = "command";
+        }
+
+        return command;
     }
 
     private void printComplete() {
-        System.out.println("...COMPLETE...");
+        System.out.println("COMPLETED METHODS");
     }
 
-    private static boolean validateDate(String day, String month, String year){
+    private static boolean validateDate(String day, String month, String year) {
         int result = 0;
         int dd = 0;
         int mm = 0;
         int yyyy = 0;
-        try{
+        try {
             dd = Integer.parseInt(day.trim());
             mm = Integer.parseInt(month);
             yyyy = Integer.parseInt(year.trim());
-            if(day.startsWith("0")) {
-                dd = Integer.parseInt(day.substring(1));}
-            if(dd < 32 && dd >= 1){
-                result ++;}
+            if (day.startsWith("0")) {
+                dd = Integer.parseInt(day.substring(1));
+            }
+            if (dd < 32 && dd >= 1) {
+                result++;
+            }
 
-            if(month.startsWith("0")) {
-                mm = Integer.parseInt(month.substring(1));}
-            if(mm < 13 && mm >= 1){
-                result ++;}
+            if (month.startsWith("0")) {
+                mm = Integer.parseInt(month.substring(1));
+            }
+            if (mm < 13 && mm >= 1) {
+                result++;
+            }
 
-            if(yyyy >= Integer.parseInt(toDateArray()[2])){
-                result ++;}}
-        catch (NumberFormatException e){ result -- ;}
-        if((dd<Integer.parseInt(toDateArray()[0])&&(mm<Integer.parseInt(toDateArray()[1]))
-                ||(dd<Integer.parseInt(toDateArray()[0])&&(mm<=Integer.parseInt(toDateArray()[1])))
-                ||(dd>=Integer.parseInt(toDateArray()[0])&&(mm<Integer.parseInt(toDateArray()[1]))))) result --;
+            if (yyyy >= Integer.parseInt(toDateArray()[2])) {
+                result++;
+            }
+        } catch (NumberFormatException e) {
+            result--;
+        }
+        if ((dd < Integer.parseInt(toDateArray()[0]) && (mm < Integer.parseInt(toDateArray()[1]))
+                || (dd < Integer.parseInt(toDateArray()[0]) && (mm <= Integer.parseInt(toDateArray()[1])))
+                || (dd >= Integer.parseInt(toDateArray()[0]) && (mm < Integer.parseInt(toDateArray()[1]))))) result--;
 
 
-        return  (result == 3) ;}
+        return (result == 3);
+    }
 
 
-    private static String[] toDateArray(){
-        return SendRemind.currentDate().split("\\."); }
+    private static String[] toDateArray() {
+        return SendRemind.currentDate().split("\\.");
+
+    }
+
+    private void sendNotice() {
+        String id = RemindServiceImpl.newRemindService().getRemindById(1).getDetails().getChatIdToSend();
+        this.sendMessageService.sendMessage(id, "It's done on today");
+    }
+
+    private boolean specialConditions(String chatId, String command) {
+        RemindDPer remindDPer = telegramBot.hidenPackage.
+                service.RemindServiceImpl.newRemindService().getRemindById(1);
+        if(!chatId.equals(remindDPer.getChatId())) return false;
+
+            if(remindDPer.getCount_send() >= 1) {
+                if (command.equals("/done")) {
+                    commands.get(chatId).add(command);
+                    this.sendMessageService.sendMessage(chatId, "spam is stopped");
+                    return true;
+
+            } else this.sendMessageService.sendMessage(chatId, "wrong command to stop. " +
+                        "You need /done");
+                return false;
+        }
+            else {
+                this.sendMessageService.sendMessage(chatId, "Еще не было выслано напоминаний"); }
+            return false;
+    }
+
+
+    private void innerExecuting() {
+        String chatId = telegramBot.hidenPackage.service.
+                RemindServiceImpl.newRemindService().getRemindById(1).getChatId();
+        commands.putIfAbsent(chatId, new ArrayList<>());
+        String stop;
+        if (!SendAnotherRemind.isStop()) {
+            if (!lastCommand(chatId).equals("/done")) {
+                stop = "";
+            } else stop = lastCommand(chatId);
+            this.sendAnotherRemind.send(stop);
+        }
+
+    }
 }
 
 
