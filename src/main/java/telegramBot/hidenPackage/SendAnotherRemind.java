@@ -24,7 +24,7 @@ public class SendAnotherRemind  {
         if (isConditionsToSend(stopCommand)) {
             isDoneOnToday = false;
             if (telegramBot.sendRemind.
-                    SendRemind.timeDifference(remindDPer.getLastSendTime()) >= 0.05) {
+                    SendRemind.timeDifference(remindDPer.getLastSendTime()) >= 0.044) {
                 if (this.service.sendMessage(remindDPer.getChatId(), remindDPer.
                         getRemindAboutTablets())) {
                     RemindServiceImpl.newRemindService().

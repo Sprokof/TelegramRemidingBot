@@ -284,7 +284,7 @@ public class SendRemind {
         boolean flag = false;
         double time = toDoubleTime();
         if (remind.getDetails().getTimeToSend().equals("false")) {
-            if ((timeDifference(remind.getDetails().getLastSendTime()) >= 3.80) && (time < 23)) {
+            if ((timeDifference(remind.getDetails().getLastSendTime()) >= 4.01) && (time < 23)) {
                 RemindServiceImpl.newRemindService().updateSendHourField(remind, currentTime());
                 RemindServiceImpl.newRemindService().updateTimeToSendField(remind, true);
                 flag = true;
