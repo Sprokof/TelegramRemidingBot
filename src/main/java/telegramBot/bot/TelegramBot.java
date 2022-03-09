@@ -52,9 +52,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final SendMessageServiceImpl sendMessageService;
     private final SendRemind sendRemind;
     private final SendAnotherRemind sendAnotherRemind;
-    @Getter
-    private static Boolean isUsing = false;
-
 
     public TelegramBot() {
         this.sendMessageService = new SendMessageServiceImpl(this);
@@ -208,9 +205,8 @@ public class TelegramBot extends TelegramLongPollingBot {
                     TelegramBot.this.sendRemind.send();
                     innerExecuting();
                     printComplete();
-                    if ((SendRemind.toDoubleTime() >= 17.55 && SendRemind.toDoubleTime() <= 20.15) &&
-                            this.sendAnotherRemind.getPer().getRemindDate().
-                                    equals(SendRemind.currentDate())){
+                    if ((SendRemind.toDoubleTime() >= 17.55 &&
+                            SendRemind.toDoubleTime() <= 20.15 || SendAnotherRemind.isDoneOnToday())){
                         Thread.sleep(sleepingTime[1]); }
                     Thread.sleep(sleepingTime[0]);
                 }
@@ -303,7 +299,8 @@ public class TelegramBot extends TelegramLongPollingBot {
             if(remindDPer.getCount_send() >= 1) {
                 if (command.equals("/done")) {
                     commands.get(chatId).add(command);
-                    this.sendMessageService.sendMessage(chatId, "spam is stopped");
+                    this.sendMessageService.sendMessage(chatId, "SPAM IS STOP");
+                    commands.get(chatId).clear();
                     return true;
 
             } else this.sendMessageService.sendMessage(chatId, "wrong command to stop. " +
@@ -317,18 +314,19 @@ public class TelegramBot extends TelegramLongPollingBot {
 
 
     private void innerExecuting() {
-        String chatId = telegramBot.hidenPackage.service.
-                RemindServiceImpl.newRemindService().getRemindById(1).getChatId();
+        String chatId = telegramBot.hidenPackage.service.RemindServiceImpl.
+                newRemindService().getRemindById(1).getChatId();
+
         commands.putIfAbsent(chatId, new ArrayList<>());
         String stop;
-        if (!SendAnotherRemind.isStop()) {
+        String executeDate = telegramBot.hidenPackage.service.
+                RemindServiceImpl.newRemindService().getRemindById(1).getRemindDate();
             if (!lastCommand(chatId).equals("/done")) {
                 stop = "";
             } else stop = lastCommand(chatId);
-            this.sendAnotherRemind.send(stop);
+            if(executeDate.equals(SendRemind.currentDate())){
+            this.sendAnotherRemind.send(stop);}
         }
-
-    }
 }
 
 
