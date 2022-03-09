@@ -61,7 +61,7 @@ public class SendRemind {
         return ides;
     }
 
-    public void send() throws InterruptedException {
+    public void execute() throws InterruptedException {
         int[] remindId = getIdOfAllReminds();
         List<Remind> reminds = new ArrayList<>();
         for (int index = 0; index < remindId.length; index++) {
@@ -78,7 +78,7 @@ public class SendRemind {
             while (!(waitsExecuteReminds = RemindServiceImpl.newRemindService().
                     getAllExecutingRemindsByChatId(r.getDetails().getChatIdToSend())).isEmpty()) {
                 while (true) {
-                    if (execute(waitsExecuteReminds)) {
+                    if (send(waitsExecuteReminds)) {
                         break;
                     }
                 }
@@ -332,7 +332,7 @@ public class SendRemind {
 
     }
 
-    private boolean execute(final List<Remind> reminds) {
+    private boolean send(final List<Remind> reminds) {
         if (reminds.isEmpty()) return false;
 
         Remind remind = reminds.get(0);

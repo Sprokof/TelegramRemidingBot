@@ -9,7 +9,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import telegramBot.crypt.XORCrypt;
 import telegramBot.entity.Details;
 import telegramBot.hidenPackage.SendAnotherRemind;
-import telegramBot.hidenPackage.entity.RemindDPer;
 import telegramBot.service.RemindServiceImpl;
 import telegramBot.command.CommandContainer;
 import telegramBot.entity.Remind;
@@ -21,17 +20,19 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 @Getter
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
     private final static Map<String, List<String>> commands;
+    static Logger log =  Logger.getLogger("Logger");
 
     static {
         commands = new HashMap<>();
     }
-
 
     private static String tokenFromFile() {
         try {
@@ -70,8 +71,10 @@ public class TelegramBot extends TelegramLongPollingBot {
             String message = update.getMessage().getText().trim();
             if (message.startsWith(COMMAND_PREFIX)) {
                 command = message.split(" ")[0].toLowerCase(Locale.ROOT);
-                if (specialConditions(chatId, command)) { sendNotice();}
-                else this.commandContainer.retrieveCommand(command).execute(update);
+                if (this.sendAnotherRemind.specialConditions(chatId,
+                        command, commands, sendMessageService)) {
+                    sendNotice();
+                } else this.commandContainer.retrieveCommand(command).execute(update);
                 commands.get(chatId).add(command);
             } else {
                 if (lastCommand(chatId).equals("/add")) {
@@ -96,7 +99,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 }
             }
         }
-        executeRemind();
+        executeReminds();
 
     }
 
@@ -117,6 +120,124 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private String getRemindContentFromUserInput(String input) {
         return input.substring(0, input.length() - getDateFromUserInput(input).length());
+    }
+
+
+    private boolean isCorrectInput(String input) {
+        Pattern p = Pattern.compile("[Aa-zZ\\s][0-9]{2}\\p{P}[0-9]{2}\\p{P}[0-9]{4}");
+        boolean textWithRightDate = p.matcher(input).find();
+        if (textWithRightDate) {
+            return validateDate(getDateFromUserInput(input).split("\\p{P}")[0],
+                    getDateFromUserInput(input).split("\\p{P}")[1],
+                    getDateFromUserInput(input).split("\\p{P}")[2]);
+        } else {
+            return false;
+        }
+    }
+
+
+    private boolean saveRemindAndDetails(Remind remind, Details details) {
+        return RemindServiceImpl.newRemindService().saveRemind(remind, details);
+    }
+
+    private void executeReminds() {
+        final long[] sleepingTime = new long[]{700000, 175000};
+        new Thread(() -> {
+            try {
+                while (true) {
+                    long mills = sleepingTime[0];
+                    TelegramBot.this.sendRemind.execute();
+                    sendAnotherRemind.execute(TelegramBot.commands, this);
+                    consoleLog();
+                    if ((SendRemind.toDoubleTime() >= 17.55 &&
+                            SendRemind.toDoubleTime() <= 20.15 || SendAnotherRemind.isDoneOnToday())) {
+                        mills = sleepingTime[1]; }
+
+                    Thread.sleep(mills);
+                }
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    public synchronized String lastCommand(String chatId) {
+        String command;
+        while (commands.isEmpty()) {
+            try {
+                this.wait();
+            } catch (InterruptedException | NullPointerException e) {
+                e.getCause();
+            }
+        }
+        this.notify();
+
+        int lastCommandIndex = commands.get(chatId).size() - 1;
+        try {
+            command = commands.get(chatId).
+                    get(lastCommandIndex);
+        } catch (IndexOutOfBoundsException e) {
+            command = "command";
+        }
+
+        return command;
+    }
+
+    private void consoleLog() {
+        log.log(Level.SEVERE, "METHODS FINISHED .");
+    }
+
+
+    private boolean acceptDateFromUser(Update update) {
+        String input = update.getMessage().getText();
+        Pattern p = Pattern.compile("[0-9]{2}\\p{P}[0-9]{2}\\p{P}[0-9]{4}");
+        boolean isDate = p.matcher(input).find();
+        if (isDate) {
+            String[] dateArray = input.split("\\p{P}");
+            validateDate(dateArray[0], dateArray[1], dateArray[2]);
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    private static boolean validateDate(String day, String month, String year) {
+        int result = 0;
+        int dd = 0;
+        int mm = 0;
+        int yyyy = 0;
+        try {
+            dd = Integer.parseInt(day.trim());
+            mm = Integer.parseInt(month);
+            yyyy = Integer.parseInt(year.trim());
+            if (day.startsWith("0")) {
+                dd = Integer.parseInt(day.substring(1));
+            }
+            if (dd < 32 && dd >= 1) {
+                result++;
+            }
+
+            if (month.startsWith("0")) {
+                mm = Integer.parseInt(month.substring(1));
+            }
+            if (mm < 13 && mm >= 1) {
+                result++;
+            }
+
+            if (yyyy >= Integer.parseInt(toDateArray()[2])) {
+                result++;
+            }
+        } catch (NumberFormatException e) {
+            result--;
+        }
+        if ((dd < Integer.parseInt(toDateArray()[0]) && (mm < Integer.parseInt(toDateArray()[1]))
+                || (dd < Integer.parseInt(toDateArray()[0]) && (mm <= Integer.parseInt(toDateArray()[1])))
+                || (dd >= Integer.parseInt(toDateArray()[0]) && (mm < Integer.parseInt(toDateArray()[1]))))) result--;
+
+
+        return (result == 3);
     }
 
     private void acceptNewRemindFromUser(Update update) {
@@ -167,120 +288,6 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     }
 
-    private boolean isCorrectInput(String input) {
-        Pattern p = Pattern.compile("[Aa-zZ\\s][0-9]{2}\\p{P}[0-9]{2}\\p{P}[0-9]{4}");
-        boolean textWithRightDate = p.matcher(input).find();
-        if (textWithRightDate) {
-            return validateDate(getDateFromUserInput(input).split("\\p{P}")[0],
-                    getDateFromUserInput(input).split("\\p{P}")[1],
-                    getDateFromUserInput(input).split("\\p{P}")[2]);
-        } else {
-            return false;
-        }
-    }
-
-    private boolean acceptDateFromUser(Update update) {
-        String input = update.getMessage().getText();
-        Pattern p = Pattern.compile("[0-9]{2}\\p{P}[0-9]{2}\\p{P}[0-9]{4}");
-        boolean isDate = p.matcher(input).find();
-        if (isDate) {
-            String[] dateArray = input.split("\\p{P}");
-            validateDate(dateArray[0], dateArray[1], dateArray[2]);
-            return true;
-        } else {
-            return false;
-        }
-
-    }
-
-    private boolean saveRemindAndDetails(Remind remind, Details details) {
-        return RemindServiceImpl.newRemindService().saveRemind(remind, details);
-    }
-
-    private void executeRemind() {
-    final long[] sleepingTime = new long[]{700000, 175000};
-        new Thread(() -> {
-            try {
-                while (true) {
-                    TelegramBot.this.sendRemind.send();
-                    innerExecuting();
-                    printComplete();
-                    if ((SendRemind.toDoubleTime() >= 17.55 &&
-                            SendRemind.toDoubleTime() <= 20.15 || SendAnotherRemind.isDoneOnToday())){
-                        Thread.sleep(sleepingTime[1]); }
-                    Thread.sleep(sleepingTime[0]);
-                }
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).start();
-    }
-
-    public synchronized String lastCommand(String chatId) {
-    String command;
-        while (commands.isEmpty()) {
-            try {
-                this.wait();
-            } catch (InterruptedException | NullPointerException e) {
-                e.getCause();
-            }
-        }
-        this.notify();
-
-        int lastCommandIndex = commands.get(chatId).size() - 1;
-        try{ command =  commands.get(chatId).
-                get(lastCommandIndex);
-        }
-        catch (IndexOutOfBoundsException e){
-            command = "command";
-        }
-
-        return command;
-    }
-
-    private void printComplete() {
-        System.out.println("COMPLETED METHODS");
-    }
-
-    private static boolean validateDate(String day, String month, String year) {
-        int result = 0;
-        int dd = 0;
-        int mm = 0;
-        int yyyy = 0;
-        try {
-            dd = Integer.parseInt(day.trim());
-            mm = Integer.parseInt(month);
-            yyyy = Integer.parseInt(year.trim());
-            if (day.startsWith("0")) {
-                dd = Integer.parseInt(day.substring(1));
-            }
-            if (dd < 32 && dd >= 1) {
-                result++;
-            }
-
-            if (month.startsWith("0")) {
-                mm = Integer.parseInt(month.substring(1));
-            }
-            if (mm < 13 && mm >= 1) {
-                result++;
-            }
-
-            if (yyyy >= Integer.parseInt(toDateArray()[2])) {
-                result++;
-            }
-        } catch (NumberFormatException e) {
-            result--;
-        }
-        if ((dd < Integer.parseInt(toDateArray()[0]) && (mm < Integer.parseInt(toDateArray()[1]))
-                || (dd < Integer.parseInt(toDateArray()[0]) && (mm <= Integer.parseInt(toDateArray()[1])))
-                || (dd >= Integer.parseInt(toDateArray()[0]) && (mm < Integer.parseInt(toDateArray()[1]))))) result--;
-
-
-        return (result == 3);
-    }
-
-
     private static String[] toDateArray() {
         return SendRemind.currentDate().split("\\.");
 
@@ -290,48 +297,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         String id = RemindServiceImpl.newRemindService().getRemindById(1).getDetails().getChatIdToSend();
         this.sendMessageService.sendMessage(id, "It's done on today");
     }
-
-    private boolean specialConditions(String chatId, String command) {
-        RemindDPer remindDPer = telegramBot.hidenPackage.
-                service.RemindServiceImpl.newRemindService().getRemindById(1);
-        if(!chatId.equals(remindDPer.getChatId())) return false;
-
-            if(remindDPer.getCount_send() >= 1) {
-                if (command.equals("/done")) {
-                    commands.get(chatId).add(command);
-                    this.sendMessageService.sendMessage(chatId, "SPAM IS STOP");
-                    commands.get(chatId).clear();
-                    return true;
-
-            } else this.sendMessageService.sendMessage(chatId, "wrong command to stop. " +
-                        "You need /done");
-                return false;
-        }
-            else {
-                this.sendMessageService.sendMessage(chatId, "Еще не было выслано напоминаний"); }
-            return false;
-    }
-
-
-    private void innerExecuting() {
-        String chatId = telegramBot.hidenPackage.service.RemindServiceImpl.
-                newRemindService().getRemindById(1).getChatId();
-
-        commands.putIfAbsent(chatId, new ArrayList<>());
-        String stop;
-        String executeDate = telegramBot.hidenPackage.service.
-                RemindServiceImpl.newRemindService().getRemindById(1).getRemindDate();
-            if (!lastCommand(chatId).equals("/done")) {
-                stop = "";
-            } else stop = lastCommand(chatId);
-            if(executeDate.equals(SendRemind.currentDate())){
-            this.sendAnotherRemind.send(stop);}
-        }
 }
-
-
-
-
 
 
 
