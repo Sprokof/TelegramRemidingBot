@@ -7,18 +7,21 @@ import telegramBot.hidenPackage.service.RemindServiceImpl;
 import telegramBot.service.SendMessageService;
 import telegramBot.service.SendMessageServiceImpl;
 
-public class SendAnotherRemind {
+public class SendAnotherRemind  {
     private final SendMessageService service;
     @Getter
     private static boolean isStop = false;
+    @Getter
+    private RemindDPer per;
 
     @Autowired
     public SendAnotherRemind(SendMessageServiceImpl sendMessageService){
         this.service = sendMessageService;
+        this.per = RemindServiceImpl.newRemindService().getRemindById(1);
     }
 
     public void send(String stopCommand) {
-        RemindDPer remindDPer = RemindServiceImpl.newRemindService().getRemindById(1);
+        RemindDPer remindDPer = this.per;
         int countSendRemind = 0;
         while (isConditionsToSend(stopCommand)) {
             if (telegramBot.sendRemind.
@@ -38,7 +41,7 @@ public class SendAnotherRemind {
                 nextDate(remindDPer.getRemindDate().split(""));
 
         RemindServiceImpl.newRemindService().updateRemindDateField(remindDPer, nextDate);
-        RemindServiceImpl.newRemindService().updateLastSendTimeField(remindDPer,"18:00");
+        RemindServiceImpl.newRemindService().updateLastSendTimeField(remindDPer,"17:55");
         RemindServiceImpl.newRemindService().updateCountSendField(remindDPer, 0);
         SendAnotherRemind.isStop = false;
 
@@ -50,8 +53,7 @@ public class SendAnotherRemind {
         double time = Double.parseDouble(telegramBot.sendRemind.SendRemind.
                         currentTime().replace(':', '.'));
         boolean result = (time >= 18.00 && time <= 20.10 && !command.equals("/done"));
-        if(result) isStop = false;
-        isStop = true;
+        if(!result) isStop = true;
         return result;
 
     }

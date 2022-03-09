@@ -208,10 +208,10 @@ public class TelegramBot extends TelegramLongPollingBot {
                     TelegramBot.this.sendRemind.send();
                     innerExecuting();
                     printComplete();
-                    if (Double.parseDouble(SendRemind.currentTime().
-                            replace(':', '.')) >= 17.55) {
-                        Thread.sleep(sleepingTime[1]);
-                    }
+                    if ((SendRemind.toDoubleTime() >= 17.55 && SendRemind.toDoubleTime() <= 20.15) &&
+                            this.sendAnotherRemind.getPer().getRemindDate().
+                                    equals(SendRemind.currentDate())){
+                        Thread.sleep(sleepingTime[1]); }
                     Thread.sleep(sleepingTime[0]);
                 }
 
