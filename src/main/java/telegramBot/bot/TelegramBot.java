@@ -72,9 +72,8 @@ public class TelegramBot extends TelegramLongPollingBot {
             if (message.startsWith(COMMAND_PREFIX)) {
                 command = message.split(" ")[0].toLowerCase(Locale.ROOT);
                 if (this.sendAnotherRemind.specialConditions(chatId,
-                        command, commands, sendMessageService)) {
-                    sendNotice();
-                } else this.commandContainer.retrieveCommand(command).execute(update);
+                        command, commands, sendMessageService)) {   sendNotice(); }
+                else this.commandContainer.retrieveCommand(command).execute(update);
                 commands.get(chatId).add(command);
             } else {
                 if (lastCommand(chatId).equals("/add")) {
@@ -141,14 +140,16 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     private void executeReminds() {
-        final long[] sleepingTime = new long[]{700000, 175000};
+        final long[] sleepingTime = new long[]{700000, 270000};
+        String[] messages = {"METHODS STARTS .","METHODS FINISHED ."};
         new Thread(() -> {
             try {
                 while (true) {
                     long mills = sleepingTime[0];
+                    consoleLog(messages[0]); Thread.sleep(2700);
                     TelegramBot.this.sendRemind.execute();
                     sendAnotherRemind.execute(TelegramBot.commands, this);
-                    consoleLog();
+                    consoleLog(messages[1]);
                     if ((SendRemind.toDoubleTime() >= 17.55 &&
                             SendRemind.toDoubleTime() <= 20.15 || SendAnotherRemind.isDoneOnToday())) {
                         mills = sleepingTime[1]; }
@@ -184,8 +185,8 @@ public class TelegramBot extends TelegramLongPollingBot {
         return command;
     }
 
-    private void consoleLog() {
-        log.log(Level.SEVERE, "METHODS FINISHED .");
+    private void consoleLog(String message) {
+        log.log(Level.SEVERE, message);
     }
 
 
@@ -195,8 +196,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         boolean isDate = p.matcher(input).find();
         if (isDate) {
             String[] dateArray = input.split("\\p{P}");
-            validateDate(dateArray[0], dateArray[1], dateArray[2]);
-            return true;
+           return validateDate(dateArray[0], dateArray[1], dateArray[2]);
         } else {
             return false;
         }
@@ -295,7 +295,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private void sendNotice() {
         String id = RemindServiceImpl.newRemindService().getRemindById(1).getDetails().getChatIdToSend();
-        this.sendMessageService.sendMessage(id, "It's done on today");
+        this.sendMessageService.sendMessage(id, "status: is done .");
     }
 }
 
