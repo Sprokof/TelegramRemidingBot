@@ -113,8 +113,8 @@ public class SendRemind {
 
     public static String currentTime() {
         String[] calendarsParams = Calendar.getInstance().toString().split(",");
-        String hour; int minutes = Integer.parseInt(calendarsParams[24].
-                substring(calendarsParams[24].indexOf("=")+1));
+        String hour; String minutes = calendarsParams[24].
+                substring(calendarsParams[24].indexOf("=")+1);
 
         if (calendarsParams[21].equals("AM_PM=1")) {
             hour = String.valueOf(Integer.parseInt(calendarsParams[22].
@@ -123,6 +123,7 @@ public class SendRemind {
             hour = String.valueOf(Integer.parseInt(calendarsParams[22].
                     substring(calendarsParams[22].indexOf("=") + 1)));
         }
+        if(minutes.length() == 1) minutes = "0"+minutes;
         return String.format("%s:%s", hour, minutes);
     }
 
@@ -184,7 +185,7 @@ public class SendRemind {
         }
         notify();
 
-        int index = 2, count = 0;
+        int index = 0, count = 0;
         service.sendMessage(userChatId, "Через пару секунд пришлю напоминания на " + dayAndMonth(date));
         Thread.sleep(4700);
         String messageToSend = SHOW_MESSAGE;
