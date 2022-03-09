@@ -178,9 +178,8 @@ public class SendRemind {
     }
 
     public synchronized boolean showRemindsByDate(String userChatId, String date) throws InterruptedException {
-        List<Remind> reminds;
-        while ((reminds = RemindServiceImpl.
-                newRemindService().getAllRemindsFromDB()).isEmpty()) {
+        int[] remindsId;
+        while ((remindsId = getIdOfAllReminds()).length == 0 ) {
             wait();
         }
         notify();
@@ -189,8 +188,8 @@ public class SendRemind {
         service.sendMessage(userChatId, "Через пару секунд пришлю напоминания на " + dayAndMonth(date));
         Thread.sleep(4700);
         String messageToSend = SHOW_MESSAGE;
-        while (index != reminds.size()) {
-            Remind remind = reminds.get(index);
+        while (index != remindsId.length) {
+            Remind remind = RemindServiceImpl.newRemindService().getRemindById(remindsId[index]);
             String decrypt = XORCrypt.decrypt(XORCrypt.stringToIntArray(remind.
                     getEncryptedMaintenance()), remind.getKey());
             if ((remind.getDetails().getChatIdToSend().equals(userChatId) &&
