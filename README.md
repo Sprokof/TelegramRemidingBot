@@ -4,7 +4,7 @@
 ## Description
 
 LongPull telegram bot what implemenetion reminders fucntion. It's using Spring Boot, lombok library, PostgreSQL database, and Hibernate ORM.
-On screenshots a little under is showing prinpic of works main function. 
+On screenshots a little under is showing prinpic work main function. 
 ![c1UHJ3JD084](https://user-images.githubusercontent.com/90979711/155953533-aa7aaac6-96a3-46be-bb39-53dc021dea47.jpg)
 * screenshot 1 .
 
