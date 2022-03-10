@@ -358,8 +358,17 @@ public class SendRemind {
     }
 
     private boolean alreadyAddedRemind(Remind remind) {
-        return remind.getDetails().getLastSendTime().equals("-");
-    }
+        Remind remindRecipient = null;
+        if(remind.getDetails().getLastSendTime().equals("-")){
+            String chatId = remind.getDetails().getChatIdToSend();
+                    if(!RemindServiceImpl.newRemindService().getAllNotExecutingRemindsByChatId(chatId).isEmpty()){
+                        remindRecipient = RemindServiceImpl.newRemindService().
+                                getAllNotExecutingRemindsByChatId(chatId).get(0);}
+            if (remindRecipient != null) {
+            RemindServiceImpl.newRemindService().updateSendHourField(remind, remindRecipient.getDetails().getLastSendTime());}
+            return true;}
+        return false;
+        }
 
 
     private String detachMonthFromInputDate(String date){

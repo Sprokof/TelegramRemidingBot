@@ -109,7 +109,6 @@ public class RemindServiceImpl implements RemindService{
 
     @Override
     public List<Remind> getAllExecutingRemindsByChatId(String chatId) {
-
         List<Remind> reminds =
                 (ArrayList<Remind>) getAllRemindsFromDB().stream().filter((r) -> {
                             return r.getDetails().getChatIdToSend().equals(chatId) &&
@@ -122,8 +121,16 @@ public class RemindServiceImpl implements RemindService{
         return new ArrayList<>();
     }
 
-
+    @Override
+    public List<Remind> getAllNotExecutingRemindsByChatId(String chatId) {
+        return (ArrayList<Remind>) getAllRemindsFromDB().stream().filter((r) -> {
+                    return r.getDetails().getChatIdToSend().equals(chatId) &&
+                            r.getRemindDate().replaceAll("\\p{P}", "\\.").equals(SendRemind.currentDate()) &&
+                            r.getDetails().getTimeToSend().equals("false") && r.getDetails().getIsStop().equals("false");
+                }).
+                collect(Collectors.toList());
     }
+}
 
 
 
