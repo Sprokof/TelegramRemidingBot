@@ -182,7 +182,6 @@ public class SendRemind {
         while ((remindsId = getIdOfAllReminds()).length == 0 ) {
             wait();
         }
-        notify();
 
         int index = 0, count = 0;
         service.sendMessage(userChatId, "Через пару секунд пришлю напоминания на " + dayAndMonth(date));
