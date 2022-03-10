@@ -17,7 +17,7 @@ This bot may display existing reminds on input date .
 ![show](https://user-images.githubusercontent.com/90979711/157696885-b808e261-6d85-43f4-aca5-fd413a8d38db.jpg)
 * screenshot 3 .
 
-Reminding messages may be as stopped (screenshot 4) and also restarted (screenschot 5) .
+Reminding messages may be as stopped (screenshot 4) so also restarted (screenschot 5) .
 ![stop](https://user-images.githubusercontent.com/90979711/157694825-d1a5f987-e0a3-45aa-aef9-ca36dc4a158a.jpg)
 * screenshot 4 .
 
