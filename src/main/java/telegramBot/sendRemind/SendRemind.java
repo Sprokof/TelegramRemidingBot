@@ -366,7 +366,8 @@ public class SendRemind {
                                 getAllNotExecutingRemindsByChatId(chatId).get(0);}
             if (remindRecipient != null) {
             RemindServiceImpl.newRemindService().updateSendHourField(remind, remindRecipient.getDetails().getLastSendTime());}
-            return true;}
+            return true;
+        }
         return false;
         }
 
