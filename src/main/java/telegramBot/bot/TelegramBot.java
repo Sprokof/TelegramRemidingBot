@@ -53,6 +53,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final SendMessageServiceImpl sendMessageService;
     private final SendRemind sendRemind;
     private final SendAnotherRemind sendAnotherRemind;
+    private static final String[] messagesToLog = {"METHOD STARTS", "METHOD FINISHED"};
+
 
     public TelegramBot() {
         this.sendMessageService = new SendMessageServiceImpl(this);
@@ -98,8 +100,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 }
             }
         }
-        executeReminds();
-
+        executeReminds(); executeAnotherReminds();
     }
 
     private String getDateFromUserInput(String input) {
@@ -140,22 +141,14 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     private void executeReminds() {
-        final long[] sleepingTime = new long[]{700000, 270000};
-        final String[] messages = {"METHODS STARTS","METHODS FINISHED"};
         final long[] milliseconds = new long[2];
+        final long mills = 720000;
         new Thread(() -> {
             try {
                 while (true) {
-                    long mills = sleepingTime[0];
-                    consoleLog(messages[0], milliseconds, 0);
-                    Thread.sleep(1700);
+                    consoleLog(messagesToLog[0], milliseconds, 0);
                     TelegramBot.this.sendRemind.execute();
-                    sendAnotherRemind.execute(TelegramBot.commands, this);
-                    consoleLog(messages[1], milliseconds, 1);
-                    if ((SendRemind.toDoubleTime() >= 17.55 &&
-                            SendRemind.toDoubleTime() <= 20.15 || SendAnotherRemind.isDoneOnToday())) {
-                        mills = sleepingTime[1]; }
-
+                    consoleLog(messagesToLog[1], milliseconds, 1);
                     Thread.sleep(mills);
                 }
 
@@ -190,7 +183,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     private void consoleLog(String message, long[] aMills, int index) {
         aMills[index] = getMills();
         if(index == 1){
-            message = message +  " FOR "+ ((aMills[1] - aMills[0])-1700) +" MILLISECONDS"; }
+            message = message +  " FOR "+ (aMills[1] - aMills[0]) +" MILLISECONDS"; }
         log.log(Level.SEVERE, message);
     }
 
@@ -304,7 +297,22 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     private long getMills(){
-    return Calendar.getInstance().getTimeInMillis();
+
+        return Calendar.getInstance().getTimeInMillis();
+    }
+
+    private void executeAnotherReminds() {
+        long[] milliseconds = new long[2];
+        final long mills = 300000;
+        new Thread(()->{
+            while(true){
+                consoleLog(messagesToLog[0], milliseconds, 0);
+                TelegramBot.this.sendAnotherRemind.execute(commands, this);
+                consoleLog(messagesToLog[1], milliseconds, 1);
+            try{
+                Thread.sleep(mills);}
+            catch (InterruptedException e){ e.printStackTrace();}
+        }}).start();
     }
 }
 
