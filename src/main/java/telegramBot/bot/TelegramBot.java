@@ -306,13 +306,15 @@ public class TelegramBot extends TelegramLongPollingBot {
         final long mills = 300000;
         new Thread(()->{
             while(true){
+                SendAnotherRemind.changeFlag();
+            if(!SendAnotherRemind.isDoneOnToday()){
                 consoleLog(messagesToLog[0], milliseconds, 0);
                 TelegramBot.this.sendAnotherRemind.execute(commands, this);
                 consoleLog(messagesToLog[1], milliseconds, 1);
             try{
                 Thread.sleep(mills);}
             catch (InterruptedException e){ e.printStackTrace();}
-        }}).start();
+        }}}).start();
     }
 }
 

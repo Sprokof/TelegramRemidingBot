@@ -24,7 +24,7 @@ public class SendAnotherRemind  {
         this.service = sendMessageService;
     }
 
-    public void send(String stopCommand) {
+    private void send(String stopCommand) {
         RemindDPer remindDPer = RemindServiceImpl.newRemindService().getRemindById(1);
         if (isConditionsToSend(stopCommand)) {
             isDoneOnToday = false;
@@ -55,7 +55,7 @@ public class SendAnotherRemind  {
 
     }
 
-    public boolean isConditionsToSend(String command){
+    private boolean isConditionsToSend(String command){
         double time = SendRemind.toDoubleTime();
         return (time >= 18.00 && time <= 20.10 && !command.equals("/done"));
 
@@ -96,6 +96,13 @@ public class SendAnotherRemind  {
             stop = "";
         } else stop = bot.lastCommand(chatId);
         if(executeDate.equals(SendRemind.currentDate())){ send(stop);}
+    }
+
+    public static void changeFlag(){
+        if(!isDoneOnToday){
+            if(SendRemind.toDoubleTime() >= 20.15)
+            isDoneOnToday = true;
+        }
     }
 }
 
