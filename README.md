@@ -12,7 +12,7 @@ On screenshots a little under is showing prinpic work main function.
 * screenshot 2 .
 
 On current time it supporting once time reminders and also daily rate reminds. 
-This bot may display existing reminds on input date (screenshot 3).
+This bot may display existing reminds on input date .
 
 ![show](https://user-images.githubusercontent.com/90979711/157696885-b808e261-6d85-43f4-aca5-fd413a8d38db.jpg)
 * screenshot 3 .
