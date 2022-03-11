@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="43856064-b782-429c-a6db-3ed054bc481a" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../OtherFiles/BankApplication.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../SpringProjects/Bank/src/main/java/bank/service/ClientService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../SpringProjects/Scala/.idea/modules/Scala-build.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../SpringProjects/Scala/.idea/modules/Scala.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../SpringProjects/springMVC/.idea/springMVC.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Converter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ConverterTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Median.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MyLinkedList.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MyMap.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/.idea/compiler.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/.idea/dbnavigator.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/.idea/jarRepositories.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/.idea/libraries/ojdbc11_full.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/.idea/libraries/ojdbc11_full1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/.idea/uiDesigner.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/ReadMe.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/src/main/hibernate.cfg.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/src/main/java/com/spring5/bootstrap/BootStrapData.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/src/main/java/com/spring5/controllers/BookController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/src/main/java/com/spring5/domain/Author.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/src/main/java/com/spring5/domain/Book.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/src/main/java/com/spring5/domain/JettyConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/src/main/java/com/spring5/domain/Publisher.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/src/main/java/com/spring5/repositories/AuthorRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/src/main/java/com/spring5/repositories/BookRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/src/main/java/com/spring5/repositories/PublisherRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/src/main/java/com/spring5/repositories/Spring5webApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/src/main/resources/log4j2.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/src/main/resources/templates.books/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/com/spring5/bootstrap/BootStrapData.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/com/spring5/controllers/BookController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/com/spring5/domain/Author.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/com/spring5/domain/Book.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/com/spring5/domain/JettyConfig.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/com/spring5/domain/Publisher.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/com/spring5/repositories/AuthorRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/com/spring5/repositories/BookRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/com/spring5/repositories/PublisherRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/com/spring5/repositories/Spring5webApplication.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/log4j2.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/templates.books/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/hidenPackage/SendAnotherRemind.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/hidenPackage/SendAnotherRemind.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/hidenPackage/entity/RemindDPer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/hidenPackage/entity/RemindDPer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/hidenPackage/service/RemindService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/hidenPackage/service/RemindService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/hidenPackage/service/RemindServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/hidenPackage/service/RemindServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sql-exm/ex1.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sql-exm/hr4.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sql-exm/hr7.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sql-exm/hw(4).sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sql-exm/hw10.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sql-exm/hw11.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sql-exm/hw12.1.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sql-exm/hw12.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sql-exm/hw2.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sql-exm/hw3.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sql-exm/hw5.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sql-exm/hw6.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sql-exm/hw7.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sql-exm/hw9_with _logic_operator.sql" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeStyleSettingsInfer">
+    <option name="done" value="true" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Enum" />
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="ProjectCodeStyleSettingsMigration">
+    <option name="version" value="2" />
+  </component>
+  <component name="ProjectId" id="21tur4tK7haLk8zFgHK5Lt3XTlp" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="autoscrollToSource" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Twister" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="settings.editor.selected.configurable" value="preferences.fileTypes" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Projects\Tbot\src\main\resources" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.BotApplication">
+    <configuration name="BotApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="telegramBot.BotApplication" />
+      <module name="Tbot" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="telegramBot.entity.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SendRemindTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Tbot" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="SendRemindTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SendRemindTest.toNextMonth" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Tbot" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="SendRemindTest" />
+      <option name="METHOD_NAME" value="toNextMonth" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ValidateTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Tbot" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="ValidateTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="XORCryptTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Tbot" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="XORCryptTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.BotApplication" />
+        <item itemvalue="JUnit.XORCryptTest" />
+        <item itemvalue="JUnit.ValidateTest" />
+        <item itemvalue="JUnit.SendRemindTest.toNextMonth" />
+        <item itemvalue="JUnit.SendRemindTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="43856064-b782-429c-a6db-3ed054bc481a" name="Default Changelist" comment="" />
+      <created>1638772906906</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1638772906906</updated>
+      <workItem from="1643278922298" duration="7359000" />
+      <workItem from="1643338049254" duration="32031000" />
+      <workItem from="1643883569725" duration="21331000" />
+      <workItem from="1644418359487" duration="54832000" />
+      <workItem from="1645081485786" duration="40025000" />
+      <workItem from="1645721681642" duration="43927000" />
+      <workItem from="1645823023756" duration="113701000" />
+      <workItem from="1646555590474" duration="17636000" />
+      <workItem from="1646742306953" duration="1342000" />
+      <workItem from="1646750772617" duration="49133000" />
+      <workItem from="1646909311435" duration="14897000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="se.expertsystem.intellij.aop.aspectj.AspectJProjectComponent">
+    <setting name="isActivated" value="false" />
+  </component>
+</project>
