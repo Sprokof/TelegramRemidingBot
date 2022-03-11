@@ -18,11 +18,6 @@ public class RemindServiceImpl implements RemindService {
 
     }
 
-    @Override
-    public boolean updateLastSendTimeField(RemindDPer remindDPer, String time) {
-        remindDPer.setLastSendTime(time);
-        return this.remindDAO.updateRemind(remindDPer);
-    }
 
     @Override
     public boolean updateRemindDateField(RemindDPer remindDPer, String nextDate) {

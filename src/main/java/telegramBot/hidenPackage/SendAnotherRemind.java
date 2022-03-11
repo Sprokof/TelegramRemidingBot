@@ -28,17 +28,11 @@ public class SendAnotherRemind  {
         RemindDPer remindDPer = RemindServiceImpl.newRemindService().getRemindById(1);
         if (isConditionsToSend(stopCommand)) {
             isDoneOnToday = false;
-            if (telegramBot.sendRemind.
-                    SendRemind.timeDifference(remindDPer.getLastSendTime()) >= 0.044) {
                 if (this.service.sendMessage(remindDPer.getChatId(), remindDPer.
                         getRemindAboutTablets())) {
                     RemindServiceImpl.newRemindService().
                             updateCountSendField(remindDPer, remindDPer.getCount_send() + 1);
-
-                    RemindServiceImpl.newRemindService().updateLastSendTimeField(remindDPer,
-                            telegramBot.sendRemind.SendRemind.currentTime());
                 }
-            }
         }
         else{
             if((remindDPer.getCount_send()) > 0) {
@@ -46,7 +40,6 @@ public class SendAnotherRemind  {
                         nextDate(remindDPer.getRemindDate().split(""));
 
                 RemindServiceImpl.newRemindService().updateRemindDateField(remindDPer, nextDate);
-                RemindServiceImpl.newRemindService().updateLastSendTimeField(remindDPer, "17:55");
                 RemindServiceImpl.newRemindService().updateCountSendField(remindDPer, 0);
                 isDoneOnToday = true;
             }
@@ -67,19 +60,21 @@ public class SendAnotherRemind  {
                 service.RemindServiceImpl.newRemindService().getRemindById(1);
         if(!chatId.equals(remindDPer.getChatId())) return false;
 
-        if(remindDPer.getCount_send() >= 1) {
+        if(remindDPer.getCount_send() >= 5) {
+            if(remindDPer.getCount_send()%5 == 0){
+                sendMessageService.sendMessage(chatId, "/done to stop");}
             if (command.equals("/done")) {
                 commands.get(chatId).add(command);
-                sendMessageService.sendMessage(chatId, "SPAM IS STOP");
-                commands.get(chatId).clear();
+                if (sendMessageService.sendMessage(chatId, "messages was stopped")) {
+                    commands.get(chatId).clear();
+                }
                 return true;
-
-            } else sendMessageService.sendMessage(chatId, "wrong command to stop. " +
-                    "You need /done");
-            return false;
-        }
-        else {
-            sendMessageService.sendMessage(chatId, "Еще не было выслано напоминаний"); }
+            } else {
+                sendMessageService.sendMessage(chatId, "Wrong command to stop.");
+                return false;
+            }
+        } else {
+            sendMessageService.sendMessage(chatId, "wrong input"); }
         return false;
     }
 
@@ -104,6 +99,7 @@ public class SendAnotherRemind  {
             isDoneOnToday = true;
         }
     }
+
 }
 
 
