@@ -1,9 +1,10 @@
 package telegramBot.service;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import telegramBot.bot.TelegramBot;
 
@@ -11,6 +12,8 @@ import telegramBot.bot.TelegramBot;
 @Component
 public class SendMessageServiceImpl implements SendMessageService{
     private final TelegramBot telegramBot;
+    @Getter
+    private static Integer messageId;
 
     @Autowired
     public SendMessageServiceImpl(TelegramBot telegramBot){
@@ -24,11 +27,13 @@ public class SendMessageServiceImpl implements SendMessageService{
         sendMessage.enableHtml(true);
         sendMessage.setText(message);
 
+
     try{
-        telegramBot.execute(sendMessage);}
+        messageId = telegramBot.execute(sendMessage).getMessageId();}
     catch (TelegramApiException e){
     return false;}
     return true;}
+
     }
 
 

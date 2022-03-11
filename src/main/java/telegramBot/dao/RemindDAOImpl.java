@@ -11,7 +11,7 @@ import telegramBot.entity.Remind;
 
 @NoArgsConstructor
 @Component
-public class RemindDAOImpl implements DAO {
+public class RemindDAOImpl implements RemindDAO {
     @Getter
     private final SessionFactory sessionFactory = new Configuration().
             configure("hibernate.cfg.xml").addAnnotatedClass(Remind.class).

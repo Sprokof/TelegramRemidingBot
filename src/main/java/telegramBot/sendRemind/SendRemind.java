@@ -4,7 +4,9 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import telegramBot.crypt.XORCrypt;
+import telegramBot.entity.Message;
 import telegramBot.entity.Remind;
+import telegramBot.service.DeleteMessageServiceImpl;
 import telegramBot.service.RemindServiceImpl;
 import telegramBot.service.SendMessageService;
 import telegramBot.service.SendMessageServiceImpl;
@@ -14,6 +16,7 @@ import java.util.*;
 @Component
 public class SendRemind {
     public static final HashMap<String, String> lastDayInMonth = new HashMap<>();
+    public static final HashMap<String, List<Message>> messagesToDelete;
 
     static {
         lastDayInMonth.put("01", "31.01");
@@ -28,16 +31,21 @@ public class SendRemind {
         lastDayInMonth.put("10", "31.10");
         lastDayInMonth.put("11", "30.11");
         lastDayInMonth.put("12", "31.12");
+
+        messagesToDelete = new HashMap<>();
+
     }
 
     private SendMessageServiceImpl service;
+    private DeleteMessageServiceImpl deleteService;
     @Getter
     private static final String REMIND_MESSAGE = "Позвольте напомнить, что вам следует ";
     private static final String SHOW_MESSAGE = "На эту дату есть следующие записи:\n";
 
     @Autowired
-    public SendRemind(SendMessageService service) {
+    public SendRemind(SendMessageService service, DeleteMessageServiceImpl deleteService) {
         this.service = (SendMessageServiceImpl) service;
+        this.deleteService = deleteService;
     }
 
     private synchronized int[] getIdOfAllReminds() throws InterruptedException {
@@ -227,6 +235,7 @@ public class SendRemind {
                     int id = getIdOfRemind(remind);
                     RemindServiceImpl.newRemindService().deleteRemind(id);
                 }
+
             }
         return messageToSend;
     }
@@ -348,6 +357,15 @@ public class SendRemind {
            reminds.clear();
                 this.service.sendMessage(chatId, maintenance);
                 }
+
+            if(messagesToDelete.containsKey(chatId)){
+                 messagesToDelete.get(chatId).add(new Message(chatId, SendMessageServiceImpl.
+                    getMessageId()));}
+            else{
+                List<Message> messages = new ArrayList<>(); messages.add(new Message(chatId,
+                            SendMessageServiceImpl.getMessageId()));
+                messagesToDelete.put(chatId, messages);
+        }
         return true; }
 
 
@@ -420,7 +438,14 @@ public class SendRemind {
        return Double.parseDouble(SendRemind.currentTime().replace(':', '.'));
     }
 
+    private void deleteMessage(Remind remind){
+        List<Message> messages = messagesToDelete.get(remind.getDetails().getChatIdToSend());
+        for(Message message : messages){
+            this.deleteService.deleteMessage(message.getChatId(), message.getMessageId());
+        }
+        }
 }
+
 
 
 
