@@ -32,7 +32,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     static {
         commands = new HashMap<>();
     }
-    
+
     @Value("${bot.username}")
     private String botUsername;
     @Value("${bot.token}")
