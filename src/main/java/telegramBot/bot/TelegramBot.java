@@ -32,21 +32,11 @@ public class TelegramBot extends TelegramLongPollingBot {
     static {
         commands = new HashMap<>();
     }
-
-    private static String tokenFromFile() {
-        try {
-            return new BufferedReader(new InputStreamReader(
-                    new FileInputStream("C:/Users/user/Desktop/token.txt"))).readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
+    
     @Value("${bot.username}")
     private String botUsername;
     @Value("${bot.token}")
-    private final String botToken = tokenFromFile();
+    private String botToken;
     private final String COMMAND_PREFIX = "/";
     private final CommandContainer commandContainer;
     @Getter
