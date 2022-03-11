@@ -17,12 +17,12 @@ public class StartCommand implements Command{
 
     @Override
     public boolean execute(Update update) {
-        counter++;
+        counter ++;
         this.sendMessageService.sendMessage(update.getMessage().getChatId().toString(),
                 START_COMMAND);
-        if(counter>0){
+        if(counter > 0){
             START_COMMAND = "Команда уже была запущена ранее";}
-        counter=1;
+        counter = 1 ;
         return true;
     }}
 

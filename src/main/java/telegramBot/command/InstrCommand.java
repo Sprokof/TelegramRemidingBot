@@ -16,8 +16,8 @@ public class InstrCommand implements Command{
 
     @Override
     public boolean execute(Update update) {
-        sendMessageService.sendMessage(update.getMessage().getChatId().toString(), INSTR_COMMAND);
-        return true;
+     return this.sendMessageService.sendMessage(update.getMessage().getChatId().toString(), INSTR_COMMAND);
+
 
     }
 }
