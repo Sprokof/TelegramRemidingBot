@@ -55,10 +55,10 @@
       <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/com/spring5/repositories/Spring5webApplication.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/log4j2.properties" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/templates.books/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/hidenPackage/SendAnotherRemind.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/hidenPackage/SendAnotherRemind.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/hidenPackage/entity/RemindDPer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/hidenPackage/entity/RemindDPer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/hidenPackage/service/RemindService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/hidenPackage/service/RemindService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/hidenPackage/service/RemindServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/hidenPackage/service/RemindServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/bot/TelegramBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/bot/TelegramBot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/hibernate.cfg.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/hibernate.cfg.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/ex1.sql" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/hr4.sql" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/hr7.sql" beforeDir="false" />
@@ -114,6 +114,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_MARK_IGNORED_FILES_AS_EXCLUDED" value="true" />
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
@@ -128,6 +129,7 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Projects\Tbot\.idea" />
       <recent name="C:\Projects\Tbot\src\main\resources" />
     </key>
   </component>
@@ -210,7 +212,7 @@
       <workItem from="1646555590474" duration="17636000" />
       <workItem from="1646742306953" duration="1342000" />
       <workItem from="1646750772617" duration="49133000" />
-      <workItem from="1646909311435" duration="14897000" />
+      <workItem from="1646909311435" duration="18870000" />
     </task>
     <servers />
   </component>

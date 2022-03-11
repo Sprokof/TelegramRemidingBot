@@ -8,7 +8,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import telegramBot.crypt.XORCrypt;
 import telegramBot.entity.Details;
-import telegramBot.hidenPackage.SendAnotherRemind;
 import telegramBot.service.RemindServiceImpl;
 import telegramBot.command.CommandContainer;
 import telegramBot.entity.Remind;
@@ -46,13 +45,13 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @Value("${bot.username}")
     private String botUsername;
+    @Value("${bot.token}")
     private final String botToken = tokenFromFile();
     private final String COMMAND_PREFIX = "/";
     private final CommandContainer commandContainer;
     @Getter
     private final SendMessageServiceImpl sendMessageService;
     private final SendRemind sendRemind;
-    private final SendAnotherRemind sendAnotherRemind;
     private static final String[] messagesToLog = {"METHOD STARTS", "METHOD FINISHED"};
 
 
@@ -60,7 +59,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.sendMessageService = new SendMessageServiceImpl(this);
         this.commandContainer = new CommandContainer(sendMessageService);
         this.sendRemind = new SendRemind(sendMessageService);
-        this.sendAnotherRemind = new SendAnotherRemind(sendMessageService);
     }
 
     @Override
@@ -73,9 +71,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             String message = update.getMessage().getText().trim();
             if (message.startsWith(COMMAND_PREFIX)) {
                 command = message.split(" ")[0].toLowerCase(Locale.ROOT);
-                if (this.sendAnotherRemind.specialConditions(chatId,
-                        command, commands, sendMessageService)) {   sendNotice(); }
-                else this.commandContainer.retrieveCommand(command).execute(update);
+                this.commandContainer.retrieveCommand(command).execute(update);
                 commands.get(chatId).add(command);
             } else {
                 if (lastCommand(chatId).equals("/add")) {
@@ -100,7 +96,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 }
             }
         }
-        executeReminds(); executeAnotherReminds();
+        executeReminds();
     }
 
     private String getDateFromUserInput(String input) {
@@ -291,31 +287,10 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     }
 
-    private void sendNotice() {
-        String id = RemindServiceImpl.newRemindService().getRemindById(1).getDetails().getChatIdToSend();
-        this.sendMessageService.sendMessage(id, "status: is done .");
-    }
-
     private long getMills(){
-
         return Calendar.getInstance().getTimeInMillis();
     }
 
-    private void executeAnotherReminds() {
-        long[] milliseconds = new long[2];
-        final long mills = 300000;
-        new Thread(()->{
-            while(true){
-                SendAnotherRemind.changeFlag();
-            if(!SendAnotherRemind.isDoneOnToday()){
-                consoleLog(messagesToLog[0], milliseconds, 0);
-                TelegramBot.this.sendAnotherRemind.execute(commands, this);
-                consoleLog(messagesToLog[1], milliseconds, 1);
-            try{
-                Thread.sleep(mills);}
-            catch (InterruptedException e){ e.printStackTrace();}
-        }}}).start();
-    }
 }
 
 
