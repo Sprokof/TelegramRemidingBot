@@ -1,2 +1,2 @@
-.../src/java/telegramBot/hidenPackage
-../src/main/resources
+../src/main/resources/application.properties
+../src/main/resources/hibernate.cfg.xml
