@@ -47,8 +47,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     public TelegramBot() {
         this.sendMessageService = new SendMessageServiceImpl(this);
         this.commandContainer = new CommandContainer(sendMessageService);
-        this.sendRemind = new SendRemind(sendMessageService);
         this.deleteMessageService = new DeleteMessageServiceImpl(this);
+        this.sendRemind = new SendRemind(sendMessageService, deleteMessageService);
     }
 
     @Override
