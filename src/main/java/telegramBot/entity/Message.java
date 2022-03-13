@@ -11,12 +11,15 @@ import javax.persistence.*;
 @Setter
 @Entity
 @NoArgsConstructor
+@Table(name = "MESSAGES")
 public class Message{
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(name = "CHAT_ID")
     private  String chatId;
+    @Column(name = "MESSAGE_ID")
     private Integer messageId;
-
 
     public Message(String chatId, Integer messageId){
         this.messageId = messageId;

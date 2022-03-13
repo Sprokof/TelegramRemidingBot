@@ -8,7 +8,9 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import telegramBot.crypt.XORCrypt;
 import telegramBot.entity.Details;
+import telegramBot.entity.Message;
 import telegramBot.service.DeleteMessageServiceImpl;
+import telegramBot.service.MessageServiceImpl;
 import telegramBot.service.RemindServiceImpl;
 import telegramBot.command.CommandContainer;
 import telegramBot.entity.Remind;
@@ -86,7 +88,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 }
             }
         }
-        executeReminds();
+        executeReminds(); executeDeleteMessages();
     }
 
     private String getDateFromUserInput(String input) {
@@ -282,6 +284,22 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private long getMills(){
         return Calendar.getInstance().getTimeInMillis();
+    }
+
+
+    private void executeDeleteMessages() {
+        new Thread(() -> {
+            List<Message> messages;
+            while (true) {
+                if (SendRemind.toDoubleTime() >= 23.00 && SendRemind.toDoubleTime() <= 1.05) {
+                    messages = MessageServiceImpl.newMessageService().getAllMessages();
+                   messages.forEach((m) -> {
+                        this.deleteMessageService.deleteMessage(m.getChatId(), m.getMessageId());
+                    });
+                    MessageServiceImpl.newMessageService().deleteAllMessages();
+                }
+            }
+        }).start();
     }
 
 }

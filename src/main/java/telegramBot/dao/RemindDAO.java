@@ -1,10 +1,11 @@
 package telegramBot.dao;
 
+import telegramBot.entity.Details;
 import telegramBot.entity.Remind;
 
 public interface RemindDAO {
-    boolean save(Object obj1, Object obj2);
+    boolean save(Remind remind , Details details);
     Object getObjectByID(int id);
     boolean deleteByID(int id);
-    boolean update(Object obj);
+    boolean update(Remind remind);
 }

@@ -6,17 +6,13 @@ import org.springframework.stereotype.Component;
 import telegramBot.crypt.XORCrypt;
 import telegramBot.entity.Message;
 import telegramBot.entity.Remind;
-import telegramBot.service.DeleteMessageServiceImpl;
-import telegramBot.service.RemindServiceImpl;
-import telegramBot.service.SendMessageService;
-import telegramBot.service.SendMessageServiceImpl;
+import telegramBot.service.*;
 
 import java.util.*;
 
 @Component
 public class SendRemind {
     public static final HashMap<String, String> lastDayInMonth = new HashMap<>();
-    public static final HashMap<String, List<Message>> messagesToDelete;
 
     static {
         lastDayInMonth.put("01", "31.01");
@@ -32,7 +28,7 @@ public class SendRemind {
         lastDayInMonth.put("11", "30.11");
         lastDayInMonth.put("12", "31.12");
 
-        messagesToDelete = new HashMap<>();
+
 
     }
 
@@ -135,7 +131,8 @@ public class SendRemind {
         return String.format("%s:%s", hour, minutes);
     }
 
-    public static String nextDate(String[] thisDate) {
+    public static String nextDate(String date) {
+        String[] thisDate = date.split("");
         String nextDate = String.format(thisDate[0] + "%d" + thisDate[2] +
                 "" + thisDate[3] + "" + thisDate[4] + "" + thisDate[5] + "" +
                 thisDate[6] + "" + thisDate[7] + "" + thisDate[8] + "" + thisDate[9], Integer.parseInt(thisDate[1]) + 1);
@@ -228,7 +225,7 @@ public class SendRemind {
         updateRemindFieldsToNextSendTime(remind, remind.getDetails().getCountSendOfRemind()+1);
             if(remind.getDetails().getCountSendOfRemind() == 3){
                 if(isContainsDailySendMarker(decrypt)){
-                    String date = nextDate(remind.getRemindDate().split(""));
+                    String date = nextDate(remind.getRemindDate());
                     updateRemindFieldsToNextDay(remind, date);
                 }
                 else {
@@ -273,7 +270,7 @@ public class SendRemind {
 
             if ((isContainsDailySendMarker(decrypted))) {
                 if (remind.getDetails().getCountSendOfRemind() == 3) {
-                    String date = nextDate(reminds[i].getRemindDate().split(""));
+                    String date = nextDate(reminds[i].getRemindDate());
                     updateRemindFieldsToNextDay(reminds[i], date);
                 }
             } else {
@@ -307,7 +304,7 @@ public class SendRemind {
                     getEncryptedMaintenance()), remind.getKey());
 
             if (isContainsDailySendMarker(decrypt)) {
-                String date = nextDate(remind.getRemindDate().split(""));
+                String date = nextDate(remind.getRemindDate());
                 updateRemindFieldsToNextDay(remind, date);
             } else {
                 RemindServiceImpl.newRemindService().deleteRemind(index);
@@ -332,7 +329,7 @@ public class SendRemind {
     private void deleteNotUpdatedRemind() {
         List<Remind> reminds = RemindServiceImpl.newRemindService().getAllRemindsFromDB();
         reminds.forEach((r) -> {
-            if (nextDate(r.getRemindDate().split("")).equals(currentDate())) {
+            if (nextDate(r.getRemindDate()).equals(currentDate())) {
                 int id = getIdOfRemind(r);
                 RemindServiceImpl.newRemindService().deleteRemind(id);
             }
@@ -358,14 +355,9 @@ public class SendRemind {
                 this.service.sendMessage(chatId, maintenance);
                 }
 
-            if(messagesToDelete.containsKey(chatId)){
-                 messagesToDelete.get(chatId).add(new Message(chatId, SendMessageServiceImpl.
-                    getMessageId()));}
-            else{
-                List<Message> messages = new ArrayList<>(); messages.add(new Message(chatId,
-                            SendMessageServiceImpl.getMessageId()));
-                messagesToDelete.put(chatId, messages);
-        }
+        MessageServiceImpl.newMessageService().save(new Message(chatId, SendMessageServiceImpl.
+                getMessageId()));
+
         return true; }
 
 
@@ -438,12 +430,6 @@ public class SendRemind {
        return Double.parseDouble(SendRemind.currentTime().replace(':', '.'));
     }
 
-    private void deleteMessage(Remind remind){
-        List<Message> messages = messagesToDelete.get(remind.getDetails().getChatIdToSend());
-        for(Message message : messages){
-            this.deleteService.deleteMessage(message.getChatId(), message.getMessageId());
-        }
-        }
 }
 
 

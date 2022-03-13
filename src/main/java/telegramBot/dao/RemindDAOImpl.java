@@ -34,9 +34,8 @@ public class RemindDAOImpl implements RemindDAO {
     return true;}
 
     @Override
-    public boolean save(Object obj1, Object obj2) {
-        Remind remind = (Remind) obj1;
-        remind.setDetails((Details) obj2);
+    public boolean save(Remind remind, Details details) {
+        remind.setDetails(details);
         Session session;
         try{
             session = this.sessionFactory.getCurrentSession();
@@ -50,12 +49,12 @@ public class RemindDAOImpl implements RemindDAO {
         return true;}
 
     @Override
-    public boolean update(Object o) {
+    public boolean update(Remind remind) {
         Session session;
         try{
             session = this.sessionFactory.getCurrentSession();
             session.beginTransaction();
-            session.update((Remind) o);
+            session.update(remind);
             session.getTransaction().commit();}
         catch (Exception e){
             e.printStackTrace();}
