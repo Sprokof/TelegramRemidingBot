@@ -20,8 +20,8 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void deleteAllMessages() {
-        this.messageDAO.deleteAllMessages();
+    public void deleteMessage(Message message) {
+        this.messageDAO.deleteMessage(message);
     }
 
 

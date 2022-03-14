@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface MessageService {
     void save(Message message);
-    void deleteAllMessages();
+    void deleteMessage(Message message);
     List<Message> getAllMessages();
 }

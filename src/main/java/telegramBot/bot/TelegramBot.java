@@ -43,7 +43,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final SendMessageServiceImpl sendMessageService;
     private final SendRemind sendRemind;
     private DeleteMessageServiceImpl deleteMessageService;
-    private static final String[] messagesToLog = {"METHOD STARTS", "METHOD FINISHED"};
+    private static final String[] messagesToLog = {"METHOD %s STARTS", "METHOD %s FINISHED"};
 
 
     public TelegramBot() {
@@ -88,7 +88,8 @@ public class TelegramBot extends TelegramLongPollingBot {
                 }
             }
         }
-        executeReminds(); executeDeleteMessages();
+        executeReminds();
+        executeDeleteMessages();
     }
 
     private String getDateFromUserInput(String input) {
@@ -134,9 +135,9 @@ public class TelegramBot extends TelegramLongPollingBot {
         new Thread(() -> {
             try {
                 while (true) {
-                    consoleLog(messagesToLog[0], milliseconds, 0);
+                    consoleLog(messagesToLog[0], "executeReminds", milliseconds, 0);
                     TelegramBot.this.sendRemind.execute();
-                    consoleLog(messagesToLog[1], milliseconds, 1);
+                    consoleLog(messagesToLog[1], "executeReminds", milliseconds, 1);
                     Thread.sleep(mills);
                 }
 
@@ -147,31 +148,23 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     public synchronized String lastCommand(String chatId) {
-        String command;
-        while (commands.isEmpty()) {
+        while (commands.isEmpty() || commands.get(chatId).isEmpty()) {
             try {
                 this.wait();
             } catch (InterruptedException | NullPointerException e) {
                 e.getCause();
             }
         }
-        this.notify();
 
-        int lastCommandIndex = commands.get(chatId).size() - 1;
-        try {
-            command = commands.get(chatId).
-                    get(lastCommandIndex);
-        } catch (IndexOutOfBoundsException e) {
-            command = "command";
-        }
-
-        return command;
+        int lastIndex = commands.get(chatId).size() - 1;
+        return commands.get(chatId).get(lastIndex);
     }
 
-    private void consoleLog(String message, long[] aMills, int index) {
+    private void consoleLog(String message, String methodName, long[] aMills, int index) {
+        message = String.format(message, methodName);
         aMills[index] = getMills();
         if(index == 1){
-            message = message +  " FOR "+ (aMills[1] - aMills[0]) +" MILLISECONDS"; }
+            message = message +  " FOR \n "+ (aMills[1] - aMills[0]) +" MILLISECONDS"; }
         log.log(Level.SEVERE, message);
     }
 
@@ -288,16 +281,21 @@ public class TelegramBot extends TelegramLongPollingBot {
 
 
     private void executeDeleteMessages() {
+        final long[] milliseconds = new long[2];
         new Thread(() -> {
-            List<Message> messages;
             while (true) {
-                if (SendRemind.toDoubleTime() >= 23.00 && SendRemind.toDoubleTime() <= 1.05) {
-                    messages = MessageServiceImpl.newMessageService().getAllMessages();
-                   messages.forEach((m) -> {
-                        this.deleteMessageService.deleteMessage(m.getChatId(), m.getMessageId());
-                    });
-                    MessageServiceImpl.newMessageService().deleteAllMessages();
+                List<Message> messages = MessageServiceImpl.newMessageService().getAllMessages();
+                consoleLog(messagesToLog[0], "executeDeleteMessages", milliseconds, 0);
+                if (SendRemind.toDoubleTime() >= 23.00 && !messages.isEmpty()){
+                messages.forEach((m)->{
+                    this.deleteMessageService.deleteMessage(m.getChatId(), m.getMessageId());
+                    MessageServiceImpl.newMessageService().deleteMessage(m);
+                });
                 }
+                consoleLog(messagesToLog[1],"executeDeleteMessages", milliseconds, 1);
+            try{
+                Thread.sleep(150000);}
+            catch (InterruptedException e){e.printStackTrace();}
             }
         }).start();
     }

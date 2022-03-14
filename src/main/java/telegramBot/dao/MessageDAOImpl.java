@@ -29,12 +29,12 @@ public class MessageDAOImpl implements MessageDAO{
     }
 
     @Override
-    public void deleteAllMessages() {
+    public void deleteMessage(Message message) {
         Session session;
     try{
         session = this.sessionFactory.getCurrentSession();
         session.beginTransaction();
-        session.createSQLQuery("DELETE FROM MESSAGES");
+        session.delete(message);
         session.getTransaction().commit();}
     catch (Exception e){ e.printStackTrace(); }
     finally {
@@ -48,14 +48,15 @@ public class MessageDAOImpl implements MessageDAO{
     try{
         session = this.sessionFactory.getCurrentSession();
         session.beginTransaction();
-        tempList = session.createSQLQuery("SELECT * FROM MESSAGES").list();
+        tempList = session.createSQLQuery("SELECT * FROM MESSAGES").
+                addEntity(Message.class).list();
         session.getTransaction().commit();}
     catch (Exception e){ e.getCause();}
     finally{
         this.sessionFactory.close();}
     List<Message> messages = new ArrayList<>();
-    for(Object o: tempList){
-        messages.add((Message) o);
+        for(Iterator<?> it = tempList.iterator(); it.hasNext();){
+            messages.add((Message) it.next());
     }
     return messages;
     }
