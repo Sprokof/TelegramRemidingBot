@@ -11,6 +11,7 @@ Work of this bot demonstrates next GIF-animation
 
 User's input maybye not right. To correct work it's implementing input's validate and send appropriate response . Example:
 
-![botGif2](https://user-images.githubusercontent.com/90979711/158226292-1fc5f38c-5d07-43bc-97f8-e64a292aac27.gif)
+![botGif2](https://user-images.githubusercontent.com/90979711/158227397-93380217-99e6-4abd-95eb-e2326dfcbe3e.gif)
+
 
 ## Builds
