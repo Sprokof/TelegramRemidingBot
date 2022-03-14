@@ -43,7 +43,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final SendMessageServiceImpl sendMessageService;
     private final SendRemind sendRemind;
     private DeleteMessageServiceImpl deleteMessageService;
-    private static final String[] messagesToLog = {"METHOD %s STARTS", "METHOD %s FINISHED"};
+    private static final String[] messagesToLog = {"%s METHOD STARTS", "%s METHOD FINISHED"};
 
 
     public TelegramBot() {
@@ -164,7 +164,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         message = String.format(message, methodName);
         aMills[index] = getMills();
         if(index == 1){
-            message = message +  " FOR \n "+ (aMills[1] - aMills[0]) +" MILLISECONDS"; }
+            message = message +  " FOR "+ (aMills[1] - aMills[0]) +" MILLISECONDS"; }
         log.log(Level.SEVERE, message);
     }
 

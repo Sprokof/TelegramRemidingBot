@@ -5,9 +5,8 @@ import telegramBot.bot.TelegramBot;
 import telegramBot.service.SendMessageService;
 
 public class AddCommand implements Command {
-    public static String ADD_COMMAND = "Введите то, о чем вам нужно напомнить и через пробел дату напоминания. " +
-            "Для ежедневных напоминаний поставьте 'р' и через пробел " +
-            "содержание с датой напоминания. \nФормат даты - dd.mm.yyyy .";
+    public static String ADD_COMMAND = "Введите напоминание в формате -> text date (dd.mm.yyyy - формат даты) . \n" +
+            "для ежедневных напоминаний поставьте в начале букву 'р' и через пробел ваше напоминание";
 
     private final SendMessageService sendMessageService;
 
