@@ -8,9 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import telegramBot.crypt.XORCrypt;
 import telegramBot.entity.Details;
-import telegramBot.entity.Message;
 import telegramBot.service.DeleteMessageServiceImpl;
-import telegramBot.service.MessageServiceImpl;
 import telegramBot.service.RemindServiceImpl;
 import telegramBot.command.CommandContainer;
 import telegramBot.entity.Remind;
@@ -89,7 +87,6 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
         }
         executeReminds();
-        executeDeleteLastMessage();
     }
 
     private String getDateFromUserInput(String input) {
@@ -135,9 +132,9 @@ public class TelegramBot extends TelegramLongPollingBot {
         new Thread(() -> {
             try {
                 while (true) {
-                    consoleLog(messagesToLog[0], "executeReminds", milliseconds, 0);
+                    consoleLog(messagesToLog[0], milliseconds, 0);
                     TelegramBot.this.sendRemind.execute();
-                    consoleLog(messagesToLog[1], "executeReminds", milliseconds, 1);
+                    consoleLog(messagesToLog[1], milliseconds, 1);
                     Thread.sleep(mills);
                 }
 
@@ -160,8 +157,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         return commands.get(chatId).get(lastIndex);
     }
 
-    private void consoleLog(String message, String methodName, long[] aMills, int index) {
-        message = String.format(message, methodName);
+    private void consoleLog(String message, long[] aMills, int index) {
         aMills[index] = getMills();
         if(index == 1){
             message = message +  " FOR "+ (aMills[1] - aMills[0]) +" MILLISECONDS"; }
@@ -223,7 +219,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         String chatId = update.getMessage().getChatId().toString();
         String input = update.getMessage().getText();
         Integer messageId = update.getMessage().getMessageId();
-        boolean isContains;
+        boolean isExist;
         if (isCorrectInput(input)) {
             try {
                 String key = XORCrypt.keyGenerate();
@@ -237,8 +233,8 @@ public class TelegramBot extends TelegramLongPollingBot {
                 Details details = new Details(chatId, "true",
                         "-", 0, "false");
 
-                isContains = RemindServiceImpl.newRemindService().isContainsInDB(remind);
-                if (!isContains) {
+                isExist = RemindServiceImpl.newRemindService().isExist(remind);
+                if (!isExist) {
                     if (saveRemindAndDetails(remind, details)) {
                         this.sendMessageService.sendMessage(chatId, "Напоминание успешно" +
                                 " добавлено.");
@@ -276,28 +272,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     private long getMills(){
+
         return Calendar.getInstance().getTimeInMillis();
-    }
-
-
-    private void executeDeleteLastMessage() {
-        final long[] milliseconds = new long[2];
-        new Thread(() -> {
-            while (true) {
-                List<Message> messages = MessageServiceImpl.newMessageService().getAllMessages();
-                consoleLog(messagesToLog[0], "executeDeleteMessages", milliseconds, 0);
-                if (SendRemind.toDoubleTime() >= 23.10 && !messages.isEmpty()){
-                messages.forEach((m)->{
-                    this.deleteMessageService.deleteMessage(m.getChatId(), m.getMessageId());
-                    MessageServiceImpl.newMessageService().deleteMessage(m);
-                });
-                }
-                consoleLog(messagesToLog[1],"executeDeleteMessages", milliseconds, 1);
-            try{
-                Thread.sleep(320000);}
-            catch (InterruptedException e){e.printStackTrace();}
-            }
-        }).start();
     }
 
 }

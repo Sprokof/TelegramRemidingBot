@@ -65,12 +65,23 @@ public class RemindServiceImpl implements RemindService{
         return this.remindDAO.getObjectByID(id);}
 
     @Override
-    public boolean isContainsInDB(Remind remind) {
-        List<Remind> reminds = getAllRemindsFromDB();
-        for(Remind rem:reminds){
-            if(rem.equals(remind)){return true;}
+    public boolean isExist(Remind remind) {
+        Session session;
+        Remind compRemind = null;
+        try {
+            session = this.remindDAO.getSessionFactory().getCurrentSession();
+            session.beginTransaction();
+            compRemind = (Remind) session.createSQLQuery("SELECT * FROM REMINDERS " +
+                    "WHERE ENCRYPT_MAINTENANCE = " +
+                    remind.getEncryptedMaintenance() +
+                    "AND REMIND_DATE =" + remind.getRemindDate()).addEntity(Remind.class).list().toArray()[0];
+        } catch (Exception e) {
+            e.getCause();
+        } finally {
+            this.remindDAO.getSessionFactory().close();
         }
-        return false;}
+        return compRemind == null;
+    }
 
     public static RemindServiceImpl newRemindService(){
         return new RemindServiceImpl(new RemindDAOImpl());
@@ -121,15 +132,6 @@ public class RemindServiceImpl implements RemindService{
         return new ArrayList<>();
     }
 
-    @Override
-    public List<Remind> getAllNotExecutingRemindsByChatId(String chatId) {
-        return (ArrayList<Remind>) getAllRemindsFromDB().stream().filter((r) -> {
-                    return r.getDetails().getChatIdToSend().equals(chatId) &&
-                            r.getRemindDate().replaceAll("\\p{P}", "\\.").equals(SendRemind.currentDate()) &&
-                            r.getDetails().getTimeToSend().equals("false") && r.getDetails().getIsStop().equals("false");
-                }).
-                collect(Collectors.toList());
-    }
 }
 
 

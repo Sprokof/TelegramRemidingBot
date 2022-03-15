@@ -89,7 +89,16 @@ public class SendRemind {
 
             }
         });
+        if(toDoubleTime() >= 23.10) {
+            List<Message> messages;
+            if (!(messages = MessageServiceImpl.newMessageService().getAllMessages()).isEmpty()) {
+                messages.forEach((m) -> {
+                    this.deleteService.deleteMessage(m.getChatId(), m.getMessageId());
+                    MessageServiceImpl.newMessageService().deleteMessage(m);
+                });
 
+            }
+        }
         deleteNotUpdatedRemind();
     }
 
@@ -352,15 +361,15 @@ public class SendRemind {
 
         if (reminds.size() > 1) {
                maintenance  = messageForAggregateRemind(reminds.toArray(Remind[]::new));
-           reminds.clear();
                 this.service.sendMessage(chatId, maintenance);
         }
         else {
-                maintenance = messageForLonelyRemind(remind);
-           reminds.clear();
-                this.service.sendMessage(chatId, maintenance);
-                }
+            maintenance = messageForLonelyRemind(remind);
+            this.service.sendMessage(chatId, maintenance);
 
+        }
+
+        reminds.clear();
         MessageServiceImpl.newMessageService().save(new Message(chatId, SendMessageServiceImpl.
                 getMessageId()));
 
@@ -374,17 +383,7 @@ public class SendRemind {
     }
 
     private boolean alreadyAddedRemind(Remind remind) {
-        Remind remindRecipient = null;
-        if(remind.getDetails().getLastSendTime().equals("-")){
-            String chatId = remind.getDetails().getChatIdToSend();
-                    if(!RemindServiceImpl.newRemindService().getAllNotExecutingRemindsByChatId(chatId).isEmpty()){
-                        remindRecipient = RemindServiceImpl.newRemindService().
-                                getAllNotExecutingRemindsByChatId(chatId).get(0);}
-            if (remindRecipient != null) {
-            RemindServiceImpl.newRemindService().updateSendHourField(remind, remindRecipient.getDetails().getLastSendTime());}
-            return true;
-        }
-        return false;
+        return remind.getDetails().getLastSendTime().equals("-");
         }
 
 

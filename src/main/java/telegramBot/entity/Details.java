@@ -9,7 +9,6 @@ import javax.persistence.*;
 
 @Entity
 @NoArgsConstructor
-@ToString
 @Getter
 @Setter
 @Table(name = "DETAILS")
@@ -36,5 +35,17 @@ public class Details {
         this.countSendOfRemind = countSendOfRemind;
         this.isStop = isStop;
 
+    }
+
+    @Override
+    public String toString() {
+        return "Details{" +
+                "id=" + id +
+                ", chatIdToSend='" + chatIdToSend + '\'' +
+                ", timeToSend='" + timeToSend + '\'' +
+                ", lastSendTime='" + lastSendTime + '\'' +
+                ", countSendOfRemind=" + countSendOfRemind +
+                ", isStop='" + isStop + '\'' +
+                '}';
     }
 }

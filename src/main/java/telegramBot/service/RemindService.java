@@ -13,8 +13,7 @@ public interface RemindService {
     List<Remind> getAllRemindsFromDB();
     Remind getRemindById(int id);
     List<Remind> getAllExecutingRemindsByChatId(String chatId);
-    List<Remind> getAllNotExecutingRemindsByChatId(String chatId);
-    boolean isContainsInDB(Remind remind);
+    boolean isExist(Remind remind);
     void updateTimeToSendField(Remind remind, boolean flag);
     void updateCountSendField(Remind remind, int count);
     void updateSendHourField(Remind remind, String time);
