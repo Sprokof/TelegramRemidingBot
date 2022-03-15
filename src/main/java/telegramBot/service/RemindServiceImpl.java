@@ -74,10 +74,9 @@ public class RemindServiceImpl implements RemindService{
         try {
             session = this.remindDAO.getSessionFactory().getCurrentSession();
             session.beginTransaction();
-            objects = session.createSQLQuery("SELECT * FROM REMINDERS " +
-                    "WHERE ENCRYPT_MAINTENANCE = " +
-                    remind.getEncryptedMaintenance() +
-                    "AND REMIND_DATE =" + remind.getRemindDate()).addEntity(Remind.class).list().toArray();
+            objects = session.createSQLQuery("SELECT * FROM REMINDERS").
+                    addEntity(Remind.class).list().toArray();
+            session.getTransaction().commit();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -85,7 +84,11 @@ public class RemindServiceImpl implements RemindService{
             this.remindDAO.getSessionFactory().close();
         }
         assert objects != null;
-        return objects.length > 0;
+
+        for(Object o : objects){ Remind r = ((Remind) o);
+            if(r.equals(remind)) return true; }
+        
+        return false;
     }
 
     public static RemindServiceImpl newRemindService(){
