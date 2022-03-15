@@ -8,9 +8,12 @@ import telegramBot.entity.Remind;
 import telegramBot.sendRemind.SendRemind;
 
 
+import javax.persistence.criteria.CriteriaBuilder;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class RemindServiceImpl implements RemindService{
@@ -67,20 +70,22 @@ public class RemindServiceImpl implements RemindService{
     @Override
     public boolean isExist(Remind remind) {
         Session session;
-        Remind compRemind = null;
+        Object[] objects = null;
         try {
             session = this.remindDAO.getSessionFactory().getCurrentSession();
             session.beginTransaction();
-            compRemind = (Remind) session.createSQLQuery("SELECT * FROM REMINDERS " +
+            objects = session.createSQLQuery("SELECT * FROM REMINDERS " +
                     "WHERE ENCRYPT_MAINTENANCE = " +
                     remind.getEncryptedMaintenance() +
-                    "AND REMIND_DATE =" + remind.getRemindDate()).addEntity(Remind.class).list().toArray()[0];
+                    "AND REMIND_DATE =" + remind.getRemindDate()).addEntity(Remind.class).list().toArray();
+
         } catch (Exception e) {
-            e.getCause();
+            e.printStackTrace();
         } finally {
             this.remindDAO.getSessionFactory().close();
         }
-        return compRemind == null;
+        assert objects != null;
+        return objects.length > 0;
     }
 
     public static RemindServiceImpl newRemindService(){
