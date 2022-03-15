@@ -199,7 +199,7 @@ public class SendRemind {
             if ((remind.getDetails().getChatIdToSend().equals(userChatId) &&
                     remind.getRemindDate().equals(date.replaceAll("\\p{P}", "\\.")))
                     && !isContainsDailySendMarker(decrypt)) {
-                messageToSend = messageToSend + (index + 1) + ") " + decrypt;
+                messageToSend = messageToSend + (index) + ") " + decrypt+"\n";
                 count++;
             }
             index++;
@@ -340,9 +340,15 @@ public class SendRemind {
     private boolean send(final List<Remind> reminds) {
         if (reminds.isEmpty()) return false;
 
+        List<Message> messages = MessageServiceImpl.newMessageService().getAllMessages();
         Remind remind = reminds.get(0);
         String maintenance;
         String chatId = remind.getDetails().getChatIdToSend();
+
+        if(!messages.isEmpty())
+            this.deleteService.deleteMessage(chatId, SendMessageServiceImpl.getMessageId());
+        MessageServiceImpl.newMessageService().
+                deleteMessageByMessageId(SendMessageServiceImpl.getMessageId());
 
         if (reminds.size() > 1) {
                maintenance  = messageForAggregateRemind(reminds.toArray(Remind[]::new));
@@ -417,7 +423,6 @@ public class SendRemind {
             day = String.valueOf(day.charAt(1)); }
 
         return String.format("%s %s", day, month);
-
     }
 
     public static double timeDifference(String lastSendTime){
@@ -427,7 +432,7 @@ public class SendRemind {
     }
 
     public static double toDoubleTime(){
-       return Double.parseDouble(SendRemind.currentTime().replace(':', '.'));
+        return Double.parseDouble(SendRemind.currentTime().replace(':', '.'));
     }
 
 }

@@ -89,7 +89,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
         }
         executeReminds();
-        executeDeleteMessages();
+        executeDeleteLastMessage();
     }
 
     private String getDateFromUserInput(String input) {
@@ -280,13 +280,13 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
 
-    private void executeDeleteMessages() {
+    private void executeDeleteLastMessage() {
         final long[] milliseconds = new long[2];
         new Thread(() -> {
             while (true) {
                 List<Message> messages = MessageServiceImpl.newMessageService().getAllMessages();
                 consoleLog(messagesToLog[0], "executeDeleteMessages", milliseconds, 0);
-                if (SendRemind.toDoubleTime() >= 23.00 && !messages.isEmpty()){
+                if (SendRemind.toDoubleTime() >= 23.10 && !messages.isEmpty()){
                 messages.forEach((m)->{
                     this.deleteMessageService.deleteMessage(m.getChatId(), m.getMessageId());
                     MessageServiceImpl.newMessageService().deleteMessage(m);
@@ -294,7 +294,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 }
                 consoleLog(messagesToLog[1],"executeDeleteMessages", milliseconds, 1);
             try{
-                Thread.sleep(150000);}
+                Thread.sleep(320000);}
             catch (InterruptedException e){e.printStackTrace();}
             }
         }).start();

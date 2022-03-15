@@ -33,4 +33,9 @@ public class MessageServiceImpl implements MessageService {
     public List<Message> getAllMessages() {
         return this.messageDAO.getAllMessages();
     }
+
+    @Override
+    public void deleteMessageByMessageId(Integer messageId) {
+        this.messageDAO.deleteByMessageId(messageId);
+    }
 }
