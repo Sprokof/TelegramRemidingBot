@@ -1,5 +1,6 @@
 package telegramBot.service;
 
+import org.hibernate.QueryException;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import telegramBot.dao.RemindDAOImpl;
@@ -7,11 +8,8 @@ import telegramBot.entity.Details;
 import telegramBot.entity.Remind;
 import telegramBot.sendRemind.SendRemind;
 
-
-import javax.persistence.criteria.CriteriaBuilder;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -42,23 +40,20 @@ public class RemindServiceImpl implements RemindService{
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<Remind> getAllRemindsFromDB() {
         Session session;
-        List<?> temp = null;
+        ArrayList<Remind> reminds = null;
         try {
             session = this.remindDAO.getSessionFactory().getCurrentSession();
             session.beginTransaction();
-            temp = session.createSQLQuery("SELECT * from REMINDERS").
+            reminds = (ArrayList<Remind>) session.createSQLQuery("SELECT * from REMINDERS").
                     addEntity(Remind.class).list();
             session.getTransaction().commit();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             this.remindDAO.getSessionFactory().close();
-        }
-        List<Remind> reminds = new ArrayList<>();
-        for (Iterator<?> it = temp.iterator(); it.hasNext();) {
-            reminds.add((Remind) it.next());
         }
         return reminds;
     }
@@ -68,31 +63,40 @@ public class RemindServiceImpl implements RemindService{
         return this.remindDAO.getObjectByID(id);}
 
     @Override
-    public boolean isExist(Remind remind) {
+    public boolean isExist(Remind remind) throws NullPointerException {
         Session session;
-        Object[] objects = null;
+        Remind[] reminds = null;
         try {
             session = this.remindDAO.getSessionFactory().getCurrentSession();
             session.beginTransaction();
-            objects = session.createSQLQuery("SELECT * FROM REMINDERS").
-                    addEntity(Remind.class).list().toArray();
-            session.getTransaction().commit();
-
+            try {
+                reminds = (Remind[]) session.createSQLQuery("SELECT * FROM REMINDERS " +
+                                "WHERE ENCRYPT_MAINTENANCE = " +
+                                "?::String" + remind.getEncryptedMaintenance() +
+                                "AND REMIND_DATE = ?::String" + remind.getRemindDate()).
+                        addEntity(Remind.class).list().toArray();
+                session.getTransaction().commit();
+            } catch (QueryException e) {
+                return true;
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             this.remindDAO.getSessionFactory().close();
         }
-        assert objects != null;
-
-        for(Object o : objects){ Remind r = ((Remind) o);
-            if(r.equals(remind)) return true; }
-        
-        return false;
+        return Arrays.stream(reminds).map(Remind::getDetails)
+                    .collect(Collectors.toList()).stream().map(Details::getChatIdToSend).collect(Collectors.toList()).
+                contains(remind.getDetails().getChatIdToSend());
     }
+
 
     public static RemindServiceImpl newRemindService(){
         return new RemindServiceImpl(new RemindDAOImpl());
+    }
+
+    @Override
+    public void updateRemind(Remind remind) {
+        this.remindDAO.update(remind);
     }
 
     @Override
@@ -127,10 +131,10 @@ public class RemindServiceImpl implements RemindService{
     }
 
     @Override
-    public List<Remind> getAllExecutingRemindsByChatId(String chatId) {
+    public List<Remind> getAllExecutingRemindsByChatId(Integer chatId) {
         List<Remind> reminds =
                 (ArrayList<Remind>) getAllRemindsFromDB().stream().filter((r) -> {
-                            return r.getDetails().getChatIdToSend().equals(chatId) &&
+                            return Objects.equals(r.getDetails().getChatIdToSend(), chatId) &&
                                     r.getRemindDate().replaceAll("\\p{P}", "\\.").equals(SendRemind.currentDate()) &&
                                     r.getDetails().getTimeToSend().equals("true") && r.getDetails().getIsStop().equals("false");
                         }).
@@ -140,6 +144,44 @@ public class RemindServiceImpl implements RemindService{
         return new ArrayList<>();
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<Remind> getAllNotExecutingRemindsByChatId(Integer chatId) {
+        List<Details> details = null;
+        List<Integer> ides;
+        List<Remind> reminds = new ArrayList<>();
+
+        Session session;
+        try {
+            session = this.remindDAO.getSessionFactory().getCurrentSession();
+            session.beginTransaction();
+        try{
+            details = (List<Details>) session.createSQLQuery("SELECT * FROM DETAILS WHERE CHAT_ID_TO_SEND = " + chatId +
+                    "AND TIME_TO_SEND = ?::String false").addEntity(Details.class).list();
+            session.getTransaction().commit();}
+        catch (QueryException e){ return new ArrayList<>();}
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            this.remindDAO.getSessionFactory().close();
+        }
+
+        assert details != null;
+        ides = details.stream().map(Details::getId).collect(Collectors.toList());
+
+        int index = 0;
+        while (index != ides.size()) {
+            Remind remind;
+            int id = ides.get(index);
+            if (!(remind = getRemindById(id)).
+                    getRemindDate().equals(SendRemind.currentDate())) {
+                continue;
+            }
+            reminds.add(remind);
+        }
+        return reminds;
+    }
 }
 
 

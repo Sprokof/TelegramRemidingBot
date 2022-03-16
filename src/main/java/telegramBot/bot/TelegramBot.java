@@ -41,7 +41,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final SendMessageServiceImpl sendMessageService;
     private final SendRemind sendRemind;
     private DeleteMessageServiceImpl deleteMessageService;
-    private static final String[] messagesToLog = {"%s METHOD STARTS", "%s METHOD FINISHED"};
+    private static final String[] messagesToLog = {"METHOD STARTS", "METHOD FINISHED"};
 
 
     public TelegramBot() {
@@ -230,7 +230,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                         getDateFromUserInput(input).
                                 replaceAll("\\p{P}", "\\."), key);
 
-                Details details = new Details(chatId, "true",
+                Details details = new Details(Integer.parseInt(chatId), "true",
                         "-", 0, "false");
 
                 isExist = RemindServiceImpl.newRemindService().isExist(remind);

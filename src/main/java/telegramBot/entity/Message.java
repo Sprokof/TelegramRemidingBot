@@ -24,6 +24,5 @@ public class Message{
     public Message(String chatId, Integer messageId){
         this.messageId = messageId;
         this.chatId = chatId;
-
     }
 }

@@ -17,7 +17,7 @@ public class Details {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(name = "CHAT_ID_TO_SEND")
-    private String chatIdToSend;
+    private Integer chatIdToSend;
     @Column(name = "TIME_TO_SEND")
     private String timeToSend;
     @Column(name = "LAST_SEND_TIME")
@@ -27,7 +27,7 @@ public class Details {
     @Column(name = "IS_STOP")
     private String isStop;
 
-    public Details(String chatIdToSend, String timeToSend,
+    public Details(Integer chatIdToSend, String timeToSend,
                    String lastSendTime, int countSendOfRemind, String isStop) {
         this.chatIdToSend = chatIdToSend;
         this.timeToSend = timeToSend;
@@ -47,5 +47,11 @@ public class Details {
                 ", countSendOfRemind=" + countSendOfRemind +
                 ", isStop='" + isStop + '\'' +
                 '}';
+    }
+
+    public int getId(){
+        return Integer.parseInt(this.toString().
+                substring(this.toString().indexOf("=") + 1,
+                        this.toString().indexOf(",")));
     }
 }

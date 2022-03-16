@@ -28,8 +28,6 @@ public class SendRemind {
         lastDayInMonth.put("11", "30.11");
         lastDayInMonth.put("12", "31.12");
 
-
-
     }
 
     private SendMessageServiceImpl service;
@@ -71,9 +69,13 @@ public class SendRemind {
         for (int index = 0; index < remindId.length; index++) {
             Remind remind = RemindServiceImpl.newRemindService().getRemindById(remindId[index]);
             if (remind.getRemindDate().equals(currentDate())) {
-                if (changedRemind(remind, remindId[index]) || alreadyAddedRemind(remind)) {
-                    reminds.add(remind);
+                if(isAlreadyAddedRemind(remind)){
+                    if(extendLastSendTime(remind)) { index -- ; }
                 }
+               else if (isChangedRemind(remind, remindId[index])) {
+                    reminds.add(remind);    }
+
+               else reminds.add(remind);
             }
         }
 
@@ -294,7 +296,7 @@ public class SendRemind {
     }
 
 
-    public boolean changedRemind(Remind remind, int index) {
+    public boolean isChangedRemind(Remind remind, int index) {
         boolean flag = false;
         double time = toDoubleTime();
         if (remind.getDetails().getTimeToSend().equals("false")) {
@@ -349,29 +351,23 @@ public class SendRemind {
     private boolean send(final List<Remind> reminds) {
         if (reminds.isEmpty()) return false;
 
-        List<Message> messages = MessageServiceImpl.newMessageService().getAllMessages();
+        List<Message> messages;
+
         Remind remind = reminds.get(0);
-        String maintenance;
-        String chatId = remind.getDetails().getChatIdToSend();
+        String maintenance, chatId = String.valueOf(remind.getDetails().getChatIdToSend());
 
-        if(!messages.isEmpty())
-            this.deleteService.deleteMessage(chatId, SendMessageServiceImpl.getMessageId());
-        MessageServiceImpl.newMessageService().
-                deleteMessageByMessageId(SendMessageServiceImpl.getMessageId());
-
-        if (reminds.size() > 1) {
-               maintenance  = messageForAggregateRemind(reminds.toArray(Remind[]::new));
-                this.service.sendMessage(chatId, maintenance);
+        if (reminds.size() == 1) {
+               maintenance  = messageForLonelyRemind(remind);   }
+               else  maintenance = messageForAggregateRemind(reminds.toArray(Remind[]::new));
+        Message message;
+        if(!(messages = MessageServiceImpl.newMessageService().getAllMessages()).isEmpty()) {
+            message = messages.get(messages.size() - 1);
+            this.deleteService.deleteMessage(message.getChatId(), message.getMessageId());
         }
-        else {
-            maintenance = messageForLonelyRemind(remind);
-            this.service.sendMessage(chatId, maintenance);
-
-        }
-
-        reminds.clear();
-        MessageServiceImpl.newMessageService().save(new Message(chatId, SendMessageServiceImpl.
-                getMessageId()));
+                if(this.service.sendMessage(chatId, maintenance)){
+                    MessageServiceImpl.newMessageService().save(new Message(chatId, SendMessageServiceImpl.
+                            getMessageId()));
+                }
 
         return true; }
 
@@ -382,10 +378,21 @@ public class SendRemind {
                         remind.toString().indexOf(",")));
     }
 
-    private boolean alreadyAddedRemind(Remind remind) {
+    private boolean isAlreadyAddedRemind(Remind remind) {
         return remind.getDetails().getLastSendTime().equals("-");
-        }
+    }
 
+
+    private boolean extendLastSendTime(Remind remind){
+            List<Remind> reminds;
+            if(!(reminds = RemindServiceImpl.newRemindService().
+                    getAllNotExecutingRemindsByChatId(remind.getDetails().
+                            getChatIdToSend())).isEmpty()){
+                remind.getDetails().setLastSendTime(reminds.get(0).getDetails().getLastSendTime());
+            RemindServiceImpl.newRemindService().updateRemind(remind);
+        return true;  }
+            return false;
+        }
 
     private String detachMonthFromInputDate(String date){
         String intView = date.split("\\p{P}")[1];
@@ -424,10 +431,11 @@ public class SendRemind {
         return String.format("%s %s", day, month);
     }
 
-    public static double timeDifference(String lastSendTime){
+    public static double timeDifference(String lastSendTime) {
         double current = Double.parseDouble(currentTime().replace(':', '.'));
         double last = Double.parseDouble(lastSendTime.replace(':', '.'));
     return current - last;
+
     }
 
     public static double toDoubleTime(){

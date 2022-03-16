@@ -3,6 +3,7 @@ package telegramBot.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import telegramBot.crypt.XORCrypt;
 
 import javax.persistence.*;
 
@@ -46,8 +47,11 @@ public class Remind {
         if (this == obj) return true;
         if (! (obj instanceof Remind)) return false;
         Remind remind = (Remind) obj;
-        return this.encryptedMaintenance.
-                equals(remind.encryptedMaintenance) && this.remindDate.replaceAll("\\p{P}", "\\.").
+        String thisMaintenance =
+                XORCrypt.decrypt(XORCrypt.stringToIntArray(this.encryptedMaintenance), this.getKey());
+        String compMaintenance = XORCrypt.decrypt(XORCrypt.stringToIntArray(remind.
+                encryptedMaintenance), this.getKey());
+        return thisMaintenance.equalsIgnoreCase(compMaintenance) && this.remindDate.replaceAll("\\p{P}", "\\.").
                 equals(remind.remindDate.replaceAll("\\p{P}", "\\."));
     }
 
