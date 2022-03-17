@@ -84,9 +84,8 @@ public class RemindServiceImpl implements RemindService{
         } finally {
             this.remindDAO.getSessionFactory().close();
         }
-        return Arrays.stream(reminds).map(Remind::getDetails)
-                    .collect(Collectors.toList()).stream().map(Details::getChatIdToSend).collect(Collectors.toList()).
-                contains(remind.getDetails().getChatIdToSend());
+        return Arrays.stream(reminds).map(Remind::getDetails).noneMatch((d)->{
+           return d.getChatIdToSend().equals(remind.getDetails().getChatIdToSend()); });
     }
 
 
