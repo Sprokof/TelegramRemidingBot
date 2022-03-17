@@ -70,12 +70,11 @@ public class SendRemind {
             Remind remind = RemindServiceImpl.newRemindService().getRemindById(remindId[index]);
             if (remind.getRemindDate().equals(currentDate())) {
                 if(isAlreadyAddedRemind(remind)){
-                    if(extendLastSendTime(remind)) { index -- ; }
+                    if(extendFieldValue(remind)) { index -- ; }
                 }
-               else if (isChangedRemind(remind, remindId[index])) {
-                    reminds.add(remind);    }
+               if (isChangedRemind(remind, remindId[index])) {  reminds.add(remind);    }
 
-               else reminds.add(remind);
+               reminds.add(remind);
             }
         }
 
@@ -207,7 +206,7 @@ public class SendRemind {
             Remind remind = RemindServiceImpl.newRemindService().getRemindById(remindsId[index]);
             String decrypt = XORCrypt.decrypt(XORCrypt.stringToIntArray(remind.
                     getEncryptedMaintenance()), remind.getKey());
-            if ((remind.getDetails().getChatIdToSend().equals(userChatId) &&
+            if ((remind.getDetails().getChatIdToSend() == Integer.parseInt(userChatId)&&
                     remind.getRemindDate().equals(date.replaceAll("\\p{P}", "\\.")))
                     && !isContainsDailySendMarker(decrypt)) {
                 messageToSend = messageToSend + (index) + ") " + decrypt+"\n";
@@ -328,7 +327,7 @@ public class SendRemind {
         RemindServiceImpl.newRemindService().updateRemindDateField(remind, date);
         RemindServiceImpl.newRemindService().updateCountSendField(remind, 0);
         RemindServiceImpl.newRemindService().updateTimeToSendField(remind, true);
-        RemindServiceImpl.newRemindService().updateSendHourField(remind, "-");
+        RemindServiceImpl.newRemindService().updateSendHourField(remind, "...");
     }
 
     public void updateRemindFieldsToNextSendTime(Remind remind, int count) {
@@ -379,17 +378,18 @@ public class SendRemind {
     }
 
     private boolean isAlreadyAddedRemind(Remind remind) {
-        return remind.getDetails().getLastSendTime().equals("-");
+        return remind.getDetails().getLastSendTime().equals("---");
     }
 
 
-    private boolean extendLastSendTime(Remind remind){
+    private boolean extendFieldValue(Remind remind){
             List<Remind> reminds;
             if(!(reminds = RemindServiceImpl.newRemindService().
                     getAllNotExecutingRemindsByChatId(remind.getDetails().
                             getChatIdToSend())).isEmpty()){
-                remind.getDetails().setLastSendTime(reminds.get(0).getDetails().getLastSendTime());
-            RemindServiceImpl.newRemindService().updateRemind(remind);
+             RemindServiceImpl.newRemindService().updateSendHourField(remind,
+                     reminds.get(0).getDetails().getLastSendTime());
+             RemindServiceImpl.newRemindService().updateTimeToSendField(remind, false);
         return true;  }
             return false;
         }

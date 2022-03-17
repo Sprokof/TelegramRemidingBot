@@ -77,7 +77,7 @@ public class RemindServiceImpl implements RemindService{
                         addEntity(Remind.class).list().toArray();
                 session.getTransaction().commit();
             } catch (QueryException e) {
-                return true;
+                return false;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -96,12 +96,6 @@ public class RemindServiceImpl implements RemindService{
 
     @Override
     public void updateRemind(Remind remind) {
-        this.remindDAO.update(remind);
-    }
-
-    @Override
-    public void updateMaintenanceField(Remind remind, String maintenance) {
-        remind.setEncryptedMaintenance(maintenance);
         this.remindDAO.update(remind);
     }
 

@@ -231,7 +231,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                                 replaceAll("\\p{P}", "\\."), key);
 
                 Details details = new Details(Integer.parseInt(chatId), "true",
-                        "-", 0, "false");
+                        "---", 0, "false");
 
                 isExist = RemindServiceImpl.newRemindService().isExist(remind);
                 if (!isExist) {
