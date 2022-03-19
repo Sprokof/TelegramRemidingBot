@@ -84,7 +84,7 @@ public class RemindServiceImpl implements RemindService{
         } finally {
             this.remindDAO.getSessionFactory().close();
         }
-        return Arrays.stream(reminds).map(Remind::getDetails).noneMatch((d)->{
+        return Arrays.stream(reminds).map(Remind::getDetails).anyMatch((d)->{
            return d.getChatIdToSend().equals(remind.getDetails().getChatIdToSend()); });
     }
 
@@ -93,10 +93,6 @@ public class RemindServiceImpl implements RemindService{
         return new RemindServiceImpl(new RemindDAOImpl());
     }
 
-    @Override
-    public void updateRemind(Remind remind) {
-        this.remindDAO.update(remind);
-    }
 
     @Override
     public void updateTimeToSendField(Remind remind, boolean flag) {
@@ -139,7 +135,7 @@ public class RemindServiceImpl implements RemindService{
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<Remind> getAllNotExecutingRemindsByChatId(Integer chatId) {
+    public List<Details> getAllNotExecutingDetailsByChatId(Integer chatId) {
         List<Details> details = null;
         Session session;
         try {
@@ -161,11 +157,9 @@ public class RemindServiceImpl implements RemindService{
 
         assert details != null;
 
-        return details.stream().map(Details::getId).filter((id) -> {
-            return getRemindById(id).getRemindDate().
+        return details.stream().filter((d) -> { return getRemindById(d.getId()).getRemindDate().
                     equals(SendRemind.currentDate());
-        }).collect(Collectors.toList()).stream().
-                map((id)-> getRemindById(id)).collect(Collectors.toList());
+        }).collect(Collectors.toList());
     }
 }
 

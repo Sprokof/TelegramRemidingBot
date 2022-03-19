@@ -219,6 +219,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         String chatId = update.getMessage().getChatId().toString();
         String input = update.getMessage().getText();
         Integer messageId = update.getMessage().getMessageId();
+        List<Details> detailsList = new ArrayList<>();
         boolean isExist;
         if (isCorrectInput(input)) {
             try {
@@ -230,8 +231,15 @@ public class TelegramBot extends TelegramLongPollingBot {
                         getDateFromUserInput(input).
                                 replaceAll("\\p{P}", "\\."), key);
 
-                Details details = new Details(Integer.parseInt(chatId), "true",
-                        "---", 0, "false");
+                String lastTime, timeToSend;
+                if(!(detailsList = RemindServiceImpl.newRemindService().
+                                getAllNotExecutingDetailsByChatId(Integer.parseInt(chatId))).isEmpty()){
+                lastTime = detailsList.get(0).getLastSendTime();  timeToSend = "false";
+                }
+                else lastTime = "---"; timeToSend = "true";
+
+                Details details = new Details(Integer.parseInt(chatId), timeToSend,
+                        lastTime, 0, "false");
 
                 isExist = RemindServiceImpl.newRemindService().isExist(remind);
                 if (!isExist) {

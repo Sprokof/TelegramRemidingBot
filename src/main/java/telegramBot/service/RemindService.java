@@ -12,8 +12,7 @@ public interface RemindService {
     List<Remind> getAllRemindsFromDB();
     Remind getRemindById(int id);
     List<Remind> getAllExecutingRemindsByChatId(Integer chatId);
-    List<Remind> getAllNotExecutingRemindsByChatId(Integer chatId);
-    void updateRemind(Remind remind);
+    List<Details> getAllNotExecutingDetailsByChatId(Integer chatId);
     boolean isExist(Remind remind);
     void updateTimeToSendField(Remind remind, boolean flag);
     void updateCountSendField(Remind remind, int count);

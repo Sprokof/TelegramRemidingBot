@@ -69,12 +69,9 @@ public class SendRemind {
         for (int index = 0; index < remindId.length; index++) {
             Remind remind = RemindServiceImpl.newRemindService().getRemindById(remindId[index]);
             if (remind.getRemindDate().equals(currentDate())) {
-                if(isAlreadyAddedRemind(remind)){
-                    if(extendFieldValue(remind)) { reminds.add(remind); } }
                 changeRemind(remind, remindId[index]);
                 reminds.add(remind);
             }
-
         }
 
         reminds.forEach((r) -> {
@@ -373,22 +370,6 @@ public class SendRemind {
                         remind.toString().indexOf(",")));
     }
 
-    private boolean isAlreadyAddedRemind(Remind remind) {
-        return remind.getDetails().getLastSendTime().equals("---");
-    }
-
-
-    private boolean extendFieldValue(Remind remind){
-            List<Remind> reminds;
-            if(!(reminds = RemindServiceImpl.newRemindService().
-                    getAllNotExecutingRemindsByChatId(remind.getDetails().
-                            getChatIdToSend())).isEmpty()){
-             RemindServiceImpl.newRemindService().updateSendHourField(remind,
-                     reminds.get(0).getDetails().getLastSendTime());
-             RemindServiceImpl.newRemindService().updateTimeToSendField(remind, false);
-        return true;  }
-            return false;
-        }
 
     private String detachMonthFromInputDate(String date){
         String intView = date.split("\\p{P}")[1];
