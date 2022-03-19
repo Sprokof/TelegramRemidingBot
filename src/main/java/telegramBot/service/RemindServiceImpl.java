@@ -141,18 +141,17 @@ public class RemindServiceImpl implements RemindService{
     @SuppressWarnings("unchecked")
     public List<Remind> getAllNotExecutingRemindsByChatId(Integer chatId) {
         List<Details> details = null;
-        List<Integer> ides;
-        List<Remind> reminds = new ArrayList<>();
-
         Session session;
         try {
             session = this.remindDAO.getSessionFactory().getCurrentSession();
             session.beginTransaction();
-        try{
-            details = (List<Details>) session.createSQLQuery("SELECT * FROM DETAILS WHERE CHAT_ID_TO_SEND = " + chatId +
-                    "AND TIME_TO_SEND = ?::String false").addEntity(Details.class).list();
-            session.getTransaction().commit();}
-        catch (QueryException e){ return new ArrayList<>();}
+            try {
+                details = (List<Details>) session.createSQLQuery("SELECT * FROM DETAILS WHERE CHAT_ID_TO_SEND = " + chatId +
+                        "AND TIME_TO_SEND = ?::String false").addEntity(Details.class).list();
+                session.getTransaction().commit();
+            } catch (QueryException e) {
+                return new ArrayList<>();
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -161,19 +160,12 @@ public class RemindServiceImpl implements RemindService{
         }
 
         assert details != null;
-        ides = details.stream().map(Details::getId).collect(Collectors.toList());
 
-        int index = 0;
-        while (index != ides.size()) {
-            Remind remind;
-            int id = ides.get(index);
-            if (!(remind = getRemindById(id)).
-                    getRemindDate().equals(SendRemind.currentDate())) {
-                continue;
-            }
-            reminds.add(remind);
-        }
-        return reminds;
+        return details.stream().map(Details::getId).filter((id) -> {
+            return getRemindById(id).getRemindDate().
+                    equals(SendRemind.currentDate());
+        }).collect(Collectors.toList()).stream().
+                map((id)-> getRemindById(id)).collect(Collectors.toList());
     }
 }
 

@@ -70,12 +70,11 @@ public class SendRemind {
             Remind remind = RemindServiceImpl.newRemindService().getRemindById(remindId[index]);
             if (remind.getRemindDate().equals(currentDate())) {
                 if(isAlreadyAddedRemind(remind)){
-                    if(extendFieldValue(remind)) { index -- ; }
-                }
-               if (isChangedRemind(remind, remindId[index])) {  reminds.add(remind);    }
-
-               reminds.add(remind);
+                    if(extendFieldValue(remind)) { reminds.add(remind); } }
+                changeRemind(remind, remindId[index]);
+                reminds.add(remind);
             }
+
         }
 
         reminds.forEach((r) -> {
@@ -295,14 +294,12 @@ public class SendRemind {
     }
 
 
-    public boolean isChangedRemind(Remind remind, int index) {
-        boolean flag = false;
+    public void changeRemind(Remind remind, int index) {
         double time = toDoubleTime();
         if (remind.getDetails().getTimeToSend().equals("false")) {
             if ((timeDifference(remind.getDetails().getLastSendTime()) >= 4.01) && (time < 23)) {
                 RemindServiceImpl.newRemindService().updateSendHourField(remind, currentTime());
                 RemindServiceImpl.newRemindService().updateTimeToSendField(remind, true);
-                flag = true;
             }
         }
         if (time >= 23 && (remind.getDetails().getCountSendOfRemind() <= 3 &&
@@ -320,7 +317,6 @@ public class SendRemind {
                 RemindServiceImpl.newRemindService().deleteRemind(index);
             }
         }
-        return flag;
     }
 
     public void updateRemindFieldsToNextDay(Remind remind, String date) {
@@ -371,7 +367,7 @@ public class SendRemind {
         return true; }
 
 
-     private int getIdOfRemind(Remind remind) {
+     public int getIdOfRemind(Remind remind) {
         return Integer.parseInt(remind.toString().
                 substring(remind.toString().indexOf("=") + 1,
                         remind.toString().indexOf(",")));
