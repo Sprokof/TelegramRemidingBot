@@ -6,13 +6,12 @@ import telegramBot.entity.Remind;
 import java.util.List;
 
 public interface RemindService {
-    boolean saveRemind(Remind remind, Details details);
+    boolean saveRemind(Remind remind);
     void deleteRemind(int index);
     void updateRemindDateField(Remind remind, String newDate);
     List<Remind> getAllRemindsFromDB();
     Remind getRemindById(int id);
-    List<Remind> getAllExecutingRemindsByChatId(Integer chatId);
-    List<Details> getAllNotExecutingDetailsByChatId(Integer chatId);
+    List<Remind> getAllExecutingReminds(Remind remind);
     boolean isExist(Remind remind);
     void updateTimeToSendField(Remind remind, boolean flag);
     void updateCountSendField(Remind remind, int count);

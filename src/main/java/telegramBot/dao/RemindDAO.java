@@ -4,7 +4,7 @@ import telegramBot.entity.Details;
 import telegramBot.entity.Remind;
 
 public interface RemindDAO {
-    boolean save(Remind remind , Details details);
+    boolean save(Remind remind);
     Object getObjectByID(int id);
     boolean deleteByID(int id);
     boolean update(Remind remind);

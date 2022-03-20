@@ -69,23 +69,24 @@ public class SendRemind {
         for (int index = 0; index < remindId.length; index++) {
             Remind remind = RemindServiceImpl.newRemindService().getRemindById(remindId[index]);
             if (remind.getRemindDate().equals(currentDate())) {
-                changeRemind(remind, remindId[index]);
-                reminds.add(remind);
+                if(newAddedRemind(remind)){ reminds.add(remind) ;}
+                if(isChangeRemind(remind, remindId[index])) {
+                    reminds.add(remind);}
             }
         }
 
         reminds.forEach((r) -> {
             List<Remind> waitsExecuteReminds = null;
-            while (!(waitsExecuteReminds = RemindServiceImpl.newRemindService().
-                    getAllExecutingRemindsByChatId(r.getDetails().getChatIdToSend())).isEmpty()) {
-                while (true) {
-                    if (send(waitsExecuteReminds)) {
-                        break;
-                    }
-                }
+               while(!(waitsExecuteReminds =
+                       RemindServiceImpl.newRemindService().getAllExecutingReminds(r)).isEmpty()) {
+                   while (true) {
+                       if (send(waitsExecuteReminds)) {
+                           break;
+                       }
+                   }
+               }
+            });
 
-            }
-        });
         if(toDoubleTime() >= 23.10) {
             List<Message> messages;
             if (!(messages = MessageServiceImpl.newMessageService().getAllMessages()).isEmpty()) {
@@ -291,12 +292,13 @@ public class SendRemind {
     }
 
 
-    public void changeRemind(Remind remind, int index) {
+    public boolean isChangeRemind(Remind remind, int index) {
         double time = toDoubleTime();
         if (remind.getDetails().getTimeToSend().equals("false")) {
             if ((timeDifference(remind.getDetails().getLastSendTime()) >= 4.01) && (time < 23)) {
                 RemindServiceImpl.newRemindService().updateSendHourField(remind, currentTime());
                 RemindServiceImpl.newRemindService().updateTimeToSendField(remind, true);
+                return true;
             }
         }
         if (time >= 23 && (remind.getDetails().getCountSendOfRemind() <= 3 &&
@@ -314,6 +316,7 @@ public class SendRemind {
                 RemindServiceImpl.newRemindService().deleteRemind(index);
             }
         }
+        return false;
     }
 
     public void updateRemindFieldsToNextDay(Remind remind, String date) {
@@ -414,7 +417,9 @@ public class SendRemind {
     return current - last;
 
     }
-
+    private boolean newAddedRemind(Remind remind){
+        return remind.getDetails().getLastSendTime().equals(" ");
+    }
     public static double toDoubleTime(){
         return Double.parseDouble(SendRemind.currentTime().replace(':', '.'));
     }

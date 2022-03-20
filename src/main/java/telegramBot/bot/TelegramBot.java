@@ -122,8 +122,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
 
-    private boolean saveRemindAndDetails(Remind remind, Details details) {
-        return RemindServiceImpl.newRemindService().saveRemind(remind, details);
+    private boolean save(Remind remind) {
+        return RemindServiceImpl.newRemindService().saveRemind(remind);
     }
 
     private void executeReminds() {
@@ -219,6 +219,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         String chatId = update.getMessage().getChatId().toString();
         String input = update.getMessage().getText();
         Integer messageId = update.getMessage().getMessageId();
+        String lastTime = " ";
         List<Details> detailsList = new ArrayList<>();
         boolean isExist;
         if (isCorrectInput(input)) {
@@ -231,19 +232,14 @@ public class TelegramBot extends TelegramLongPollingBot {
                         getDateFromUserInput(input).
                                 replaceAll("\\p{P}", "\\."), key);
 
-                String lastTime, timeToSend;
-                if(!(detailsList = RemindServiceImpl.newRemindService().
-                                getAllNotExecutingDetailsByChatId(Integer.parseInt(chatId))).isEmpty()){
-                lastTime = detailsList.get(0).getLastSendTime();  timeToSend = "false";
-                }
-                else lastTime = "---"; timeToSend = "true";
+                Details details = new Details(Integer.parseInt(chatId), true,
+                        lastTime, 0, false);
 
-                Details details = new Details(Integer.parseInt(chatId), timeToSend,
-                        lastTime, 0, "false");
+                remind.setDetails(details);
 
                 isExist = RemindServiceImpl.newRemindService().isExist(remind);
                 if (!isExist) {
-                    if (saveRemindAndDetails(remind, details)) {
+                    if (save(remind)) {
                         this.sendMessageService.sendMessage(chatId, "Напоминание успешно" +
                                 " добавлено.");
                             this.deleteMessageService.deleteMessage(chatId, messageId);
@@ -284,7 +280,9 @@ public class TelegramBot extends TelegramLongPollingBot {
         return Calendar.getInstance().getTimeInMillis();
     }
 
-}
+
+    }
+
 
 
 

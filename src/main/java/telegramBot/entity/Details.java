@@ -27,13 +27,13 @@ public class Details {
     @Column(name = "IS_STOP")
     private String isStop;
 
-    public Details(Integer chatIdToSend, String timeToSend,
-                   String lastSendTime, int countSendOfRemind, String isStop) {
+    public Details(Integer chatIdToSend, boolean timeToSend,
+                   String lastSendTime, int countSendOfRemind, boolean isStop) {
         this.chatIdToSend = chatIdToSend;
-        this.timeToSend = timeToSend;
+        this.timeToSend = String.valueOf(timeToSend);
         this.lastSendTime = lastSendTime;
         this.countSendOfRemind = countSendOfRemind;
-        this.isStop = isStop;
+        this.isStop = String.valueOf(isStop);
 
     }
 

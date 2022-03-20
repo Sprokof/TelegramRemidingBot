@@ -34,8 +34,7 @@ public class RemindDAOImpl implements RemindDAO {
     return true;}
 
     @Override
-    public boolean save(Remind remind, Details details) {
-        remind.setDetails(details);
+    public boolean save(Remind remind) {
         Session session;
         try{
             session = this.sessionFactory.getCurrentSession();
