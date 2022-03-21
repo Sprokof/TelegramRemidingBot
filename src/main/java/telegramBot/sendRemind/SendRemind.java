@@ -92,7 +92,7 @@ public class SendRemind {
             if (!(messages = MessageServiceImpl.newMessageService().getAllMessages()).isEmpty()) {
                 messages.forEach((m) -> {
                     this.deleteService.deleteMessage(m.getChatId(), m.getMessageId());
-                    MessageServiceImpl.newMessageService().deleteMessage(m);
+                    MessageServiceImpl.newMessageService().deleteAllMessages();
                 });
 
             }

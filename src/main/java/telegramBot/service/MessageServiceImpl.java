@@ -19,10 +19,6 @@ public class MessageServiceImpl implements MessageService {
         this.messageDAO.save(message);
     }
 
-    @Override
-    public void deleteMessage(Message message) {
-        this.messageDAO.deleteMessage(message);
-    }
 
 
     public static MessageServiceImpl newMessageService(){
@@ -35,7 +31,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void deleteMessageByMessageId(Integer messageId) {
-        this.messageDAO.deleteByMessageId(messageId);
+    public void deleteAllMessages() {
+        this.messageDAO.deleteAllMessages();
     }
 }
