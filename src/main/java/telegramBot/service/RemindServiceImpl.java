@@ -97,14 +97,13 @@ public class RemindServiceImpl implements RemindService {
         Iterator<Object> iterator = objects.iterator();
         while(iterator.hasNext()){
             Object[] line = (Object[]) iterator.next();
-            Remind r = (Remind) line[0];
-            r.setDetails((Details) line[1]);
-            reminds.add(remind);
+            Remind thisRemind = (Remind) line[0];
+            thisRemind.setDetails((Details) line[1]);
+            reminds.add(thisRemind);
         }
-
         return reminds.stream().map((r)->{
-           return XORCrypt.decrypt(XORCrypt.stringToIntArray(r.getEncryptedMaintenance()),
-                   r.getKey());}).collect(Collectors.toList()).contains(decryptMaintenance);
+            return XORCrypt.decrypt(XORCrypt.stringToIntArray(r.getEncryptedMaintenance()),
+                    r.getKey());}).anyMatch((m)-> m.equals(decryptMaintenance));
     }
 
 
@@ -170,7 +169,7 @@ public class RemindServiceImpl implements RemindService {
                reminds.add(r);
             }
         return reminds; }
-        
+
         return new ArrayList<>();
 
     }

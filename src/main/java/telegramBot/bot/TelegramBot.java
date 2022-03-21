@@ -219,8 +219,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         String chatId = update.getMessage().getChatId().toString();
         String input = update.getMessage().getText();
         Integer messageId = update.getMessage().getMessageId();
-        String lastTime = " ";
-        List<Details> detailsList = new ArrayList<>();
         boolean isExist;
         if (isCorrectInput(input)) {
             try {
@@ -233,7 +231,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                                 replaceAll("\\p{P}", "\\."), key);
 
                 Details details = new Details(Integer.parseInt(chatId), true,
-                        lastTime, 0, false);
+                        " ", 0, false);
 
                 remind.setDetails(details);
 
