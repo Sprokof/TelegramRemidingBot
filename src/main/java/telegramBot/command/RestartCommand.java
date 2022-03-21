@@ -29,8 +29,8 @@ public class RestartCommand implements Command {
     private boolean restart(String chatId) {
         int count = 0;
         for (Remind r : RemindServiceImpl.newRemindService().getAllRemindsFromDB()) {
-            if (r.getDetails().getChatIdToSend().equals(chatId) &&
-                    r.getDetails().getIsStop().equals("true")) {
+            if (r.getDetails().getChatIdToSend() == Integer.parseInt(chatId)
+            && r.getDetails().isStop()) {
                 RemindServiceImpl.newRemindService().updateIsStopField(r, false);
                 count++;
             }

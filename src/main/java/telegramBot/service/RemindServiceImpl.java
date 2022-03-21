@@ -101,6 +101,7 @@ public class RemindServiceImpl implements RemindService {
             thisRemind.setDetails((Details) line[1]);
             reminds.add(thisRemind);
         }
+
         return reminds.stream().map((r)->{
             return XORCrypt.decrypt(XORCrypt.stringToIntArray(r.getEncryptedMaintenance()),
                     r.getKey());}).anyMatch((m)-> m.equals(decryptMaintenance));
@@ -114,7 +115,7 @@ public class RemindServiceImpl implements RemindService {
 
     @Override
     public void updateTimeToSendField(Remind remind, boolean flag) {
-        remind.getDetails().setTimeToSend(String.valueOf(flag));
+        remind.getDetails().setTimeToSend(flag);
         this.remindDAO.update(remind);
 
     }
@@ -133,7 +134,7 @@ public class RemindServiceImpl implements RemindService {
 
     @Override
     public void updateIsStopField(Remind remind, boolean flag) {
-        remind.getDetails().setIsStop(String.valueOf(flag));
+        remind.getDetails().setStop(flag);
         this.remindDAO.update(remind);
     }
 
@@ -147,10 +148,9 @@ public class RemindServiceImpl implements RemindService {
             session.beginTransaction();
             objects = session.createSQLQuery("SELECT * FROM REMINDERS as r join DETAILS as d " +
                                     "on r.details_id = d.id WHERE d.CHAT_ID_TO_SEND =:chatId " +
-                                    "AND d.TIME_TO_SEND =:timeToSend AND r.REMIND_DATE =:currentDate").
+                                    "AND d.TIME_TO_SEND is true AND r.REMIND_DATE =:currentDate").
                             addEntity("r", Remind.class).
                             addJoin("d", "r.details").
-                            setParameter("timeToSend", "true").
                             setParameter("chatId", remind.getDetails().getChatIdToSend()).
                             setParameter("currentDate", SendRemind.currentDate()).list();
             session.getTransaction().commit();

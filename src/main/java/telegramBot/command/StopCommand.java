@@ -29,7 +29,7 @@ public class StopCommand implements Command {
         int count = 0;
         for (Remind r : RemindServiceImpl.newRemindService().getAllRemindsFromDB()) {
             Details details = r.getDetails();
-            if (details.getChatIdToSend().equals(chatId) && details.getIsStop().equals("false")) {
+            if ((details.getChatIdToSend() == Integer.parseInt(chatId)) && (!details.isStop())) {
                 RemindServiceImpl.newRemindService().updateIsStopField(r, true);
                 count++;
             }

@@ -294,7 +294,7 @@ public class SendRemind {
 
     public boolean isChangeRemind(Remind remind, int index) {
         double time = toDoubleTime();
-        if (remind.getDetails().getTimeToSend().equals("false")) {
+        if (!remind.getDetails().isTimeToSend()) {
             if ((timeDifference(remind.getDetails().getLastSendTime()) >= 4.01) && (time < 23)) {
                 RemindServiceImpl.newRemindService().updateSendHourField(remind, currentTime());
                 RemindServiceImpl.newRemindService().updateTimeToSendField(remind, true);

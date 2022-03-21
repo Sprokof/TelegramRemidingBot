@@ -19,21 +19,21 @@ public class Details {
     @Column(name = "CHAT_ID_TO_SEND")
     private Integer chatIdToSend;
     @Column(name = "TIME_TO_SEND")
-    private String timeToSend;
+    private boolean timeToSend;
     @Column(name = "LAST_SEND_TIME")
     private String lastSendTime;
     @Column(name = "COUNT_SEND_OF_REMIND")
     private int countSendOfRemind;
     @Column(name = "IS_STOP")
-    private String isStop;
+    private boolean isStop;
 
     public Details(Integer chatIdToSend, boolean timeToSend,
                    String lastSendTime, int countSendOfRemind, boolean isStop) {
         this.chatIdToSend = chatIdToSend;
-        this.timeToSend = String.valueOf(timeToSend);
+        this.timeToSend = timeToSend;
         this.lastSendTime = lastSendTime;
         this.countSendOfRemind = countSendOfRemind;
-        this.isStop = String.valueOf(isStop);
+        this.isStop = isStop;
 
     }
 
