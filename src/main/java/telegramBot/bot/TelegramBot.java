@@ -216,7 +216,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         return (result == 3);
     }
 
-    private void acceptNewRemindFromUser(Update update) {
+    private synchronized void acceptNewRemindFromUser(Update update) {
         String chatId = update.getMessage().getChatId().toString();
         String input = update.getMessage().getText();
         Integer messageId = update.getMessage().getMessageId();
@@ -240,10 +240,11 @@ public class TelegramBot extends TelegramLongPollingBot {
                 if (!isExist) {
                     if (save(remind)) {
                         notify();
+                        this.deleteMessageService.deleteMessage(new Message(chatId,
+                                messageId));
+                        Thread.sleep(750);
                         this.sendMessageService.sendMessage(chatId, "Напоминание успешно" +
                                 " добавлено.");
-                            this.deleteMessageService.deleteMessage(new Message(chatId, messageId));
-                        Thread.sleep(500);
                     } else {
                         this.sendMessageService.sendMessage(chatId,
                                 "Напоминание не было добавлено, проверьте формат даты (dd.mm.yyyy) ." +

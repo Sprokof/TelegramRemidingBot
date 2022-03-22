@@ -169,8 +169,8 @@ public class RemindManage {
     private static String deleteRegularMarker(Remind remind) {
         String decrypt = XORCrypt.decrypt(XORCrypt.stringToIntArray(remind.
                 getEncryptedMaintenance()), remind.getKey());
-        return decrypt.substring(decrypt.indexOf(" ") + 1).
-                toLowerCase(Locale.ROOT) + decrypt.substring(decrypt.indexOf(" ") + 2);
+        char fLetter = Character.toLowerCase(decrypt.charAt(decrypt.indexOf(" ") + 1));
+        return String.format("%s%s", fLetter, decrypt.substring(decrypt.indexOf(" ") + 2));
     }
 
     public static String toNextMonth(String date) {
