@@ -8,11 +8,12 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import telegramBot.crypt.XORCrypt;
 import telegramBot.entity.Details;
+import telegramBot.entity.Message;
 import telegramBot.service.DeleteMessageServiceImpl;
 import telegramBot.service.RemindServiceImpl;
 import telegramBot.command.CommandContainer;
 import telegramBot.entity.Remind;
-import telegramBot.sendRemind.SendRemind;
+import telegramBot.manage.RemindManage;
 import telegramBot.service.SendMessageServiceImpl;
 
 
@@ -39,7 +40,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final CommandContainer commandContainer;
     @Getter
     private final SendMessageServiceImpl sendMessageService;
-    private final SendRemind sendRemind;
+    private final RemindManage manage;
     private DeleteMessageServiceImpl deleteMessageService;
     private static final String[] messagesToLog = {"METHOD STARTS", "METHOD FINISHED"};
 
@@ -48,7 +49,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.sendMessageService = new SendMessageServiceImpl(this);
         this.commandContainer = new CommandContainer(sendMessageService);
         this.deleteMessageService = new DeleteMessageServiceImpl(this);
-        this.sendRemind = new SendRemind(sendMessageService, deleteMessageService);
+        this.manage = new RemindManage(sendMessageService, deleteMessageService);
     }
 
     @Override
@@ -69,7 +70,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 } else if (lastCommand(chatId).equals("/show")) {
                     if (acceptDateFromUser(update)) {
                         try {
-                            if (!this.sendRemind.showRemindsByDate(update.getMessage().getChatId().toString(),
+                            if (!this.manage.showRemindsByDate(update.getMessage().getChatId().toString(),
                                     update.getMessage().getText())) {
                                 this.sendMessageService.sendMessage(update.getMessage().getChatId().toString(),
                                         "Не получилось найти напоминания, возможно " +
@@ -133,7 +134,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             try {
                 while (true) {
                     consoleLog(messagesToLog[0], milliseconds, 0);
-                    TelegramBot.this.sendRemind.execute();
+                    TelegramBot.this.manage.execute();
                     consoleLog(messagesToLog[1], milliseconds, 1);
                     Thread.sleep(mills);
                 }
@@ -238,9 +239,10 @@ public class TelegramBot extends TelegramLongPollingBot {
                 isExist = RemindServiceImpl.newRemindService().isExist(remind);
                 if (!isExist) {
                     if (save(remind)) {
+                        notify();
                         this.sendMessageService.sendMessage(chatId, "Напоминание успешно" +
                                 " добавлено.");
-                            this.deleteMessageService.deleteMessage(chatId, messageId);
+                            this.deleteMessageService.deleteMessage(new Message(chatId, messageId));
                         Thread.sleep(500);
                     } else {
                         this.sendMessageService.sendMessage(chatId,
@@ -269,17 +271,15 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     private static String[] toDateArray() {
-        return SendRemind.currentDate().split("\\.");
+        return RemindManage.currentDate().split("\\.");
 
     }
 
     private long getMills(){
-
         return Calendar.getInstance().getTimeInMillis();
     }
 
-
-    }
+}
 
 
 

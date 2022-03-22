@@ -1,4 +1,4 @@
-package telegramBot.sendRemind;
+package telegramBot.manage;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,7 @@ import telegramBot.service.*;
 import java.util.*;
 
 @Component
-public class SendRemind {
+public class RemindManage {
     public static final HashMap<String, String> lastDayInMonth = new HashMap<>();
 
     static {
@@ -37,7 +37,7 @@ public class SendRemind {
     private static final String SHOW_MESSAGE = "На эту дату есть следующие записи:\n";
 
     @Autowired
-    public SendRemind(SendMessageService service, DeleteMessageServiceImpl deleteService) {
+    public RemindManage(SendMessageService service, DeleteMessageServiceImpl deleteService) {
         this.service = (SendMessageServiceImpl) service;
         this.deleteService = deleteService;
     }
@@ -91,7 +91,7 @@ public class SendRemind {
             List<Message> messages;
             if (!(messages = MessageServiceImpl.newMessageService().getAllMessages()).isEmpty()) {
                 messages.forEach((m) -> {
-                    this.deleteService.deleteMessage(m.getChatId(), m.getMessageId());
+                    this.deleteService.deleteMessage(m);
                     MessageServiceImpl.newMessageService().deleteAllMessages();
                 });
 
@@ -169,7 +169,8 @@ public class SendRemind {
     private static String deleteRegularMarker(Remind remind) {
         String decrypt = XORCrypt.decrypt(XORCrypt.stringToIntArray(remind.
                 getEncryptedMaintenance()), remind.getKey());
-        return decrypt.substring(decrypt.indexOf(" ") + 1);
+        return decrypt.substring(decrypt.indexOf(" ") + 1).
+                toLowerCase(Locale.ROOT) + decrypt.substring(decrypt.indexOf(" ") + 2);
     }
 
     public static String toNextMonth(String date) {
@@ -226,7 +227,7 @@ public class SendRemind {
         else{
             messageToSend = (messageToSend +
                 String.valueOf(decrypt.
-                        charAt(0)).toLowerCase(Locale.ROOT)+ decrypt.substring(1));
+                        charAt(0)).toLowerCase(Locale.ROOT) + decrypt.substring(1));
         }
 
         updateRemindFieldsToNextSendTime(remind, remind.getDetails().getCountSendOfRemind()+1);
@@ -254,11 +255,9 @@ public class SendRemind {
                     getEncryptedMaintenance()), remind.getKey());
             int num = (i + 1);
             if(isContainsDailySendMarker(decrypt)){
-            string  = String.format(Character.
-                    toUpperCase(deleteRegularMarker(remind).charAt(0)) + "%s", deleteRegularMarker(
-                    remind).substring(1));
+            string  = deleteRegularMarker(remind);
             }
-           else {
+            else {
                string = String.valueOf(decrypt.
                     charAt(0)).toLowerCase(Locale.ROOT)+ decrypt.substring(1);
            }
@@ -355,13 +354,17 @@ public class SendRemind {
                maintenance  = messageForLonelyRemind(remind);   }
                else  maintenance = messageForAggregateRemind(reminds.toArray(Remind[]::new));
         Message message;
-        if(!(messages = MessageServiceImpl.newMessageService().getAllMessages()).isEmpty()) {
-            message = messages.get(messages.size() - 1);
-            this.deleteService.deleteMessage(message.getChatId(), message.getMessageId());
+        if((message = MessageServiceImpl.newMessageService().getMessageByNextField(chatId, maintenance))!=null){
+            this.deleteService.deleteMessage(message);
         }
-                if(this.service.sendMessage(chatId, maintenance)){
-                    MessageServiceImpl.newMessageService().save(new Message(chatId, SendMessageServiceImpl.
-                            getMessageId()));
+                if(this.service.sendMessage(chatId, maintenance)) {
+                    String key = XORCrypt.keyGenerate();
+                    String em = XORCrypt.encrypt(maintenance, key);
+                    message = new Message(chatId, em, key, SendMessageServiceImpl.getMessageId());
+                    if (!MessageServiceImpl.newMessageService().
+                            getAllMessages().contains(message)) {
+                        MessageServiceImpl.newMessageService().save(message);
+                    }
                 }
 
         return true; }
@@ -418,10 +421,11 @@ public class SendRemind {
 
     }
     private boolean newAddedRemind(Remind remind){
-        return remind.getDetails().getLastSendTime().equals(" ");
+        return (remind.getDetails().getLastSendTime().equals(" ") ||
+                remind.getDetails().getLastSendTime().equals("...")) && remind.getDetails().isTimeToSend();
     }
     public static double toDoubleTime(){
-        return Double.parseDouble(SendRemind.currentTime().replace(':', '.'));
+        return Double.parseDouble(RemindManage.currentTime().replace(':', '.'));
     }
 
 }

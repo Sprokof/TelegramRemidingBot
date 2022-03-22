@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import telegramBot.bot.TelegramBot;
+import telegramBot.entity.Message;
 
 @Component
 public class DeleteMessageServiceImpl implements DeleteMessageService{
@@ -18,10 +19,10 @@ public class DeleteMessageServiceImpl implements DeleteMessageService{
     }
 
     @Override
-    public boolean deleteMessage(String chatId, Integer messageId) {
+    public boolean deleteMessage(Message message) {
         DeleteMessage deleteMessage = new DeleteMessage();
-        deleteMessage.setChatId(chatId);
-        deleteMessage.setMessageId(messageId);
+        deleteMessage.setChatId(message.getChatId());
+        deleteMessage.setMessageId(message.getMessageId());
 
     try{
         bot.execute(deleteMessage);}
