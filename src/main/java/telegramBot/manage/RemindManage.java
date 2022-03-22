@@ -345,7 +345,7 @@ public class RemindManage {
     private boolean send(final List<Remind> reminds) {
         if (reminds.isEmpty()) return false;
 
-        List<Message> messages;
+        List<Message> messages = MessageServiceImpl.newMessageService().getAllMessages();
 
         Remind remind = reminds.get(0);
         String maintenance, chatId = String.valueOf(remind.getDetails().getChatIdToSend());
@@ -361,8 +361,7 @@ public class RemindManage {
                     String key = XORCrypt.keyGenerate();
                     String em = XORCrypt.encrypt(maintenance, key);
                     message = new Message(chatId, em, key, SendMessageServiceImpl.getMessageId());
-                    if (!MessageServiceImpl.newMessageService().
-                            getAllMessages().contains(message)) {
+                    if (!messages.contains(message)){
                         MessageServiceImpl.newMessageService().save(message);
                     }
                 }
