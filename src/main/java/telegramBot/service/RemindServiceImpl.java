@@ -71,7 +71,6 @@ public class RemindServiceImpl implements RemindService {
     public boolean isExist(Remind remind) {
         String decryptMaintenance = XORCrypt.
                 decrypt(XORCrypt.stringToIntArray(remind.getEncryptedMaintenance()), remind.getKey());
-        System.out.println(decryptMaintenance);
         List<Object> objects = new ArrayList<>();
         Session session;
         try {

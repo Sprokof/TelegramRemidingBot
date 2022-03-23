@@ -196,10 +196,11 @@ public class RemindManage {
             wait();
         }
 
-        int index = 0, count = 0;
+        int index = 0, count = 0, n = 1;
         service.sendMessage(userChatId, "Через пару секунд пришлю напоминания на " + dayAndMonth(date));
         Thread.sleep(4700);
         String messageToSend = SHOW_MESSAGE;
+
         while (index != remindsId.length) {
             Remind remind = RemindServiceImpl.newRemindService().getRemindById(remindsId[index]);
             String decrypt = XORCrypt.decrypt(XORCrypt.stringToIntArray(remind.
@@ -207,12 +208,15 @@ public class RemindManage {
             if ((remind.getDetails().getChatIdToSend() == Integer.parseInt(userChatId)&&
                     remind.getRemindDate().equals(date.replaceAll("\\p{P}", "\\.")))
                     && !isContainsDailySendMarker(decrypt)) {
-                messageToSend = messageToSend + (index) + ") " + decrypt+"\n";
+                messageToSend = messageToSend + (n) + ") " + decrypt+"\n";
                 count++;
             }
             index++;
         }
-                if(count != 0) service.sendMessage(userChatId, messageToSend);
+                if(count != 0) this.service.sendMessage(userChatId, messageToSend);
+                Thread.sleep(5700);
+                this.deleteService.deleteMessage(new Message(userChatId, SendMessageServiceImpl.getMessageId()));
+                this.service.sendMessage(userChatId, "Was showed");
         return count > 0;
     }
 
