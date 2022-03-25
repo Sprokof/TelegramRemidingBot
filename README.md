@@ -17,6 +17,9 @@ User's input maybye not right. To correct work it's implementing input's validat
 ## Builds
 ## Project's structure
 Pictures under is showing it's structure
+
 ![Снимок экрана (31)](https://user-images.githubusercontent.com/90979711/160171614-e315a65d-0554-495a-8080-cccf1d8b1f99.png)
+
 ![Снимок экрана (33)](https://user-images.githubusercontent.com/90979711/160171646-76ceda43-1f93-4f86-b1c6-cb9d51c80d33.png)
+
 ![Снимок экрана (35)](https://user-images.githubusercontent.com/90979711/160171662-4c632e30-59b0-4b8f-887d-bc72fa4df2d1.png)
