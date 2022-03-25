@@ -17,10 +17,11 @@ It has next data base scheme
 
 ![Снимок экрана (43)](https://user-images.githubusercontent.com/90979711/160174310-86910423-78a9-4987-8406-432ad01b93f8.png)
 
-* thats tables has oneToOne relationship. 
-All users reminders is recorded into table in encrypt view.
+* thats tables has oneToOne relationship and all users' reminders is recorded into table in encrypt view. 
 
-![Снимок экрана (41)](https://user-images.githubusercontent.com/90979711/160175340-8d1825a6-74cc-47bd-8def-eb6848877dd0.png)
+![Снимок экрана (40)](https://user-images.githubusercontent.com/90979711/160175520-ff7cf0ec-616d-4df0-b76d-a3da8148db21.png)
+
+* It achives by XOR decoded.
  
 
 ## Builds
