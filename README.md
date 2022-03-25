@@ -15,3 +15,4 @@ User's input maybye not right. To correct work it's implementing input's validat
 
 
 ## Builds
+## Project's structure
