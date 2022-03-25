@@ -13,7 +13,7 @@ Users' input maybye not right. To correct work it's implementing input's validat
 
 ![botGif2](https://user-images.githubusercontent.com/90979711/158227397-93380217-99e6-4abd-95eb-e2326dfcbe3e.gif)
 
-It has next data base scheme 
+It has next data base scheme.
 
 ![Снимок экрана (43)](https://user-images.githubusercontent.com/90979711/160174310-86910423-78a9-4987-8406-432ad01b93f8.png)
 
