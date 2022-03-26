@@ -7,7 +7,8 @@ import telegramBot.service.RemindServiceImpl;
 import telegramBot.service.SendMessageService;
 
 public class RestartCommand implements Command {
-    public static String RESTART_COMMAND = "Вы возообновили напоминания.";
+    public static String[] RESTART_COMMANDS = {"Вы возообновили напоминания.",
+            "Невозможно возообновить активные напоминания."};
 
     private SendMessageService sendMessageService;
 
@@ -19,10 +20,9 @@ public class RestartCommand implements Command {
     @Override
     public boolean execute(Update update) {
         String chatId = update.getMessage().getChatId().toString();
-        if (!restart(chatId))
-            RESTART_COMMAND = "Невозможно возообновить активные напоминания.";
-
-        this.sendMessageService.sendMessage(chatId, RESTART_COMMAND);
+        if (!restart(chatId)){
+        this.sendMessageService.sendMessage(chatId, RESTART_COMMANDS[1]);}
+        else this.sendMessageService.sendMessage(chatId, RESTART_COMMANDS[0]);
         return true;
     }
 

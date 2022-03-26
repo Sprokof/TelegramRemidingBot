@@ -146,7 +146,8 @@ public class RemindServiceImpl implements RemindService {
             session.beginTransaction();
             objects = session.createSQLQuery("SELECT * FROM REMINDERS as r join DETAILS as d " +
                                     "on r.details_id = d.id WHERE d.CHAT_ID_TO_SEND =:chatId " +
-                                    "AND d.TIME_TO_SEND is true AND r.REMIND_DATE =:currentDate").
+                                    "AND d.TIME_TO_SEND is true AND " +
+                            "d.IS_STOP is false AND r.REMIND_DATE =:currentDate").
                             addEntity("r", Remind.class).
                             addJoin("d", "r.details").
                             setParameter("chatId", remind.getDetails().getChatIdToSend()).

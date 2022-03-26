@@ -4,7 +4,7 @@ import telegramBot.service.SendMessageService;
 
 import static telegramBot.command.CommandName.STOP;
 import static telegramBot.command.CommandName.UNKNOWN;
-import static telegramBot.command.StopCommand.STOP_COMMAND;
+
 
 public class UnknownCommandTest extends AbstractCommandTest {
     @Override

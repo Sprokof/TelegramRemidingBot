@@ -8,7 +8,9 @@ import telegramBot.service.RemindServiceImpl;
 import telegramBot.service.SendMessageService;
 
 public class StopCommand implements Command {
-    public static String STOP_COMMAND = "Вы остановили напоминания. /restart - для возообновления";
+    public static String[] STOP_COMMANDS = {"Вы остановили напоминания. /restart - для возообновления " +
+            "(Остановленные на сутки и более ежедневные напоминания - удаляются).",
+            "Невозможно остановить неактивные напоминания."};
     private final SendMessageService sendMessageService;
 
 
@@ -19,9 +21,9 @@ public class StopCommand implements Command {
     @Override
     public boolean execute(Update update) {
         String chatId = update.getMessage().getChatId().toString();
-        if(!stop(chatId))
-            STOP_COMMAND = "Невозможно остановить неактивные напоминания";
-        sendMessageService.sendMessage(chatId, STOP_COMMAND);
+        if(!stop(chatId)){
+        sendMessageService.sendMessage(chatId, STOP_COMMANDS[1]);}
+        else sendMessageService.sendMessage(chatId, STOP_COMMANDS[0]);
         return true;
     }
 
@@ -34,6 +36,7 @@ public class StopCommand implements Command {
                 count++;
             }
         }
+        System.out.println(count+ "remind");
         return count > 0;
     }
 }

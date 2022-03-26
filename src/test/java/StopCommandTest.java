@@ -3,7 +3,7 @@ import telegramBot.command.AddCommand;
 import telegramBot.command.Command;
 import telegramBot.service.SendMessageService;
 
-import static telegramBot.command.StopCommand.STOP_COMMAND;
+import static telegramBot.command.StopCommand.STOP_COMMANDS;
 import static telegramBot.command.CommandName.STOP;
 
 public class StopCommandTest extends AbstractCommandTest{
@@ -21,7 +21,7 @@ public class StopCommandTest extends AbstractCommandTest{
 
     @Override
     String getCommandMessage() {
-        return STOP_COMMAND;
+        return STOP_COMMANDS[0];
     }
 
 
