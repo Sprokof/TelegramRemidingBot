@@ -56,9 +56,7 @@
       <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/com/spring5/repositories/Spring5webApplication.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/log4j2.properties" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/templates.books/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/dao/MessageDAOImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/dao/MessageDAOImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/manage/RemindManage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/manage/RemindManage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/service/RemindServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/service/RemindServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/ex1.sql" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/hr4.sql" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/hr7.sql" beforeDir="false" />
@@ -218,7 +216,7 @@
       <workItem from="1646750772617" duration="49133000" />
       <workItem from="1646909311435" duration="20274000" />
       <workItem from="1646998157632" duration="33511000" />
-      <workItem from="1647354564502" duration="117252000" />
+      <workItem from="1647354564502" duration="118286000" />
     </task>
     <servers />
   </component>

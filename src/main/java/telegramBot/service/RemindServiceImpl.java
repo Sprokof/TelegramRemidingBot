@@ -167,13 +167,11 @@ public class RemindServiceImpl implements RemindService {
                r.setDetails((Details) line[1]);
                reminds.add(r);
             }
-        return reminds; }
+            if(RemindManage.toDoubleTime() >= 5.10) { return reminds; }
+        return new ArrayList<>();}
+        return new ArrayList<>();}
 
-        return new ArrayList<>();
-
-    }
-
-
+    
 }
 
 
