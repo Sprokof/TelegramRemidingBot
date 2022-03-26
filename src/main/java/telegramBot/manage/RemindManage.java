@@ -92,10 +92,10 @@ public class RemindManage {
             if (!(messages = MessageServiceImpl.newMessageService().getAllMessages()).isEmpty()) {
                 messages.forEach((m) -> {
                     this.deleteService.deleteMessage(m);
-                    MessageServiceImpl.newMessageService().deleteAllMessages();
-                });
 
-            }
+                });
+            MessageServiceImpl.newMessageService().deleteAllMessages();
+                System.out.println(messages.size());}
         }
         deleteNotUpdatedRemind();
     }

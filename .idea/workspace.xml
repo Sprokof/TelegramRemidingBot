@@ -57,14 +57,8 @@
       <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/log4j2.properties" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/templates.books/index.html" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/command/RestartCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/command/RestartCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/command/StopCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/command/StopCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/service/RemindServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/service/RemindServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/StopCommandTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/StopCommandTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/UnknownCommandTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/UnknownCommandTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/command/RestartCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/command/RestartCommand.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/command/StopCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/command/StopCommand.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/service/RemindServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/service/RemindServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/dao/MessageDAOImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/dao/MessageDAOImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/manage/RemindManage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/manage/RemindManage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/ex1.sql" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/hr4.sql" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/hr7.sql" beforeDir="false" />
@@ -224,7 +218,7 @@
       <workItem from="1646750772617" duration="49133000" />
       <workItem from="1646909311435" duration="20274000" />
       <workItem from="1646998157632" duration="33511000" />
-      <workItem from="1647354564502" duration="116094000" />
+      <workItem from="1647354564502" duration="117252000" />
     </task>
     <servers />
   </component>

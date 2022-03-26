@@ -36,7 +36,7 @@ public class MessageDAOImpl implements MessageDAO{
     try{
         session = this.sessionFactory.getCurrentSession();
         session.beginTransaction();
-        session.createSQLQuery("DELETE FROM MESSAGES");
+        session.createSQLQuery("DELETE FROM MESSAGES").executeUpdate();
         session.getTransaction().commit();}
     catch (Exception e){e.printStackTrace();}
     finally {
