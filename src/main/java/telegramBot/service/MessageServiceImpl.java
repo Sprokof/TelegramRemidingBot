@@ -39,4 +39,9 @@ public class MessageServiceImpl implements MessageService {
     public Message getMessageByNextField(String chatId, String maintenance) {
         return this.messageDAO.getMessageByChatIdAndMaintenance(chatId, maintenance);
     }
+
+    @Override
+    public void deleteMessage(Message message) {
+        this.messageDAO.deleteMessageByMessageId(message.getMessageId());
+    }
 }

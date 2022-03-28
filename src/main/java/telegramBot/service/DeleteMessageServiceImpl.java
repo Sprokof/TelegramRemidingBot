@@ -15,7 +15,6 @@ public class DeleteMessageServiceImpl implements DeleteMessageService{
     @Autowired
     public DeleteMessageServiceImpl(TelegramBot telegramBot){
         this.bot = telegramBot;
-
     }
 
     @Override

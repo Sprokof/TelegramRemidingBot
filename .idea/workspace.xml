@@ -56,7 +56,28 @@
       <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/com/spring5/repositories/Spring5webApplication.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/log4j2.properties" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/templates.books/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/bot/TelegramBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/bot/TelegramBot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/dao/MessageDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/dao/MessageDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/dao/MessageDAOImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/dao/MessageDAOImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/entity/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/entity/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/manage/RemindManage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/manage/RemindManage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/service/DeleteMessageServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/service/DeleteMessageServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/service/MessageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/service/MessageService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/service/MessageServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/service/MessageServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/service/RemindServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/service/RemindServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/AbstractCommandTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/AbstractCommandTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/hibernate.cfg.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/hibernate.cfg.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/bot/TelegramBot.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/bot/TelegramBot.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/dao/MessageDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/dao/MessageDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/dao/MessageDAOImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/dao/MessageDAOImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/entity/Message.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/entity/Message.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/manage/RemindManage.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/manage/RemindManage.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/service/DeleteMessageServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/service/DeleteMessageServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/service/MessageService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/service/MessageService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/service/MessageServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/service/MessageServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/test-classes/AbstractCommandTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-classes/AbstractCommandTest.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/ex1.sql" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/hr4.sql" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/hr7.sql" beforeDir="false" />
@@ -100,6 +121,14 @@
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
   </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="alwaysUpdateSnapshots" value="true" />
+        <option name="workOffline" value="true" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
   <component name="ProjectCodeStyleSettingsMigration">
     <option name="version" value="2" />
   </component>
@@ -118,18 +147,23 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../oracleJDBC/Algoritms" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/docker/services/app" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
-    <property name="settings.editor.selected.configurable" value="preferences.fileTypes" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="MavenSettings" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Projects\Tbot\src\main\docker\services\app" />
+      <recent name="C:\Projects\Tbot\src\main\docker" />
       <recent name="C:\Projects\Tbot\src\main" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Projects\Tbot\src\main\docker\services\app" />
+      <recent name="C:\Projects\Tbot\src\main\docker\services" />
       <recent name="C:\Projects\Tbot\src" />
       <recent name="C:\Projects\Tbot\.idea" />
       <recent name="C:\Projects\Tbot\src\main\resources" />
@@ -149,29 +183,29 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="SendRemindTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="AddCommandTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="Tbot" />
       <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="SendRemindTest" />
+      <option name="MAIN_CLASS_NAME" value="AddCommandTest" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="SendRemindTest.toNextMonth" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="RemindManageTest.toNextMonth" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="Tbot" />
       <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="SendRemindTest" />
+      <option name="MAIN_CLASS_NAME" value="RemindManageTest" />
       <option name="METHOD_NAME" value="toNextMonth" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ValidateTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="StartCommandTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="Tbot" />
       <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="ValidateTest" />
+      <option name="MAIN_CLASS_NAME" value="StartCommandTest" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -186,13 +220,20 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="BotApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="Tbot" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="telegramBot.BotApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Application.BotApplication" />
+        <item itemvalue="JUnit.AddCommandTest" />
+        <item itemvalue="JUnit.StartCommandTest" />
+        <item itemvalue="JUnit.RemindManageTest.toNextMonth" />
         <item itemvalue="JUnit.XORCryptTest" />
-        <item itemvalue="JUnit.ValidateTest" />
-        <item itemvalue="JUnit.SendRemindTest.toNextMonth" />
-        <item itemvalue="JUnit.SendRemindTest" />
       </list>
     </recent_temporary>
   </component>
@@ -216,9 +257,15 @@
       <workItem from="1646750772617" duration="49133000" />
       <workItem from="1646909311435" duration="20274000" />
       <workItem from="1646998157632" duration="33511000" />
-      <workItem from="1647354564502" duration="118286000" />
+      <workItem from="1647354564502" duration="124122000" />
+      <workItem from="1648376244698" duration="22038000" />
     </task>
     <servers />
+  </component>
+  <component name="TerminalProjectNonSharedOptionsProvider">
+    <envs>
+      <env key="JAVA_HOME" value="C:\Program Files\Java\jdk-11" />
+    </envs>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />

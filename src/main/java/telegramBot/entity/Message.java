@@ -4,6 +4,7 @@ package telegramBot.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import telegramBot.crypt.XORCrypt;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 @Table(name = "MESSAGES")
+@ToString
 public class Message{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

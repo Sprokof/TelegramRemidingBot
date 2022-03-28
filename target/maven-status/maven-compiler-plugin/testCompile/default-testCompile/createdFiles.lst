@@ -1,0 +1,7 @@
+StopCommandTest.class
+AbstractCommandTest.class
+RemindManageTest.class
+UnknownCommandTest.class
+XORCryptTest.class
+StartCommandTest.class
+AddCommandTest.class

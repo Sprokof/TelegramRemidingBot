@@ -355,21 +355,22 @@ public class RemindManage {
         String maintenance, chatId = String.valueOf(remind.getDetails().getChatIdToSend());
 
         if (reminds.size() == 1) {
-               maintenance  = messageForLonelyRemind(remind);   }
-               else  maintenance = messageForAggregateRemind(reminds.toArray(Remind[]::new));
-        Message message;
-        if((message = MessageServiceImpl.newMessageService().getMessageByNextField(chatId, maintenance))!=null){
-            this.deleteService.deleteMessage(message);
-        }
+               maintenance  = messageForLonelyRemind(remind); }
+        else   maintenance = messageForAggregateRemind(reminds.toArray(Remind[]::new));
+
                 if(this.service.sendMessage(chatId, maintenance)) {
                     String key = XORCrypt.keyGenerate();
                     String em = XORCrypt.encrypt(maintenance, key);
-                    message = new Message(chatId, em, key, SendMessageServiceImpl.getMessageId());
-                    if (!messages.contains(message)){
-                        MessageServiceImpl.newMessageService().save(message);
-                    }
+                    Message newMessage = new Message(chatId, em, key, SendMessageServiceImpl.getMessageId());
+                    Message oldMessage;
+                    if (!messages.contains(newMessage)){
+                        MessageServiceImpl.newMessageService().save(newMessage); }
+                    else{ oldMessage = MessageServiceImpl.
+                            newMessageService().getMessageByNextField(chatId, maintenance);
+                            this.deleteService.deleteMessage(oldMessage);
+                    MessageServiceImpl.newMessageService().deleteMessage(oldMessage);
+                    MessageServiceImpl.newMessageService().save(newMessage);}
                 }
-
         return true; }
 
 

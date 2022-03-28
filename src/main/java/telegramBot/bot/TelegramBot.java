@@ -41,7 +41,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Getter
     private final SendMessageServiceImpl sendMessageService;
     private final RemindManage manage;
-    private DeleteMessageServiceImpl deleteMessageService;
+    private final DeleteMessageServiceImpl deleteMessageService;
     private static final String[] messagesToLog = {"METHOD STARTS", "METHOD FINISHED"};
 
 

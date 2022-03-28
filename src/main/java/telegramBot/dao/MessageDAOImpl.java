@@ -31,6 +31,22 @@ public class MessageDAOImpl implements MessageDAO{
     }
 
     @Override
+    public void deleteMessageByMessageId(Integer messageId) {
+        Session session;
+    try{
+        session = this.sessionFactory.getCurrentSession();
+        session.beginTransaction();
+        session.createSQLQuery("DELETE FROM MESSAGES WHERE MESSAGE_ID=:id").
+                setParameter("id", messageId).executeUpdate();
+        session.getTransaction().commit();
+    }
+    catch (Exception e){e.printStackTrace();}
+    finally {
+        this.sessionFactory.close();
+    }
+    }
+
+    @Override
     public void deleteAllMessages() {
         Session session;
     try{
@@ -42,6 +58,7 @@ public class MessageDAOImpl implements MessageDAO{
     finally {
         this.sessionFactory.close();
     }
+
     }
 
     @Override
