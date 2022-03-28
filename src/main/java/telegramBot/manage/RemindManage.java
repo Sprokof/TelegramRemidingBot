@@ -369,7 +369,7 @@ public class RemindManage {
                             newMessageService().getMessageByNextField(chatId, maintenance);
                             this.deleteService.deleteMessage(oldMessage);
                     MessageServiceImpl.newMessageService().deleteMessage(oldMessage);
-                    MessageServiceImpl.newMessageService().save(newMessage);}
+                    MessageServiceImpl.newMessageService().save(newMessage); }
                 }
         return true; }
 

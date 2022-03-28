@@ -6,19 +6,16 @@ services:
         dockerfile: Dockerfile.development
       ports:
       - "5433:5433"
-      environment:
-        - POSTGRES_USER=postgres
-        - POSTGRES_DB=Tbot
-        - POSTGRES_PASSWORD=r53
+      env_file:
+        - env/postgres.env
 
     app:
       build:
         context: services/app
         dockerfile: Dockerfile.development
       command: java -jar ./bot.jar
-      environment:
-        - SPRING_DATASOURCE_URL=jdbc:postgresql://192.168.0.48:5433/Tbot
+      env_file:
+        - env/app.env
       image: 'bot-app'
       depends_on:
         - postgres
-
