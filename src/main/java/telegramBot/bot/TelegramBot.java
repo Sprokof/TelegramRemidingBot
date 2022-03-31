@@ -9,6 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import telegramBot.crypt.XORCrypt;
 import telegramBot.entity.Details;
 import telegramBot.entity.Message;
+import telegramBot.manage.DateManage;
 import telegramBot.service.DeleteMessageServiceImpl;
 import telegramBot.service.RemindServiceImpl;
 import telegramBot.command.CommandContainer;
@@ -44,7 +45,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final DeleteMessageServiceImpl deleteMessageService;
     private static final String[] messagesToLog = {"METHOD STARTS", "METHOD FINISHED"};
 
-
     public TelegramBot() {
         this.sendMessageService = new SendMessageServiceImpl(this);
         this.commandContainer = new CommandContainer(sendMessageService);
@@ -58,36 +58,36 @@ public class TelegramBot extends TelegramLongPollingBot {
         String chatId;
         if (update.hasMessage() && update.getMessage().hasText()) {
             chatId = update.getMessage().getChatId().toString();
-            commands.putIfAbsent(chatId, new ArrayList<String>());
-            String message = update.getMessage().getText().trim();
-            if (message.startsWith(COMMAND_PREFIX)) {
-                command = message.split(" ")[0].toLowerCase(Locale.ROOT);
-                this.commandContainer.retrieveCommand(command).execute(update);
-                commands.get(chatId).add(command);
-            } else {
-                if (lastCommand(chatId).equals("/add")) {
-                    acceptNewRemindFromUser(update);
-                } else if (lastCommand(chatId).equals("/show")) {
-                    if (acceptDateFromUser(update)) {
-                        try {
-                            if (!this.manage.showRemindsByDate(update.getMessage().getChatId().toString(),
-                                    update.getMessage().getText())) {
-                                this.sendMessageService.sendMessage(update.getMessage().getChatId().toString(),
-                                        "Не получилось найти напоминания, возможно " +
-                                                "вы указали уже прошедшую дату, либо на эту дату нет напоминаний");
+                commands.putIfAbsent(chatId, new ArrayList<String>());
+                String message = update.getMessage().getText().trim();
+                if (message.startsWith(COMMAND_PREFIX)) {
+                    command = message.split(" ")[0].toLowerCase(Locale.ROOT);
+                    this.commandContainer.retrieveCommand(command).execute(update);
+                    commands.get(chatId).add(command);
+                } else {
+                    if (lastCommand(chatId).equals("/add")) {
+                        acceptNewRemindFromUser(update);
+                    } else if (lastCommand(chatId).equals("/show")) {
+                        if (acceptDateFromUser(update)) {
+                            try {
+                                if (!this.manage.showRemindsByDate(update.getMessage().getChatId().toString(),
+                                        update.getMessage().getText())) {
+                                    this.sendMessageService.sendMessage(update.getMessage().getChatId().toString(),
+                                            "Не получилось найти напоминания, возможно " +
+                                                    "вы указали уже прошедшую дату, либо на эту дату нет напоминаний");
+                                }
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
                             }
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                        } else {
+                            this.sendMessageService.sendMessage(update.getMessage().getChatId().toString(),
+                                    "Вероятно вы ошиблись в формате даты. Повторите команду /show и " +
+                                            "введите дату в верном формате");
                         }
-                    } else {
-                        this.sendMessageService.sendMessage(update.getMessage().getChatId().toString(),
-                                "Вероятно вы ошиблись в формате даты. Повторите команду /show и " +
-                                        "введите дату в верном формате");
                     }
                 }
-            }
         }
-        executeReminds();
+            executeReminds();
     }
 
     private String getDateFromUserInput(String input) {
@@ -114,7 +114,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         Pattern p = Pattern.compile("[Aa-zZ\\s][0-9]{2}\\p{P}[0-9]{2}\\p{P}[0-9]{4}");
         boolean textWithRightDate = p.matcher(input).find();
         if (textWithRightDate) {
-            return validateDate(getDateFromUserInput(input).split("\\p{P}")[0],
+            return DateManage.validateDate(getDateFromUserInput(input).split("\\p{P}")[0],
                     getDateFromUserInput(input).split("\\p{P}")[1],
                     getDateFromUserInput(input).split("\\p{P}")[2]);
         } else {
@@ -172,48 +172,11 @@ public class TelegramBot extends TelegramLongPollingBot {
         boolean isDate = p.matcher(input).find();
         if (isDate) {
             String[] dateArray = input.split("\\p{P}");
-           return validateDate(dateArray[0], dateArray[1], dateArray[2]);
+           return DateManage.validateDate(dateArray[0], dateArray[1], dateArray[2]);
         } else {
             return false;
         }
 
-    }
-
-    private static boolean validateDate(String day, String month, String year) {
-        int result = 0;
-        int dd = 0;
-        int mm = 0;
-        int yyyy = 0;
-        try {
-            dd = Integer.parseInt(day.trim());
-            mm = Integer.parseInt(month);
-            yyyy = Integer.parseInt(year.trim());
-            if (day.startsWith("0")) {
-                dd = Integer.parseInt(day.substring(1));
-            }
-            if (dd < 32 && dd >= 1) {
-                result++;
-            }
-
-            if (month.startsWith("0")) {
-                mm = Integer.parseInt(month.substring(1));
-            }
-            if (mm < 13 && mm >= 1) {
-                result++;
-            }
-
-            if (yyyy >= Integer.parseInt(toDateArray()[2])) {
-                result++;
-            }
-        } catch (NumberFormatException e) {
-            result--;
-        }
-        if ((dd < Integer.parseInt(toDateArray()[0]) && (mm < Integer.parseInt(toDateArray()[1]))
-                || (dd < Integer.parseInt(toDateArray()[0]) && (mm <= Integer.parseInt(toDateArray()[1])))
-                || (dd >= Integer.parseInt(toDateArray()[0]) && (mm < Integer.parseInt(toDateArray()[1]))))) result--;
-
-
-        return (result == 3);
     }
 
     private synchronized void acceptNewRemindFromUser(Update update) {
@@ -265,14 +228,8 @@ public class TelegramBot extends TelegramLongPollingBot {
                             "Возможно, что вы указали уже прошедшую дату. " +
                             "После введите команду /add для повторного добавления.");
 
-
             commands.get(chatId).clear();
         }
-
-    }
-
-    private static String[] toDateArray() {
-        return RemindManage.currentDate().split("\\.");
 
     }
 

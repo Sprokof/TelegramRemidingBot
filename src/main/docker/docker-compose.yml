@@ -19,3 +19,5 @@ services:
       image: 'bot-app'
       depends_on:
         - postgres
+
+

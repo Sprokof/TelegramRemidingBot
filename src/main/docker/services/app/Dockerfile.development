@@ -2,3 +2,6 @@ FROM bellsoft/liberica-openjdk-alpine-musl:11.0.3
 WORKDIR /users/local/botApp
 ADD Bot-1.0-SNAPSHOT.jar bot.jar
 CMD java -jar ./bot.jar
+
+
+

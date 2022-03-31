@@ -7,7 +7,9 @@ import telegramBot.crypt.XORCrypt;
 import telegramBot.dao.RemindDAOImpl;
 import telegramBot.entity.Details;
 import telegramBot.entity.Remind;
+import telegramBot.manage.DateManage;
 import telegramBot.manage.RemindManage;
+import telegramBot.manage.TimeManage;
 
 import java.util.ArrayList;
 
@@ -151,7 +153,7 @@ public class RemindServiceImpl implements RemindService {
                             addEntity("r", Remind.class).
                             addJoin("d", "r.details").
                             setParameter("chatId", remind.getDetails().getChatIdToSend()).
-                            setParameter("currentDate", RemindManage.currentDate()).list();
+                            setParameter("currentDate", DateManage.currentDate()).list();
             session.getTransaction().commit();
         } catch (Exception e) {
             e.printStackTrace();
@@ -167,7 +169,7 @@ public class RemindServiceImpl implements RemindService {
                r.setDetails((Details) line[1]);
                reminds.add(r);
             }
-            if(RemindManage.toDoubleTime() >= 5.10) { return reminds; }
+            if(TimeManage.toDoubleTime() >= 5.10) { return reminds; }
         return new ArrayList<>();}
         return new ArrayList<>();}
 

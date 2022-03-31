@@ -16,7 +16,7 @@ public class Remind {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     @Column(name = "ENCRYPT_MAINTENANCE")
     private String encryptedMaintenance;
     @Column(name = "REMIND_DATE")
@@ -27,6 +27,7 @@ public class Remind {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "details_id")
     private Details details;
+
 
     public Remind(String encryptedMaintenance, String remindDate, String key){
         this.encryptedMaintenance = encryptedMaintenance;
