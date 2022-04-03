@@ -13,9 +13,9 @@ import java.util.*;
 @Component
 public class RemindManage {
 
+    private final SendMessageServiceImpl service;
+    private final DeleteMessageServiceImpl deleteService;
 
-    private SendMessageServiceImpl service;
-    private DeleteMessageServiceImpl deleteService;
     @Getter
     private static final String REMIND_MESSAGE = "(R) Позвольте напомнить, что вам следует ";
     private static final String SHOW_MESSAGE = "(R) На эту дату есть следующие записи:\n";

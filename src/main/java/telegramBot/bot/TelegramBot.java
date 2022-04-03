@@ -9,13 +9,11 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import telegramBot.crypt.XORCrypt;
 import telegramBot.entity.Details;
 import telegramBot.entity.Message;
-import telegramBot.manage.DateManage;
-import telegramBot.manage.TimeManage;
+import telegramBot.manage.*;
 import telegramBot.service.DeleteMessageServiceImpl;
 import telegramBot.service.RemindServiceImpl;
 import telegramBot.command.CommandContainer;
 import telegramBot.entity.Remind;
-import telegramBot.manage.RemindManage;
 import telegramBot.service.SendMessageServiceImpl;
 
 
@@ -23,12 +21,13 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Getter
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
     private final static Map<String, List<String>> commands;
-    static Logger log =  Logger.getLogger("Logger");
+    static Logger log = Logger.getLogger("Logger");
 
     static {
         commands = new HashMap<>();
@@ -51,6 +50,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.commandContainer = new CommandContainer(sendMessageService);
         this.deleteMessageService = new DeleteMessageServiceImpl(this);
         this.manage = new RemindManage(sendMessageService, deleteMessageService);
+        //this.manage = new RemindManage(sendMessageService, deleteMessageService);
     }
 
     @Override
@@ -59,36 +59,36 @@ public class TelegramBot extends TelegramLongPollingBot {
         String chatId;
         if (update.hasMessage() && update.getMessage().hasText()) {
             chatId = update.getMessage().getChatId().toString();
-                commands.putIfAbsent(chatId, new ArrayList<String>());
-                String message = update.getMessage().getText().trim();
-                if (message.startsWith(COMMAND_PREFIX)) {
-                    command = message.split(" ")[0].toLowerCase(Locale.ROOT);
-                    this.commandContainer.retrieveCommand(command).execute(update);
-                    commands.get(chatId).add(command);
-                } else {
-                    if (lastCommand(chatId).equals("/add")) {
-                        acceptNewRemindFromUser(update);
-                    } else if (lastCommand(chatId).equals("/show")) {
-                        if (acceptDateFromUser(update)) {
-                            try {
-                                if (!this.manage.showRemindsByDate(update.getMessage().getChatId().toString(),
-                                        update.getMessage().getText())) {
-                                    this.sendMessageService.sendMessage(update.getMessage().getChatId().toString(),
-                                            "Не получилось найти напоминания, возможно " +
-                                                    "вы указали уже прошедшую дату, либо на эту дату нет напоминаний");
-                                }
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
+            commands.putIfAbsent(chatId, new ArrayList<String>());
+            String message = update.getMessage().getText().trim();
+            if (message.startsWith(COMMAND_PREFIX)) {
+                command = message.split(" ")[0].toLowerCase(Locale.ROOT);
+                this.commandContainer.retrieveCommand(command).execute(update);
+                commands.get(chatId).add(command);
+            } else {
+                if (lastCommand(chatId).equals("/add")) {
+                    acceptNewRemindFromUser(update);
+                } else if (lastCommand(chatId).equals("/show")) {
+                    if (acceptDateFromUser(update)) {
+                        try {
+                            if (!this.manage.showRemindsByDate(update.getMessage().getChatId().toString(),
+                                    update.getMessage().getText())) {
+                                this.sendMessageService.sendMessage(update.getMessage().getChatId().toString(),
+                                        "Не получилось найти напоминания, возможно " +
+                                                "вы указали уже прошедшую дату, либо на эту дату нет напоминаний");
                             }
-                        } else {
-                            this.sendMessageService.sendMessage(update.getMessage().getChatId().toString(),
-                                    "Вероятно вы ошиблись в формате даты. Повторите команду /show и " +
-                                            "введите дату в верном формате");
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
+                    } else {
+                        this.sendMessageService.sendMessage(update.getMessage().getChatId().toString(),
+                                "Вероятно вы ошиблись в формате даты. Повторите команду /show и " +
+                                        "введите дату в верном формате");
                     }
                 }
+            }
         }
-            executeReminds();
+        executeReminds();
     }
 
     private String getDateFromUserInput(String input) {
@@ -161,8 +161,9 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private void consoleLog(String message, long[] aMills, int index) {
         aMills[index] = getMills();
-        if(index == 1){
-            message = message +  " FOR "+ (aMills[1] - aMills[0]) +" MILLISECONDS"; }
+        if (index == 1) {
+            message = message + " FOR " + (aMills[1] - aMills[0]) + " MILLISECONDS";
+        }
         log.log(Level.SEVERE, message);
     }
 
@@ -173,7 +174,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         boolean isDate = p.matcher(input).find();
         if (isDate) {
             String[] dateArray = input.split("\\p{P}");
-           return DateManage.validateDate(dateArray[0], dateArray[1], dateArray[2]);
+            return DateManage.validateDate(dateArray[0], dateArray[1], dateArray[2]);
         } else {
             return false;
         }
@@ -194,6 +195,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 Remind remind = new Remind(encrypt,
                         getDateFromUserInput(input).
                                 replaceAll("\\p{P}", "\\."), key);
+
                 double time = TimeManage.toDoubleTime(TimeManage.currentTime()) - 3;
 
                 Details details = new Details(Integer.parseInt(chatId), false,
@@ -201,9 +203,13 @@ public class TelegramBot extends TelegramLongPollingBot {
 
                 remind.setDetails(details);
 
+
                 isExist = RemindServiceImpl.newRemindService().isExist(remind);
                 if (!isExist) {
-                    if (save(remind)) {
+                String maxTime;
+                    if((maxTime = RemindServiceImpl.newRemindService().getMaxTime(remind)) !=null ){
+                        remind.getDetails().setLastSendTime(maxTime); }
+                        if (save(remind)) {
                         notify();
                         this.deleteMessageService.deleteMessage(new Message(chatId,
                                 messageId));
@@ -235,10 +241,9 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     }
 
-    private long getMills(){
+    private long getMills() {
         return Calendar.getInstance().getTimeInMillis();
     }
-
 }
 
 

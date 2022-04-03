@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RemindServiceImpl implements RemindService {
     private RemindDAOImpl remindDAO;
@@ -72,16 +73,15 @@ public class RemindServiceImpl implements RemindService {
     public boolean isExist(Remind remind) {
         String decryptMaintenance = XORCrypt.
                 decrypt(XORCrypt.stringToIntArray(remind.getEncryptedMaintenance()), remind.getKey());
-        List<Object> objects = new ArrayList<>();
+        List<Remind> reminds = new ArrayList<>();
         Session session;
         try {
             session = this.remindDAO.getSessionFactory().getCurrentSession();
             session.beginTransaction();
-            objects = (List<Object>) session.createSQLQuery("SELECT * FROM REMINDERS as r join DETAILS as d " +
+            reminds = (List<Remind>) session.createSQLQuery("SELECT * FROM REMINDERS as r join DETAILS as d " +
                             "on r.details_id = d.id WHERE d.CHAT_ID_TO_SEND=:chatId " +
                             "AND r.REMIND_DATE=:rm").
                     addEntity("r", Remind.class).
-                    addJoin("d", "r.details").
                     setParameter("chatId", remind.getDetails().getChatIdToSend()).
                     setParameter("rm", remind.getRemindDate()).list();
             session.getTransaction().commit();
@@ -90,16 +90,7 @@ public class RemindServiceImpl implements RemindService {
         } finally {
             this.remindDAO.getSessionFactory().close();
         }
-        if(objects.isEmpty()){return false;}
-
-        List<Remind> reminds = new ArrayList<>();
-        Iterator<Object> iterator = objects.iterator();
-        while(iterator.hasNext()){
-            Object[] line = (Object[]) iterator.next();
-            Remind thisRemind = (Remind) line[0];
-            thisRemind.setDetails((Details) line[1]);
-            reminds.add(thisRemind);
-        }
+        if(reminds.isEmpty()){return false;}
 
         return reminds.stream().map((r)->{
             return XORCrypt.decrypt(XORCrypt.stringToIntArray(r.getEncryptedMaintenance()),
@@ -141,16 +132,15 @@ public class RemindServiceImpl implements RemindService {
     @SuppressWarnings("unchecked")
     public List<Remind> getAllExecutingReminds(Remind remind) {
         Session session;
-        List<Object> objects = new ArrayList<>();
+        List<Remind> reminds = new ArrayList<>();
         try {
             session = this.remindDAO.getSessionFactory().getCurrentSession();
             session.beginTransaction();
-            objects = session.createSQLQuery("SELECT * FROM REMINDERS as r join DETAILS as d " +
+            reminds = session.createSQLQuery("SELECT * FROM REMINDERS as r join DETAILS as d " +
                                     "on r.details_id = d.id WHERE d.CHAT_ID_TO_SEND =:chatId " +
                                     "AND d.TIME_TO_SEND is true AND " +
                             "d.IS_STOP is false AND r.REMIND_DATE =:currentDate").
                             addEntity("r", Remind.class).
-                            addJoin("d", "r.details").
                             setParameter("chatId", remind.getDetails().getChatIdToSend()).
                             setParameter("currentDate", DateManage.currentDate()).list();
             session.getTransaction().commit();
@@ -160,19 +150,44 @@ public class RemindServiceImpl implements RemindService {
         } finally {
             this.remindDAO.getSessionFactory().close();
         }
-        if(!objects.isEmpty()){
-            List<Remind> reminds = new LinkedList<>();
-            for(Iterator<Object> itr = objects.iterator(); itr.hasNext();){
-               Object[] line = (Object[]) itr.next();
-               Remind r = (Remind) line[0];
-               r.setDetails((Details) line[1]);
-               reminds.add(r);
-            }
+        if(reminds.isEmpty()){ return new ArrayList<>();}
+
             if(TimeManage.toDoubleTime(TimeManage.currentTime()) >= 5.10) { return reminds; }
-        return new ArrayList<>();}
-        return new ArrayList<>();}
+        return new ArrayList<>();
+    }
 
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public String getMaxTime(Remind remind) {
+        Session session;
+        List<Remind> reminds = new ArrayList<>();
+    try{
+        session = this.remindDAO.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        reminds = session.createSQLQuery("SELECT * FROM REMINDERS as r " +
+                "join DETAILS as d on r.details_id = d.id " +
+                "WHERE CHAT_ID_TO_SEND=:id AND REMIND_DATE=:rd").addEntity("r", Remind.class)
+                .setParameter("id", remind.getDetails().getChatIdToSend())
+                .setParameter("rd", remind.getRemindDate()).list();
+        session.getTransaction().commit();
+    }
+    catch (Exception e){e.printStackTrace();}
+    finally {
+            this.remindDAO.getSessionFactory().close();
+        }
+
+    if(reminds.isEmpty()) return null;
+
+        List<Double> times =
+                reminds.stream().map((r) -> {
+                    return TimeManage.toDoubleTime(r.getDetails().getLastSendTime());
+                }).sorted((d1, d2) -> d2.compareTo(d1)).collect(Collectors.toList());
+
+        String time = TimeManage.toStringTime(times.get(0));
+        if(time.length() == 4) return time+"0";
+        return time;
+    }
 }
 
 

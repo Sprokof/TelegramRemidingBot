@@ -12,6 +12,7 @@ public interface RemindService {
     List<Remind> getAllRemindsFromDB();
     Remind getRemindById(int id);
     List<Remind> getAllExecutingReminds(Remind remind);
+    String getMaxTime(Remind remind);
     boolean isExist(Remind remind);
     void updateTimeToSendField(Remind remind, boolean flag);
     void updateCountSendField(Remind remind, int count);
