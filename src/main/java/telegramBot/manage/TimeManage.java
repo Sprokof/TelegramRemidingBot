@@ -20,8 +20,8 @@ public class TimeManage {
         return String.format("%s:%s", hour, minutes);
     }
 
-    public static double toDoubleTime(){
-        return Double.parseDouble(currentTime().replace(':', '.'));
+    public static double toDoubleTime(String time){
+        return Double.parseDouble(time.replace(':', '.'));
     }
 
     public static double timeDifference(String lastSendTime) {
@@ -29,4 +29,7 @@ public class TimeManage {
         double last = Double.parseDouble(lastSendTime.replace(':', '.'));
         return current - last;
 }
+    public static String toStringTime(double time){
+        return String.valueOf(time).replace(".", ":");
+    }
 }

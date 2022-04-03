@@ -57,14 +57,22 @@
       <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/log4j2.properties" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/templates.books/index.html" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/docker/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/docker/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/docker/services/app/Dockerfile.development" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/docker/services/app/Dockerfile.development" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/docker/services/app/Bot-1.0-SNAPSHOT.jar" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/bot/TelegramBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/bot/TelegramBot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/entity/Remind.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/entity/Remind.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/manage/RemindManage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/manage/RemindManage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/manage/TimeManage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/manage/TimeManage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/service/RemindServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/service/RemindServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/RemindManageTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/RemindManageTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/Bot-1.0-SNAPSHOT.jar.original" beforeDir="false" afterPath="$PROJECT_DIR$/target/Bot-1.0-SNAPSHOT.jar.original" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/bot/TelegramBot.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/bot/TelegramBot.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/manage/RemindManage.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/manage/RemindManage.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/manage/TimeManage.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/manage/TimeManage.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/service/RemindServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/service/RemindServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/surefire-reports/AddCommandTest.txt" beforeDir="false" afterPath="$PROJECT_DIR$/target/surefire-reports/AddCommandTest.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/surefire-reports/TEST-AddCommandTest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/surefire-reports/TEST-AddCommandTest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/surefire-reports/TEST-StartCommandTest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/surefire-reports/TEST-StartCommandTest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/surefire-reports/TEST-StopCommandTest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/surefire-reports/TEST-StopCommandTest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/surefire-reports/TEST-UnknownCommandTest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/surefire-reports/TEST-UnknownCommandTest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/surefire-reports/UnknownCommandTest.txt" beforeDir="false" afterPath="$PROJECT_DIR$/target/surefire-reports/UnknownCommandTest.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/ex1.sql" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/hr4.sql" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/hr7.sql" beforeDir="false" />
@@ -149,9 +157,9 @@
       <recent name="C:\Projects\Tbot\src\main" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Projects\Tbot\src\main\docker\services\app" />
       <recent name="C:\Projects\Tbot\src\main\docker\env" />
       <recent name="C:\Projects\Tbot\src\main\docker" />
-      <recent name="C:\Projects\Tbot\src\main\docker\services\app" />
       <recent name="C:\Projects\Tbot\src\main\docker\services" />
       <recent name="C:\Projects\Tbot\src" />
     </key>
@@ -248,7 +256,8 @@
       <workItem from="1648376244698" duration="42604000" />
       <workItem from="1648624284346" duration="118000" />
       <workItem from="1648624667555" duration="530000" />
-      <workItem from="1648625242026" duration="23155000" />
+      <workItem from="1648625242026" duration="33789000" />
+      <workItem from="1648966433955" duration="687000" />
     </task>
     <servers />
   </component>

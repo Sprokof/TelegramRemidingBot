@@ -10,6 +10,7 @@ import telegramBot.crypt.XORCrypt;
 import telegramBot.entity.Details;
 import telegramBot.entity.Message;
 import telegramBot.manage.DateManage;
+import telegramBot.manage.TimeManage;
 import telegramBot.service.DeleteMessageServiceImpl;
 import telegramBot.service.RemindServiceImpl;
 import telegramBot.command.CommandContainer;
@@ -193,9 +194,10 @@ public class TelegramBot extends TelegramLongPollingBot {
                 Remind remind = new Remind(encrypt,
                         getDateFromUserInput(input).
                                 replaceAll("\\p{P}", "\\."), key);
+                double time = TimeManage.toDoubleTime(TimeManage.currentTime()) - 3;
 
-                Details details = new Details(Integer.parseInt(chatId), true,
-                        " ", 0, false);
+                Details details = new Details(Integer.parseInt(chatId), false,
+                        TimeManage.toStringTime(time), 0, false);
 
                 remind.setDetails(details);
 

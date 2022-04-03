@@ -8,7 +8,6 @@ import telegramBot.dao.RemindDAOImpl;
 import telegramBot.entity.Details;
 import telegramBot.entity.Remind;
 import telegramBot.manage.DateManage;
-import telegramBot.manage.RemindManage;
 import telegramBot.manage.TimeManage;
 
 import java.util.ArrayList;
@@ -169,7 +168,7 @@ public class RemindServiceImpl implements RemindService {
                r.setDetails((Details) line[1]);
                reminds.add(r);
             }
-            if(TimeManage.toDoubleTime() >= 5.10) { return reminds; }
+            if(TimeManage.toDoubleTime(TimeManage.currentTime()) >= 5.10) { return reminds; }
         return new ArrayList<>();}
         return new ArrayList<>();}
 

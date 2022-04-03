@@ -17,8 +17,8 @@ public class RemindManage {
     private SendMessageServiceImpl service;
     private DeleteMessageServiceImpl deleteService;
     @Getter
-    private static final String REMIND_MESSAGE = "Позвольте напомнить, что вам следует ";
-    private static final String SHOW_MESSAGE = "На эту дату есть следующие записи:\n";
+    private static final String REMIND_MESSAGE = "(R) Позвольте напомнить, что вам следует ";
+    private static final String SHOW_MESSAGE = "(R) На эту дату есть следующие записи:\n";
 
     @Autowired
     public RemindManage(SendMessageService service, DeleteMessageServiceImpl deleteService) {
@@ -53,8 +53,7 @@ public class RemindManage {
         for (int index = 0; index < remindId.length; index++) {
             Remind remind = RemindServiceImpl.newRemindService().getRemindById(remindId[index]);
             if (remind.getRemindDate().equals(DateManage.currentDate())) {
-                if(newAddedRemind(remind)){ reminds.add(remind) ;}
-                if(isChangeRemind(remind, remindId[index])) {
+                if(isChangedRemind(remind, remindId[index]) || isUpdatedToNextDay(remind)) {
                     reminds.add(remind);}
             }
         }
@@ -71,7 +70,7 @@ public class RemindManage {
                }
             });
 
-        if(TimeManage.toDoubleTime() >= 23.10) {
+        if(TimeManage.toDoubleTime(TimeManage.currentTime()) >= 23.10) {
             List<Message> messages;
             if (!(messages = MessageServiceImpl.newMessageService().getAllMessages()).isEmpty()) {
                 messages.forEach((m) -> {
@@ -205,8 +204,8 @@ public class RemindManage {
     }
 
 
-    public boolean isChangeRemind(Remind remind, int index) {
-        double time = TimeManage.toDoubleTime();
+    public boolean isChangedRemind(Remind remind, int index) {
+        double time = TimeManage.toDoubleTime(TimeManage.currentTime());
         System.out.println(remind.getDetails().isTimeToSend());
         if (!remind.getDetails().isTimeToSend()) {
             if ((TimeManage.timeDifference(remind.getDetails().getLastSendTime()) >= 4.01) && (time < 23)) {
@@ -283,12 +282,10 @@ public class RemindManage {
                 }
         return true; }
 
-
-    private boolean newAddedRemind(Remind remind){
-        return (remind.getDetails().getLastSendTime().equals(" ") ||
-                remind.getDetails().getLastSendTime().equals("...")) &&
-                remind.getDetails().isTimeToSend();
+    public boolean isUpdatedToNextDay(Remind remind){
+        return remind.getDetails().getLastSendTime().equals("...");
     }
+
 
 }
 
