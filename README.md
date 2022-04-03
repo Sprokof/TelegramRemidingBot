@@ -25,6 +25,9 @@ It has next data base scheme.
  
 
 ## Docker
+It's using docker, images of bot and postgres may be find on next link
+https://hub.docker.com/repository/docker/1s2s5/telegram_bot
+
 ## Project's structure
 Pictures under is showing it's structure
 
