@@ -11,9 +11,6 @@ import telegramBot.manage.DateManage;
 import telegramBot.manage.TimeManage;
 
 import java.util.ArrayList;
-
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -187,6 +184,22 @@ public class RemindServiceImpl implements RemindService {
         String time = TimeManage.toStringTime(times.get(0));
         if(time.length() == 4) return time+"0";
         return time;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<Integer> getIdOfAllReminds() {
+        Session session;
+        List<Integer> ides = new ArrayList<>();
+    try{
+        session = this.remindDAO.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        ides = session.createSQLQuery("SELECT ID FROM REMINDERS").list();
+        session.getTransaction().commit();
+    }
+    catch (Exception e){e.printStackTrace();}
+    if(ides.isEmpty()) return new ArrayList<>();
+    return ides;
     }
 }
 

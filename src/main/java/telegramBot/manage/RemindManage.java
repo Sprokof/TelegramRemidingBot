@@ -26,34 +26,17 @@ public class RemindManage {
         this.deleteService = deleteService;
     }
 
-    private synchronized int[] getIdOfAllReminds() throws InterruptedException {
-        List<Remind> reminds;
-        while ((reminds = RemindServiceImpl.newRemindService().
-                getAllRemindsFromDB()).isEmpty()) {
+
+    public synchronized void execute() throws InterruptedException {
+        List<Integer> remindsId;
+        while ((remindsId = RemindServiceImpl.newRemindService().getIdOfAllReminds()).isEmpty()){
             wait();
         }
-        notify();
-        int[] ides = null;
-        try {
-            ides = new int[reminds.size()];
-            Remind remind;
-            for (int i = 0; i < ides.length; i++) {
-                remind = reminds.get(i);
-                ides[i] = remind.getId();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return ides;
-    }
-
-    public void execute() throws InterruptedException {
-        int[] remindId = getIdOfAllReminds();
         List<Remind> reminds = new ArrayList<>();
-        for (int index = 0; index < remindId.length; index++) {
-            Remind remind = RemindServiceImpl.newRemindService().getRemindById(remindId[index]);
+        for (int index = 0; index < remindsId.size(); index++) {
+            Remind remind = RemindServiceImpl.newRemindService().getRemindById(remindsId.get(index));
             if (remind.getRemindDate().equals(DateManage.currentDate())) {
-                if(isChangedRemind(remind, remindId[index]) || isUpdatedToNextDay(remind)) {
+                if(isChangedRemind(remind, remindsId.get(index)) || isUpdatedToNextDay(remind)) {
                     reminds.add(remind);}
             }
         }
@@ -73,12 +56,9 @@ public class RemindManage {
         if(TimeManage.toDoubleTime(TimeManage.currentTime()) >= 23.10) {
             List<Message> messages;
             if (!(messages = MessageServiceImpl.newMessageService().getAllMessages()).isEmpty()) {
-                messages.forEach((m) -> {
-                    this.deleteService.deleteMessage(m);
-
-                });
+                messages.forEach(this.deleteService::deleteMessage);
+            }
             MessageServiceImpl.newMessageService().deleteAllMessages();
-                System.out.println(messages.size());}
         }
         deleteNotUpdatedRemind();
     }
@@ -99,8 +79,8 @@ public class RemindManage {
     }
 
     public synchronized boolean showRemindsByDate(String userChatId, String date) throws InterruptedException {
-        int[] remindsId;
-        while ((remindsId = getIdOfAllReminds()).length == 0 ) {
+        List<Integer> remindsId;
+        while ((remindsId = RemindServiceImpl.newRemindService().getIdOfAllReminds()).size() == 0 ) {
             wait();
         }
 
@@ -110,8 +90,8 @@ public class RemindManage {
         Thread.sleep(4700);
         String messageToSend = SHOW_MESSAGE;
 
-        while (index != remindsId.length) {
-            Remind remind = RemindServiceImpl.newRemindService().getRemindById(remindsId[index]);
+        while (index != remindsId.size()) {
+            Remind remind = RemindServiceImpl.newRemindService().getRemindById(remindsId.get(index));
             String decrypt = XORCrypt.decrypt(XORCrypt.stringToIntArray(remind.
                     getEncryptedMaintenance()), remind.getKey());
             if ((remind.getDetails().getChatIdToSend() == Integer.parseInt(userChatId)&&
@@ -125,7 +105,7 @@ public class RemindManage {
                 if(count != 0) this.service.sendMessage(userChatId, messageToSend);
                 Thread.sleep(5700);
                 this.deleteService.deleteMessage(new Message(userChatId, SendMessageServiceImpl.getMessageId()));
-                this.service.sendMessage(userChatId, "Was showed");
+                this.service.sendMessage(userChatId, "reminds was showed");
         return count > 0;
     }
 
@@ -285,7 +265,6 @@ public class RemindManage {
     public boolean isUpdatedToNextDay(Remind remind){
         return remind.getDetails().getLastSendTime().equals("...");
     }
-
 
 }
 
