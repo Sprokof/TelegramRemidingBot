@@ -33,6 +33,7 @@ Pictures under is showing it's structure
 
 ![Снимок экрана (31)](https://user-images.githubusercontent.com/90979711/160171614-e315a65d-0554-495a-8080-cccf1d8b1f99.png)
 
-![Снимок экрана (33)](https://user-images.githubusercontent.com/90979711/160171646-76ceda43-1f93-4f86-b1c6-cb9d51c80d33.png)
+![Снимок экрана (52)](https://user-images.githubusercontent.com/90979711/161579232-f9d2d707-92fd-4515-9c41-6ead04d9a88f.png)
 
-![Снимок экрана (35)](https://user-images.githubusercontent.com/90979711/160171662-4c632e30-59b0-4b8f-887d-bc72fa4df2d1.png)
+![Снимок экрана (39)](https://user-images.githubusercontent.com/90979711/161579283-e59fc7ac-42d9-4085-b9d8-df7edf1adf8c.png)
+
