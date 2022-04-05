@@ -5,7 +5,6 @@ import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import telegramBot.crypt.XORCrypt;
 import telegramBot.dao.RemindDAOImpl;
-import telegramBot.entity.Details;
 import telegramBot.entity.Remind;
 import telegramBot.manage.DateManage;
 import telegramBot.manage.TimeManage;

@@ -19,6 +19,8 @@ public class RemindManage {
     @Getter
     private static final String REMIND_MESSAGE = "(R) Позвольте напомнить, что вам следует ";
     private static final String SHOW_MESSAGE = "(R) На эту дату есть следующие записи:\n";
+    private static final int countSend = 4;
+    private static final double hour = 3.01;
 
     @Autowired
     public RemindManage(SendMessageService service, DeleteMessageServiceImpl deleteService) {
@@ -124,7 +126,7 @@ public class RemindManage {
         }
 
         updateRemindFieldsToNextSendTime(remind, remind.getDetails().getCountSendOfRemind()+1);
-            if(remind.getDetails().getCountSendOfRemind() == 3){
+            if(remind.getDetails().getCountSendOfRemind() == countSend){
                 if(isContainsDailySendMarker(decrypt)){
                     String date = DateManage.nextDate(remind.getRemindDate());
                     updateRemindFieldsToNextDay(remind, date);
@@ -169,12 +171,12 @@ public class RemindManage {
                     getEncryptedMaintenance()), remind.getKey());
 
             if ((isContainsDailySendMarker(decrypted))) {
-                if (remind.getDetails().getCountSendOfRemind() == 3) {
+                if (remind.getDetails().getCountSendOfRemind() == countSend) {
                     String date = DateManage.nextDate(reminds[i].getRemindDate());
                     updateRemindFieldsToNextDay(reminds[i], date);
                 }
             } else {
-                if (remind.getDetails().getCountSendOfRemind() == 3) {
+                if (remind.getDetails().getCountSendOfRemind() == countSend) {
                     RemindServiceImpl.newRemindService().deleteRemind(remind.getId());
                 }
             }
@@ -186,9 +188,8 @@ public class RemindManage {
 
     public boolean isChangedRemind(Remind remind, int index) {
         double time = TimeManage.toDoubleTime(TimeManage.currentTime());
-        System.out.println(remind.getDetails().isTimeToSend());
         if (!remind.getDetails().isTimeToSend()) {
-            if ((TimeManage.timeDifference(remind.getDetails().getLastSendTime()) >= 4.01) && (time < 23)) {
+            if ((TimeManage.timeDifference(remind.getDetails().getLastSendTime()) >= hour) && (time < 23)) {
                 RemindServiceImpl.newRemindService().updateSendHourField(remind, TimeManage.currentTime());
                 RemindServiceImpl.newRemindService().updateTimeToSendField(remind, true);
                 return true;
