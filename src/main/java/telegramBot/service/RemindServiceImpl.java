@@ -197,6 +197,9 @@ public class RemindServiceImpl implements RemindService {
         session.getTransaction().commit();
     }
     catch (Exception e){e.printStackTrace();}
+    finally {
+        this.remindDAO.getSessionFactory().close();
+    }
     if(ides.isEmpty()) return new ArrayList<>();
     return ides;
     }
