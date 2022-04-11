@@ -7,7 +7,6 @@
     <list default="true" id="43856064-b782-429c-a6db-3ed054bc481a" name="Default Changelist" comment="">
       <change afterPath="$PROJECT_DIR$/../OtherFiles/BankApplication.iml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../SpringProjects/Bank/src/main/java/bank/service/ClientService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../SpringProjects/LoginForm/src/main/java/com/login/form/LoginApplication.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../SpringProjects/Scala/.idea/modules/Scala-build.iml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../SpringProjects/Scala/.idea/modules/Scala.iml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../SpringProjects/springMVC/.idea/springMVC.iml" afterDir="false" />
@@ -57,8 +56,7 @@
       <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/log4j2.properties" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/templates.books/index.html" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/manage/RemindManage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/manage/RemindManage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/service/RemindServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/service/RemindServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/bot/TelegramBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/bot/TelegramBot.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/service/RemindServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/service/RemindServiceImpl.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/ex1.sql" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/hr4.sql" beforeDir="false" />
@@ -246,7 +244,9 @@
       <workItem from="1648625242026" duration="33789000" />
       <workItem from="1648966433955" duration="3877000" />
       <workItem from="1648983852681" duration="1612000" />
-      <workItem from="1648985522103" duration="11965000" />
+      <workItem from="1648985522103" duration="24868000" />
+      <workItem from="1649408502114" duration="8641000" />
+      <workItem from="1649505329198" duration="5826000" />
     </task>
     <servers />
   </component>

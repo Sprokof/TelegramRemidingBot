@@ -14,11 +14,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class RemindServiceImpl implements RemindService {
-    private RemindDAOImpl remindDAO;
+
+    private final RemindDAOImpl remindDAO;
 
     @Autowired
     public RemindServiceImpl(RemindDAOImpl remindDAO) {
-
         this.remindDAO = remindDAO;
     }
 
@@ -127,6 +127,7 @@ public class RemindServiceImpl implements RemindService {
     @Override
     @SuppressWarnings("unchecked")
     public List<Remind> getAllExecutingReminds(Remind remind) {
+        if(TimeManage.toDoubleTime(TimeManage.currentTime()) <= 5.09) return new ArrayList<>();
         Session session;
         List<Remind> reminds = new ArrayList<>();
         try {
@@ -142,14 +143,10 @@ public class RemindServiceImpl implements RemindService {
             session.getTransaction().commit();
         } catch (Exception e) {
             e.printStackTrace();
-            e.printStackTrace();
         } finally {
             this.remindDAO.getSessionFactory().close();
         }
-        if(reminds.isEmpty()){ return new ArrayList<>();}
-
-            if(TimeManage.toDoubleTime(TimeManage.currentTime()) >= 5.10) { return reminds; }
-        return new ArrayList<>();
+        return reminds;
     }
 
 
