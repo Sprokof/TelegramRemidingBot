@@ -3,7 +3,9 @@ package telegramBot.service;
 import telegramBot.dao.MessageDAOImpl;
 import telegramBot.entity.Message;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MessageServiceImpl implements MessageService {
 
@@ -36,8 +38,13 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public Message getMessageByNextField(String chatId, String maintenance) {
-        return this.messageDAO.getMessageByChatIdAndMaintenance(chatId, maintenance);
+    public Message getMessageByNextField(String chatId, String remindId) {
+        Integer[] ides = Arrays.stream(remindId.split("\\p{P}"))
+                .map(Integer::parseInt).collect(Collectors.toList()).
+                toArray(Integer[]::new); Arrays.sort(ides);
+        remindId = Arrays.toString(ides).
+                replaceAll("\\p{P}", "\\s").replaceAll("\\s", "");
+        return this.messageDAO.getMessageByChatAndRemindId(chatId, remindId);
     }
 
     @Override

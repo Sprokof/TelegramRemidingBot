@@ -82,31 +82,22 @@ public class MessageDAOImpl implements MessageDAO{
     }
 
     @SuppressWarnings("unchecked")
-    public Message getMessageByChatIdAndMaintenance(String chatId, String maintenance) {
+    public Message getMessageByChatAndRemindId(String chatId, String remindId) {
         Session session;
-        List<Object> objects = new ArrayList<>();
+        List<Message> messages = new ArrayList<>();
         try {
             session = this.sessionFactory.getCurrentSession();
             session.beginTransaction();
-            objects = (ArrayList<Object>) session.createSQLQuery("SELECT * FROM MESSAGES " +
-                    "WHERE CHAT_ID=:id").setParameter("id", chatId).list();
+            messages = (ArrayList<Message>) session.createSQLQuery("SELECT * FROM MESSAGES " +
+                    "WHERE CHAT_ID=:cId AND ID_OF_REMIND=:rId ").
+                    addEntity(Message.class).setParameter("cId", chatId).
+                    setParameter("rId", remindId).list();
             session.getTransaction().commit();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (objects.isEmpty()) return null;
-        List<Message> messages = new ArrayList<>();
-        for (Iterator<Object> iterator = objects.iterator(); iterator.hasNext(); ) {
-            Object[] line = (Object[]) iterator.next();
-            messages.add(new Message((String) line[1], (String) line[2], (String) line[3], (Integer) line[4]));
-        }
-
         try {
-            return messages.stream().filter((m) -> {
-                return XORCrypt.decrypt(XORCrypt.
-                                stringToIntArray(m.getEncrypted_maintenance()),
-                        m.getKey()).equals(maintenance);
-            }).collect(Collectors.toList()).get(0);
+            return messages.get(0);
         } catch (IndexOutOfBoundsException e) {
             return null;
         }
