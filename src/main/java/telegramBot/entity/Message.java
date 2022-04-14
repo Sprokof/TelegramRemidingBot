@@ -45,12 +45,6 @@ public class Message{
         if(this == obj) return true;
         if(!(obj instanceof Message)) return false;
         Message m = (Message) obj;
-        Integer[] a1 = Arrays.
-                stream(this.remindId.split("\\p{P}")).
-                map(Integer::parseInt).collect(Collectors.toList()).toArray(Integer[]::new);
-        Integer[] a2 = Arrays.
-                  stream(m.remindId.split("\\p{P}")).map(Integer::parseInt).
-                collect(Collectors.toList()).toArray(Integer[]::new);
-        return  Arrays.equals(a1, a2);
+        return this.remindId.equals(m.remindId);
     }
 }

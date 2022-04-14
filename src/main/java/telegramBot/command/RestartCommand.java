@@ -1,9 +1,8 @@
 package telegramBot.command;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
-import telegramBot.bot.TelegramBot;
-import telegramBot.entity.Remind;
-import telegramBot.service.RemindServiceImpl;
+import telegramBot.entity.User;
+import static telegramBot.service.UserServiceImpl.*;
 import telegramBot.service.SendMessageService;
 
 public class RestartCommand implements Command {
@@ -27,15 +26,12 @@ public class RestartCommand implements Command {
     }
 
     private boolean restart(String chatId) {
-        int count = 0;
-        for (Remind r : RemindServiceImpl.newRemindService().getAllRemindsFromDB()) {
-            if (r.getDetails().getChatIdToSend() == Integer.parseInt(chatId)
-            && r.getDetails().isStop()) {
-                RemindServiceImpl.newRemindService().updateIsStopField(r, false);
-                count++;
-            }
-        }
-        return count > 0;
+       User user = newUserService().getUserByChatId(chatId);
+       if(!user.isActive()) {
+           user.setActive(true);
+           newUserService().updateUser(user);
+           return true; }
+       else return false;
 
     }
 }

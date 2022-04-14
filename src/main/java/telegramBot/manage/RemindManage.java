@@ -6,9 +6,12 @@ import org.springframework.stereotype.Component;
 import telegramBot.crypt.XORCrypt;
 import telegramBot.entity.Message;
 import telegramBot.entity.Remind;
+import telegramBot.entity.User;
 import telegramBot.service.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
 import static telegramBot.service.RemindServiceImpl.*;
 
 @Component
@@ -39,7 +42,7 @@ public class RemindManage {
         for (int index = 0; index < remindsId.size(); index++) {
             Remind remind = RemindServiceImpl.newRemindService().getRemindById(remindsId.get(index));
             if ((remind.getRemindDate().equals(DateManage.currentDate())
-                    && (!remind.getDetails().isStop()))) {
+                    && (!remind.getUser().isActive()))) {
                 if(isChangedRemind(remind, remindsId.get(index)) || isUpdatedToNextDay(remind)) {
                     reminds.add(remind);}
             }
@@ -98,7 +101,7 @@ public class RemindManage {
             Remind remind = newRemindService().getRemindById(remindsId.get(index));
             String decrypt = XORCrypt.decrypt(XORCrypt.stringToIntArray(remind.
                     getEncryptedMaintenance()), remind.getKey());
-            if ((remind.getDetails().getChatIdToSend() == Integer.parseInt(userChatId)&&
+            if ((remind.getUser().getChatId().equals(userChatId) &&
                     remind.getRemindDate().equals(date.replaceAll("\\p{P}", "\\.")))
                     && !isContainsDailySendMarker(decrypt)) {
                 messageToSend = messageToSend + (n) + ") " + decrypt+"\n";
@@ -134,6 +137,8 @@ public class RemindManage {
                     updateRemindFieldsToNextDay(remind, date);
                 }
                 else {
+                    User user = remind.getUser();
+                    user.removeRemind(remind);
                     newRemindService().deleteRemind(remind.getId());
                 }
 
@@ -179,6 +184,8 @@ public class RemindManage {
                 }
             } else {
                 if (remind.getDetails().getCountSendOfRemind() == countSend) {
+                    User user = remind.getUser();
+                    user.removeRemind(remind);
                     newRemindService().deleteRemind(remind.getId());
                 }
             }
@@ -209,6 +216,8 @@ public class RemindManage {
                 String date = DateManage.nextDate(remind.getRemindDate());
                 updateRemindFieldsToNextDay(remind, date);
             } else {
+                User user = remind.getUser();
+                user.removeRemind(remind);
                 newRemindService().deleteRemind(index);
             }
         }
@@ -232,6 +241,8 @@ public class RemindManage {
         List<Remind> reminds = newRemindService().getAllRemindsFromDB();
         reminds.forEach((r) -> {
             if(DateManage.nextDate(r.getRemindDate()).equals(DateManage.currentDate())){
+                User user = r.getUser();
+                user.removeRemind(r);
                 newRemindService().deleteRemind(r.getId());
             }
         });
@@ -243,7 +254,7 @@ public class RemindManage {
         List<Message> messages = MessageServiceImpl.newMessageService().getAllMessages();
 
         Remind remind = reminds.get(0);
-        String maintenance, chatId = String.valueOf(remind.getDetails().getChatIdToSend());
+        String maintenance, chatId = String.valueOf(remind.getUser().getChatId());
         String id = getIdOfReminds(reminds);
 
         if (reminds.size() == 1) {
@@ -251,13 +262,13 @@ public class RemindManage {
         else   maintenance = messageForAggregateRemind(reminds.toArray(Remind[]::new));
 
                 if(this.service.sendMessage(chatId, maintenance)) {
-                    Message newMessage = new Message(chatId, id,
+                    Message newMessage = new Message(chatId, sort(id),
                             SendMessageServiceImpl.getMessageId());
                     Message oldMessage;
                     if (!messages.contains(newMessage)){
                         MessageServiceImpl.newMessageService().save(newMessage); }
                     else{ oldMessage = MessageServiceImpl.
-                            newMessageService().getMessageByNextField(chatId, id);
+                            newMessageService().getMessageByNextField(chatId, sort(id));
                             this.deleteService.deleteMessage(oldMessage);
                     MessageServiceImpl.newMessageService().deleteMessage(oldMessage);
                     MessageServiceImpl.newMessageService().save(newMessage); }
@@ -271,10 +282,23 @@ public class RemindManage {
     }
 
     private String getIdOfReminds(List<Remind> reminds){
+    if(reminds.size() == 1) return String.valueOf(reminds.get(0).getId());
     StringBuffer sb = new StringBuffer("");
-        for(Remind r : reminds){
-            sb.append(r.getId() + ":"); }
+    for(int i = 0; i < reminds.size(); i ++){
+        Remind r = reminds.get(i);
+            sb.append(r.getId()); }
     return sb.toString();
+    }
+
+    private String sort(String id){
+        if(id.length() == 1) return id;
+        List<Integer> ints;
+        ints = Arrays.stream(id.split("")).
+                map(Integer::parseInt).collect(Collectors.toList());
+        ints.remove(0);
+        ints.sort((i1, i2)-> i1-i2);
+        return Arrays.toString(ints.toArray(Integer[]::new)).toString().
+                replaceAll("\\p{P}", "");
     }
 
 

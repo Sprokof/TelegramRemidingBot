@@ -11,4 +11,5 @@ public interface MessageDAO {
     void deleteMessageByMessageId(Integer messageId);
     List<Message> getAllMessages();
     Message getMessageByChatAndRemindId(String chatId, String remindId);
+    void updateMessage(Message message);
 }

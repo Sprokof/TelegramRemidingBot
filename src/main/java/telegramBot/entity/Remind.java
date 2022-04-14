@@ -8,7 +8,7 @@ import telegramBot.crypt.XORCrypt;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "REMINDERS")
+@Table(name = "REMINDS")
 @NoArgsConstructor
 @Getter
 @Setter
@@ -28,6 +28,9 @@ public class Remind {
     @JoinColumn(name = "details_id")
     private Details details;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public Remind(String encryptedMaintenance, String remindDate, String key){
         this.encryptedMaintenance = encryptedMaintenance;

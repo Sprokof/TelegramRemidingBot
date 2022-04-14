@@ -3,17 +3,15 @@ package telegramBot.service;
 import telegramBot.dao.MessageDAOImpl;
 import telegramBot.entity.Message;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-
 public class MessageServiceImpl implements MessageService {
 
-    private MessageDAOImpl messageDAO;
+    public static Message storage = new MessageDAOImpl().getAllMessages().get(0);
 
-    public MessageServiceImpl(MessageDAOImpl messageDAO){
+    private final MessageDAOImpl messageDAO;
+
+    public MessageServiceImpl(MessageDAOImpl messageDAO) {
         this.messageDAO = (MessageDAOImpl) messageDAO;
-
     }
 
     @Override
@@ -22,8 +20,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
 
-
-    public static MessageServiceImpl newMessageService(){
+    public static MessageServiceImpl newMessageService() {
         return new MessageServiceImpl(new MessageDAOImpl());
     }
 
@@ -39,11 +36,6 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public Message getMessageByNextField(String chatId, String remindId) {
-        Integer[] ides = Arrays.stream(remindId.split("\\p{P}"))
-                .map(Integer::parseInt).collect(Collectors.toList()).
-                toArray(Integer[]::new); Arrays.sort(ides);
-        remindId = Arrays.toString(ides).
-                replaceAll("\\p{P}", "\\s").replaceAll("\\s", "");
         return this.messageDAO.getMessageByChatAndRemindId(chatId, remindId);
     }
 
@@ -51,4 +43,26 @@ public class MessageServiceImpl implements MessageService {
     public void deleteMessage(Message message) {
         this.messageDAO.deleteMessageByMessageId(message.getMessageId());
     }
+
+    @Override
+    public void updateMessage(Message message) {
+        this.messageDAO.updateMessage(message);
+    }
+
+    public void updateStorageMessage(){
+        double d = (Math.random() * 9);
+        String result;
+        int i = (int) d;
+        if (i != 0) {
+            result = (storage.getRemindId() + i);
+            storage.setRemindId(result);
+            this.updateMessage(storage);
+        }
+        if(storage.getRemindId().length() == 3){
+            storage.setRemindId("");
+            this.updateMessage(storage);
+        }
+    }
 }
+
+

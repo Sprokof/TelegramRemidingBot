@@ -4,8 +4,11 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import telegramBot.bot.TelegramBot;
 import telegramBot.entity.Details;
 import telegramBot.entity.Remind;
+import telegramBot.entity.User;
 import telegramBot.service.RemindServiceImpl;
 import telegramBot.service.SendMessageService;
+
+import static telegramBot.service.UserServiceImpl.newUserService;
 
 public class StopCommand implements Command {
     public static String[] STOP_COMMANDS = {"Вы остановили напоминания. /restart - для возообновления " +
@@ -28,16 +31,12 @@ public class StopCommand implements Command {
     }
 
     private boolean stop(String chatId) {
-        int count = 0;
-        for (Remind r : RemindServiceImpl.newRemindService().getAllRemindsFromDB()) {
-            Details details = r.getDetails();
-            if ((details.getChatIdToSend() == Integer.parseInt(chatId)) && (!details.isStop())) {
-                RemindServiceImpl.newRemindService().updateIsStopField(r, true);
-                count++;
-            }
-        }
-        System.out.println(count+ "remind");
-        return count > 0;
+        User user = newUserService().getUserByChatId(chatId);
+        if(user.isActive()) {
+            user.setActive(false);
+            newUserService().updateUser(user);
+            return true; }
+        else return false;
     }
 }
 

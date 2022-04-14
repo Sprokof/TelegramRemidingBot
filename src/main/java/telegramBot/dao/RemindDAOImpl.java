@@ -8,6 +8,7 @@ import org.hibernate.cfg.Configuration;
 import org.springframework.stereotype.Component;
 import telegramBot.entity.Details;
 import telegramBot.entity.Remind;
+import telegramBot.entity.User;
 
 @NoArgsConstructor
 @Component
@@ -15,7 +16,7 @@ public class RemindDAOImpl implements RemindDAO {
     @Getter
     private final SessionFactory sessionFactory = new Configuration().
             configure("hibernate.cfg.xml").addAnnotatedClass(Remind.class).
-            addAnnotatedClass(Details.class).buildSessionFactory();
+            addAnnotatedClass(Details.class).addAnnotatedClass(User.class).buildSessionFactory();
 
     @Override
     public boolean deleteByID(int id) {

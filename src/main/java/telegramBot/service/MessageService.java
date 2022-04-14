@@ -11,4 +11,5 @@ public interface MessageService {
     void deleteMessage(Message message);
     Message getMessageByNextField(String chatId, String maintenance);
     List<Message> getAllMessages();
+    void updateMessage(Message message);
 }

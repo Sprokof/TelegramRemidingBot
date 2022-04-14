@@ -102,4 +102,19 @@ public class MessageDAOImpl implements MessageDAO{
             return null;
         }
     }
+
+    @Override
+    public void updateMessage(Message message) {
+        Session session;
+        try {
+            session = this.sessionFactory.getCurrentSession();
+            session.beginTransaction();
+            session.update(message);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            this.sessionFactory.close();
+        }
+    }
 }

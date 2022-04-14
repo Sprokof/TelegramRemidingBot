@@ -47,7 +47,7 @@ public class RemindServiceImpl implements RemindService {
         try {
             session = this.remindDAO.getSessionFactory().getCurrentSession();
             session.beginTransaction();
-            reminds = (ArrayList<Remind>) session.createSQLQuery("SELECT * from REMINDERS").
+            reminds = (ArrayList<Remind>) session.createSQLQuery("SELECT * from REMINDS").
                     addEntity(Remind.class).list();
             session.getTransaction().commit();
         } catch (Exception e) {
@@ -74,11 +74,12 @@ public class RemindServiceImpl implements RemindService {
         try {
             session = this.remindDAO.getSessionFactory().getCurrentSession();
             session.beginTransaction();
-            reminds = (List<Remind>) session.createSQLQuery("SELECT * FROM REMINDERS as r join DETAILS as d " +
-                            "on r.details_id = d.id WHERE d.CHAT_ID_TO_SEND=:chatId " +
+            reminds = (List<Remind>) session.createSQLQuery("SELECT * FROM REMINDS as r " +
+                            "join USERS as u on r.user_id = u.id" +
+                            " WHERE u.CHAT_ID=:chatId " +
                             "AND r.REMIND_DATE=:rm").
                     addEntity("r", Remind.class).
-                    setParameter("chatId", remind.getDetails().getChatIdToSend()).
+                    setParameter("chatId", remind.getUser().getChatId()).
                     setParameter("rm", remind.getRemindDate()).list();
             session.getTransaction().commit();
         } catch (Exception e) {
@@ -119,12 +120,6 @@ public class RemindServiceImpl implements RemindService {
     }
 
     @Override
-    public void updateIsStopField(Remind remind, boolean flag) {
-        remind.getDetails().setStop(flag);
-        this.remindDAO.update(remind);
-    }
-
-    @Override
     @SuppressWarnings("unchecked")
     public List<Remind> getAllExecutingReminds(Remind remind) {
         if(TimeManage.toDoubleTime(TimeManage.currentTime()) <= 5.09) return new ArrayList<>();
@@ -133,12 +128,13 @@ public class RemindServiceImpl implements RemindService {
         try {
             session = this.remindDAO.getSessionFactory().getCurrentSession();
             session.beginTransaction();
-            reminds = session.createSQLQuery("SELECT * FROM REMINDERS as r join DETAILS as d " +
-                                    "on r.details_id = d.id WHERE d.CHAT_ID_TO_SEND =:chatId " +
+            reminds = session.createSQLQuery("SELECT * FROM REMINDS as r join DETAILS as d " +
+                                    "on r.details_id = d.id join USERS as u on r.user_id = u.id" +
+                            " WHERE u.CHAT_ID_TO =:chatId " +
                                     "AND d.TIME_TO_SEND is true AND " +
-                            "d.IS_STOP is false AND r.REMIND_DATE =:currentDate").
+                            "u.IS_ACTIVE is true AND r.REMIND_DATE =:currentDate").
                             addEntity("r", Remind.class).
-                            setParameter("chatId", remind.getDetails().getChatIdToSend()).
+                            setParameter("chatId", remind.getUser().getChatId()).
                             setParameter("currentDate", DateManage.currentDate()).list();
             session.getTransaction().commit();
         } catch (Exception e) {
@@ -149,7 +145,6 @@ public class RemindServiceImpl implements RemindService {
         return reminds;
     }
 
-
     @Override
     @SuppressWarnings("unchecked")
     public String getMaxTime(Remind remind) {
@@ -158,10 +153,10 @@ public class RemindServiceImpl implements RemindService {
     try{
         session = this.remindDAO.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        reminds = session.createSQLQuery("SELECT * FROM REMINDERS as r " +
-                "join DETAILS as d on r.details_id = d.id " +
-                "WHERE CHAT_ID_TO_SEND=:id AND REMIND_DATE=:rd").addEntity("r", Remind.class)
-                .setParameter("id", remind.getDetails().getChatIdToSend())
+        reminds = session.createSQLQuery("SELECT * FROM REMINDS as r " +
+                "join USERS as u on r.user_id = u.id " +
+                "WHERE u.CHAT_ID=:id AND r.REMIND_DATE=:rd").addEntity("r", Remind.class)
+                .setParameter("id", remind.getUser().getChatId())
                 .setParameter("rd", remind.getRemindDate()).list();
         session.getTransaction().commit();
     }
@@ -190,7 +185,7 @@ public class RemindServiceImpl implements RemindService {
     try{
         session = this.remindDAO.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        ides = session.createSQLQuery("SELECT ID FROM REMINDERS").list();
+        ides = session.createSQLQuery("SELECT ID FROM REMINDS").list();
         session.getTransaction().commit();
     }
     catch (Exception e){e.printStackTrace();}

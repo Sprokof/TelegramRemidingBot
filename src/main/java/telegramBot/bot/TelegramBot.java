@@ -9,19 +9,20 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import telegramBot.crypt.XORCrypt;
 import telegramBot.entity.Details;
 import telegramBot.entity.Message;
+import telegramBot.entity.User;
 import telegramBot.manage.*;
 import telegramBot.service.DeleteMessageServiceImpl;
 import telegramBot.service.RemindServiceImpl;
 import telegramBot.command.CommandContainer;
 import telegramBot.entity.Remind;
 import telegramBot.service.SendMessageServiceImpl;
+import static telegramBot.service.UserServiceImpl.*;
 
 
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Getter
 @Component
@@ -58,6 +59,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         String chatId;
         if (update.hasMessage() && update.getMessage().hasText()) {
             chatId = update.getMessage().getChatId().toString();
+            createUser(chatId);
             commands.putIfAbsent(chatId, new ArrayList<String>());
             String message = update.getMessage().getText().trim();
             if (message.startsWith(COMMAND_PREFIX)) {
@@ -184,6 +186,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         String chatId = update.getMessage().getChatId().toString();
         String input = update.getMessage().getText();
         Integer messageId = update.getMessage().getMessageId();
+        User user = newUserService().getUserByChatId(chatId);
         boolean isExist;
         if (isCorrectInput(input)) {
             try {
@@ -197,11 +200,12 @@ public class TelegramBot extends TelegramLongPollingBot {
 
                 double time = TimeManage.toDoubleTime(TimeManage.currentTime()) - 3;
 
-                Details details = new Details(Integer.parseInt(chatId), false,
-                        TimeManage.toStringTime(time), 0, false);
+                Details details = new Details(TimeManage.
+                        toStringTime(time), false, 0);
 
                 remind.setDetails(details);
 
+                user.addRemind(remind);
 
                 isExist = RemindServiceImpl.newRemindService().isExist(remind);
                 if (!isExist) {
@@ -243,7 +247,15 @@ public class TelegramBot extends TelegramLongPollingBot {
     private long getMills() {
         return Calendar.getInstance().getTimeInMillis();
     }
+
+
+    private void createUser(String chatId){
+        if(newUserService().getUserByChatId(chatId) == null){
+            newUserService().saveUser(new User(chatId, true));
+        }
+    }
 }
+
 
 
 
