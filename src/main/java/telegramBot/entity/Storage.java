@@ -21,6 +21,6 @@ public class Storage {
     }
 
     public boolean isFull(){
-        return randomInts.length() == 7;
+        return randomInts.length() == 21;
     }
 }

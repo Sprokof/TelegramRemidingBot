@@ -90,6 +90,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
         }
         executeReminds();
+        executeInstrCommand();
     }
 
     private String getDateFromUserInput(String input) {
@@ -137,7 +138,6 @@ public class TelegramBot extends TelegramLongPollingBot {
                 while (true) {
                     consoleLog(messagesToLog[0], milliseconds, 0);
                     TelegramBot.this.manage.execute();
-                    sendInstrCommand();
                     consoleLog(messagesToLog[1], milliseconds, 1);
                     Thread.sleep(mills);
                 }
@@ -257,25 +257,33 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    private void sendInstrCommand() {
-        Storage st;
-        if ((st = newStorageService().getStorageById(1)) == null) {
-            newStorageService().saveStorage(new Storage(""));
-        }
-        st = newStorageService().getStorageById(1);
-        System.out.println(st.toString());
-        newStorageService().fillStorage(st);
-        if (st.isFull()) {
-            if ((Integer.parseInt(st.getRandomInts()) % 2 == 0)) {
-                List<String> chatId = newUserService().getAllUsers().stream()
-                        .map(User::getChatId)
-                        .collect(Collectors.toList());
-                for (String id : chatId) {
-                    this.sendMessageService.sendMessage(id, InstrCommand.INSTR_COMMAND);
+    private void executeInstrCommand() {
+        Storage st = newStorageService().getStorageById(1);
+        String command = String.format("%s%s%s",
+                "Позвольте напомнить, что ",
+                Character.toLowerCase(InstrCommand.INSTR_COMMAND.charAt(0)),
+                InstrCommand.INSTR_COMMAND.substring(1));
+
+        new Thread(() -> {
+            while (true) {
+                newStorageService().fillStorage(st);
+                if (st.isFull()) {
+                    if ((newStorageService().sum(st.getRandomInts()) % 2 == 0)) {
+                        List<String> chatId = newUserService().getAllUsers().stream()
+                                .map(User::getChatId)
+                                .collect(Collectors.toList());
+                        for (String id : chatId) {
+                            this.sendMessageService.sendMessage(id, command);
+                        }
+                    }
+                    newStorageService().cleanStorage(st);
                 }
+            try{
+                Thread.sleep(870000);
             }
-            newStorageService().cleanStorage(st);
-        }
+            catch (InterruptedException e){e.printStackTrace();}
+            }
+        }).start();
     }
 }
 

@@ -4,6 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import telegramBot.dao.StorageDAOImpl;
 import telegramBot.entity.Storage;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class StorageServiceImpl implements StorageService{
 
     private final StorageDAOImpl storageDAO;
@@ -43,6 +47,19 @@ public class StorageServiceImpl implements StorageService{
         storage.setRandomInts("");
         this.updateStorage(storage);
         }
+
+
+    public int sum(String randomInts){
+    List<Integer> ints = Arrays.stream(randomInts.split("")).
+                map(Integer::parseInt).collect(Collectors.toList());
+    int sum = 0;
+    for(int i = 0; i < ints.size(); i++){
+        sum += ints.get(0);
+    }
+    return sum;
+    }
+
+
 
 
     public static StorageServiceImpl newStorageService(){
