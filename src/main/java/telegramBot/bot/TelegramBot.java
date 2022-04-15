@@ -6,23 +6,23 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import telegramBot.command.InstrCommand;
 import telegramBot.crypt.XORCrypt;
-import telegramBot.entity.Details;
-import telegramBot.entity.Message;
-import telegramBot.entity.User;
+import telegramBot.entity.*;
 import telegramBot.manage.*;
 import telegramBot.service.DeleteMessageServiceImpl;
 import telegramBot.service.RemindServiceImpl;
 import telegramBot.command.CommandContainer;
-import telegramBot.entity.Remind;
 import telegramBot.service.SendMessageServiceImpl;
 import static telegramBot.service.UserServiceImpl.*;
+import static telegramBot.service.StorageServiceImpl.*;
 
 
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Getter
 @Component
@@ -131,12 +131,13 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private void executeReminds() {
         final long[] milliseconds = new long[2];
-        final long mills = 720000;
+        final long mills = 870000;
         new Thread(() -> {
             try {
                 while (true) {
                     consoleLog(messagesToLog[0], milliseconds, 0);
                     TelegramBot.this.manage.execute();
+                    sendInstrCommand();
                     consoleLog(messagesToLog[1], milliseconds, 1);
                     Thread.sleep(mills);
                 }
@@ -209,10 +210,11 @@ public class TelegramBot extends TelegramLongPollingBot {
 
                 isExist = RemindServiceImpl.newRemindService().isExist(remind);
                 if (!isExist) {
-                String maxTime;
-                    if((maxTime = RemindServiceImpl.newRemindService().getMaxTime(remind)) !=null ){
-                        remind.getDetails().setLastSendTime(maxTime); }
-                        if (save(remind)) {
+                    String maxTime;
+                    if ((maxTime = RemindServiceImpl.newRemindService().getMaxTime(remind)) != null) {
+                        remind.getDetails().setLastSendTime(maxTime);
+                    }
+                    if (save(remind)) {
                         notify();
                         this.deleteMessageService.deleteMessage(new Message(chatId,
                                 messageId));
@@ -249,9 +251,30 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
 
-    private void createUser(String chatId){
-        if(newUserService().getUserByChatId(chatId) == null){
+    private void createUser(String chatId) {
+        if (newUserService().getUserByChatId(chatId) == null) {
             newUserService().saveUser(new User(chatId, true));
+        }
+    }
+
+    private void sendInstrCommand() {
+        Storage st;
+        if ((st = newStorageService().getStorageById(1)) == null) {
+            newStorageService().saveStorage(new Storage(""));
+        }
+        st = newStorageService().getStorageById(1);
+        System.out.println(st.toString());
+        newStorageService().fillStorage(st);
+        if (st.isFull()) {
+            if ((Integer.parseInt(st.getRandomInts()) % 2 == 0)) {
+                List<String> chatId = newUserService().getAllUsers().stream()
+                        .map(User::getChatId)
+                        .collect(Collectors.toList());
+                for (String id : chatId) {
+                    this.sendMessageService.sendMessage(id, InstrCommand.INSTR_COMMAND);
+                }
+            }
+            newStorageService().cleanStorage(st);
         }
     }
 }

@@ -42,9 +42,8 @@ public class RemindManage {
         for (int index = 0; index < remindsId.size(); index++) {
             Remind remind = RemindServiceImpl.newRemindService().getRemindById(remindsId.get(index));
             if ((remind.getRemindDate().equals(DateManage.currentDate())
-                    && (!remind.getUser().isActive()))) {
-                if(isChangedRemind(remind, remindsId.get(index)) || isUpdatedToNextDay(remind)) {
-                    reminds.add(remind);}
+                    && (remind.getUser().isActive()))) {
+            changeRemind(reminds, remind, remindsId.get(index));
             }
         }
 
@@ -116,7 +115,7 @@ public class RemindManage {
         return count > 0;
     }
 
-    private String messageForLonelyRemind(Remind remind) {
+    private String messageForOneRemind(Remind remind) {
         String messageToSend = REMIND_MESSAGE;
         String decrypt = XORCrypt.decrypt(XORCrypt.stringToIntArray(remind.
                 getEncryptedMaintenance()), remind.getKey());
@@ -195,16 +194,17 @@ public class RemindManage {
     }
 
 
-    public boolean isChangedRemind(Remind remind, int index) {
+    private void changeRemind(List<Remind> reminds, Remind remind, int index) {
         double time = TimeManage.toDoubleTime(TimeManage.currentTime());
         if (!remind.getDetails().isTimeToSend()) {
-            if ((TimeManage.timeDifference(remind.getDetails().getLastSendTime()) >= hour) && (time < 23)) {
-                newRemindService().updateSendHourField(remind, TimeManage.currentTime());
+            if ((TimeManage.timeDifference(remind.getDetails().getLastSendTime()) >= hour) && (time < 23.10)) {
                 newRemindService().updateTimeToSendField(remind, true);
-                return true;
+                reminds.add(newRemindService().getRemindById(remind.getId()));
+                newRemindService().updateSendHourField(remind, TimeManage.currentTime());
+
             }
         }
-        if (time >= 23 && (remind.getDetails().getCountSendOfRemind() <= 3 &&
+        if (time >= 23.10 && (remind.getDetails().getCountSendOfRemind() <= 3 &&
                 remind.getDetails().getCountSendOfRemind() >= 1)
                 || time <= 3 && (remind.getDetails().getCountSendOfRemind() <= 3 &&
                 remind.getDetails().getCountSendOfRemind() >= 1)) {
@@ -221,14 +221,13 @@ public class RemindManage {
                 newRemindService().deleteRemind(index);
             }
         }
-        return false;
     }
 
     public void updateRemindFieldsToNextDay(Remind remind, String date) {
         newRemindService().updateRemindDateField(remind, date);
         newRemindService().updateCountSendField(remind, 0);
-        newRemindService().updateTimeToSendField(remind, true);
-        newRemindService().updateSendHourField(remind, "...");
+        newRemindService().updateTimeToSendField(remind, false);
+        newRemindService().updateSendHourField(remind, "00:00");
     }
 
     public void updateRemindFieldsToNextSendTime(Remind remind, int count) {
@@ -258,7 +257,7 @@ public class RemindManage {
         String id = getIdOfReminds(reminds);
 
         if (reminds.size() == 1) {
-               maintenance = messageForLonelyRemind(remind); }
+               maintenance = messageForOneRemind(remind); }
         else   maintenance = messageForAggregateRemind(reminds.toArray(Remind[]::new));
 
                 if(this.service.sendMessage(chatId, maintenance)) {
@@ -275,11 +274,6 @@ public class RemindManage {
                 }
         return true; }
 
-
-
-    public boolean isUpdatedToNextDay(Remind remind){
-        return remind.getDetails().getLastSendTime().equals("...");
-    }
 
     private String getIdOfReminds(List<Remind> reminds){
     if(reminds.size() == 1) return String.valueOf(reminds.get(0).getId());
