@@ -6,7 +6,6 @@ import telegramBot.entity.Message;
 import java.util.List;
 public class MessageServiceImpl implements MessageService {
 
-    public static Message storage = new MessageDAOImpl().getAllMessages().get(0);
 
     private final MessageDAOImpl messageDAO;
 
@@ -49,20 +48,6 @@ public class MessageServiceImpl implements MessageService {
         this.messageDAO.updateMessage(message);
     }
 
-    public void updateStorageMessage(){
-        double d = (Math.random() * 9);
-        String result;
-        int i = (int) d;
-        if (i != 0) {
-            result = (storage.getRemindId() + i);
-            storage.setRemindId(result);
-            this.updateMessage(storage);
-        }
-        if(storage.getRemindId().length() == 3){
-            storage.setRemindId("");
-            this.updateMessage(storage);
-        }
-    }
 }
 
 

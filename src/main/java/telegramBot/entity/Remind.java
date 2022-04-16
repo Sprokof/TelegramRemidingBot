@@ -32,6 +32,7 @@ public class Remind {
     @JoinColumn(name = "user_id")
     private User user;
 
+
     public Remind(String encryptedMaintenance, String remindDate, String key){
         this.encryptedMaintenance = encryptedMaintenance;
         this.remindDate = remindDate;

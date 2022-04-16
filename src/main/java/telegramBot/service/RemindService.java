@@ -1,6 +1,7 @@
 package telegramBot.service;
 
 import telegramBot.entity.Remind;
+import telegramBot.entity.User;
 
 import java.util.List;
 
@@ -13,9 +14,8 @@ public interface RemindService {
     List<Remind> getAllExecutingReminds(Remind remind);
     List<Integer> getIdOfAllReminds();
     String getMaxTime(Remind remind);
-    boolean isExist(Remind remind);
+    boolean isExistRemind(Remind remind);
     void updateTimeToSendField(Remind remind, boolean flag);
     void updateCountSendField(Remind remind, int count);
     void updateSendHourField(Remind remind, String time);
-
 }

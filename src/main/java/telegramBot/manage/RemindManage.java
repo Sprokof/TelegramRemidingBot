@@ -13,6 +13,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static telegramBot.service.RemindServiceImpl.*;
+import static telegramBot.service.UserServiceImpl.*;
 
 @Component
 public class RemindManage {
@@ -139,6 +140,7 @@ public class RemindManage {
                     User user = remind.getUser();
                     user.removeRemind(remind);
                     newRemindService().deleteRemind(remind.getId());
+                    newUserService().saveOrUpdateUser(user);
                 }
 
             }
@@ -186,6 +188,7 @@ public class RemindManage {
                     User user = remind.getUser();
                     user.removeRemind(remind);
                     newRemindService().deleteRemind(remind.getId());
+                    newUserService().saveOrUpdateUser(user);
                 }
             }
         }
@@ -219,6 +222,8 @@ public class RemindManage {
                 User user = remind.getUser();
                 user.removeRemind(remind);
                 newRemindService().deleteRemind(index);
+                newUserService().saveOrUpdateUser(user);
+
             }
         }
     }

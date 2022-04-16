@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import telegramBot.crypt.XORCrypt;
 import telegramBot.dao.RemindDAOImpl;
 import telegramBot.entity.Remind;
+import telegramBot.entity.User;
 import telegramBot.manage.DateManage;
 import telegramBot.manage.TimeManage;
 
@@ -66,7 +67,7 @@ public class RemindServiceImpl implements RemindService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public boolean isExist(Remind remind) {
+    public boolean isExistRemind(Remind remind) {
         String decryptMaintenance = XORCrypt.
                 decrypt(XORCrypt.stringToIntArray(remind.getEncryptedMaintenance()), remind.getKey());
         List<Remind> reminds = new ArrayList<>();
@@ -195,6 +196,7 @@ public class RemindServiceImpl implements RemindService {
     if(ides.isEmpty()) return new ArrayList<>();
     return ides;
     }
+
 }
 
 

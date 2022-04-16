@@ -57,12 +57,19 @@
       <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/templates.books/index.html" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/bot/TelegramBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/bot/TelegramBot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/dao/UserDAOImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/dao/UserDAOImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/entity/Remind.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/entity/Remind.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/entity/Storage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/entity/Storage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/service/StorageServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/service/StorageServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/entity/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/manage/RemindManage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/manage/RemindManage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/service/MessageServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/service/MessageServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/service/RemindService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/service/RemindService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/service/RemindServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/service/RemindServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/service/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/service/UserServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/bot/TelegramBot.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/bot/TelegramBot.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/entity/Storage.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/entity/Storage.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/service/StorageServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/service/StorageServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/manage/RemindManage.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/manage/RemindManage.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/service/MessageServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/service/MessageServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/service/RemindServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/service/RemindServiceImpl.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/ex1.sql" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/hr4.sql" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/hr7.sql" beforeDir="false" />
@@ -252,7 +259,7 @@
       <workItem from="1648985522103" duration="24868000" />
       <workItem from="1649408502114" duration="8641000" />
       <workItem from="1649505329198" duration="25041000" />
-      <workItem from="1649921516892" duration="27410000" />
+      <workItem from="1649921516892" duration="40478000" />
     </task>
     <servers />
   </component>

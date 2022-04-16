@@ -6,12 +6,12 @@ import telegramBot.entity.User;
 
 import java.util.List;
 
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     private final UserDAOImpl userDAO;
 
     @Autowired
-    public UserServiceImpl(UserDAOImpl userDAO){
+    public UserServiceImpl(UserDAOImpl userDAO) {
         this.userDAO = userDAO;
     }
 
@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService{
         this.userDAO.deleteUser(user);
     }
 
-    public static UserServiceImpl newUserService(){
+    public static UserServiceImpl newUserService() {
         return new UserServiceImpl(new UserDAOImpl());
     }
 
@@ -43,4 +43,13 @@ public class UserServiceImpl implements UserService{
     public List<User> getAllUsers() {
         return this.userDAO.getAllActiveUser();
     }
+
+
+    public void saveOrUpdateUser(User user) {
+        if (this.getUserByChatId(user.getChatId()) == null) {
+            newUserService().saveUser(user);}
+        newUserService().updateUser(user);
+    }
+
 }
+

@@ -199,16 +199,18 @@ public class TelegramBot extends TelegramLongPollingBot {
                         getDateFromUserInput(input).
                                 replaceAll("\\p{P}", "\\."), key);
 
-                double time = TimeManage.toDoubleTime(TimeManage.currentTime()) - 3;
+                double temp = TimeManage.toDoubleTime(TimeManage.currentTime()) - 2;
+                String time;
+                if((time = TimeManage.
+                        toStringTime(temp)).length() == 1){ time = time+"0";}
 
-                Details details = new Details(TimeManage.
-                        toStringTime(time), false, 0);
+                Details details = new Details(time, false, 0);
 
                 remind.setDetails(details);
 
                 user.addRemind(remind);
 
-                isExist = RemindServiceImpl.newRemindService().isExist(remind);
+                isExist = RemindServiceImpl.newRemindService().isExistRemind(remind);
                 if (!isExist) {
                     String maxTime;
                     if ((maxTime = RemindServiceImpl.newRemindService().getMaxTime(remind)) != null) {
