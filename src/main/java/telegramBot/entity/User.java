@@ -21,7 +21,7 @@ public class User {
     private boolean isActive;
 
 
-    @OneToMany(cascade = CascadeType.MERGE, mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)
     private List<Remind> reminds;
 
     public void addRemind(Remind remind) {
@@ -34,7 +34,6 @@ public class User {
         this.reminds.remove(remind);
         remind.setUser(null);
     }
-
 
     public User(String chatId, boolean isActive) {
         this.chatId = chatId;

@@ -11,11 +11,13 @@ import telegramBot.crypt.XORCrypt;
 import telegramBot.entity.*;
 import telegramBot.manage.*;
 import telegramBot.service.DeleteMessageServiceImpl;
-import telegramBot.service.RemindServiceImpl;
+import telegramBot.service.MessageServiceImpl;
 import telegramBot.command.CommandContainer;
 import telegramBot.service.SendMessageServiceImpl;
+
 import static telegramBot.service.UserServiceImpl.*;
 import static telegramBot.service.StorageServiceImpl.*;
+import static telegramBot.service.RemindServiceImpl.*;
 
 
 import java.util.*;
@@ -65,7 +67,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             if (message.startsWith(COMMAND_PREFIX)) {
                 command = message.split(" ")[0].toLowerCase(Locale.ROOT);
                 this.commandContainer.retrieveCommand(command).execute(update);
-                commands.get(chatId).add(command);
+                commands.get(chatId).add(command); saveCommand(chatId);
             } else {
                 if (lastCommand(chatId).equals("/add")) {
                     acceptNewRemindFromUser(update);
@@ -126,9 +128,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
 
-    private boolean save(Remind remind) {
-        return RemindServiceImpl.newRemindService().saveRemind(remind);
-    }
 
     private void executeReminds() {
         final long[] milliseconds = new long[2];
@@ -187,7 +186,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         String chatId = update.getMessage().getChatId().toString();
         String input = update.getMessage().getText();
         Integer messageId = update.getMessage().getMessageId();
-        User user = newUserService().getUserByChatId(chatId);
+        User user = userService().getUserByChatId(chatId);
         boolean isExist;
         if (isCorrectInput(input)) {
             try {
@@ -197,39 +196,28 @@ public class TelegramBot extends TelegramLongPollingBot {
 
                 Remind remind = new Remind(encrypt,
                         getDateFromUserInput(input).
-                                replaceAll("\\p{P}", "\\."), key);
+                                replaceAll("\\p{P}", "\\."));
 
                 double temp = TimeManage.toDoubleTime(TimeManage.currentTime()) - 2;
                 String time;
                 if((time = TimeManage.
                         toStringTime(temp)).length() == 1){ time = time+"0";}
 
-                Details details = new Details(time, false, 0);
+                Details details = new Details(key, time, false, 0);
 
-                remind.setDetails(details);
-
-                user.addRemind(remind);
-
-                isExist = RemindServiceImpl.newRemindService().isExistRemind(remind);
+                isExist = remindService().isExistRemind(remind, details);
                 if (!isExist) {
                     String maxTime;
-                    if ((maxTime = RemindServiceImpl.newRemindService().getMaxTime(remind)) != null) {
+                    if ((maxTime = remindService().getMaxTime(remind)) != null) {
                         remind.getDetails().setLastSendTime(maxTime);
                     }
-                    if (save(remind)) {
+                    addUserRemind(user, remind);
                         notify();
                         this.deleteMessageService.deleteMessage(new Message(chatId,
                                 messageId));
-                        Thread.sleep(750);
+                        Thread.sleep(570);
                         this.sendMessageService.sendMessage(chatId, "Напоминание успешно" +
                                 " добавлено.");
-                    } else {
-                        this.sendMessageService.sendMessage(chatId,
-                                "Напоминание не было добавлено, проверьте формат даты (dd.mm.yyyy) ." +
-                                        "Возможно, вы указали уже прошедшую дату. " +
-                                        "После введите команду /add для повторного добавления.");
-                    }
-
                 } else {
                     this.sendMessageService.sendMessage(chatId,
                             "Данное напоминание было добавлено ранее.");
@@ -254,8 +242,8 @@ public class TelegramBot extends TelegramLongPollingBot {
 
 
     private void createUser(String chatId) {
-        if (newUserService().getUserByChatId(chatId) == null) {
-            newUserService().saveUser(new User(chatId, true));
+        if (userService().getUserByChatId(chatId) == null) {
+            userService().saveUser(new User(chatId, true));
         }
     }
 
@@ -271,7 +259,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 newStorageService().fillStorage(st);
                 if (st.isFull()) {
                     if ((newStorageService().sum(st.getRandomInts()) % 2 == 0)) {
-                        List<String> chatId = newUserService().getAllUsers().stream()
+                        List<String> chatId = userService().getAllUsers().stream()
                                 .map(User::getChatId)
                                 .collect(Collectors.toList());
                         for (String id : chatId) {
@@ -287,6 +275,13 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
         }).start();
     }
+
+    private void saveCommand(String chatId){
+        Message command = new Message(chatId, "0",
+                (SendMessageServiceImpl.getMessageId() - 1), false);
+        MessageServiceImpl.messageService().save(command);
+    }
+
 }
 
 

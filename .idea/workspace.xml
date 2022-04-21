@@ -57,14 +57,27 @@
       <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/templates.books/index.html" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/bot/TelegramBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/bot/TelegramBot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/command/AddCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/command/AddCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/command/InstrCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/command/InstrCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/command/RestartCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/command/RestartCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/command/ShowCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/command/ShowCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/command/StartCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/command/StartCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/command/StopCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/command/StopCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/command/UnknownCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/command/UnknownCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/dao/MessageDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/dao/MessageDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/dao/MessageDAOImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/dao/MessageDAOImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/entity/Details.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/entity/Details.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/entity/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/entity/Message.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/entity/Remind.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/entity/Remind.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/entity/Storage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/entity/Storage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/entity/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/manage/RemindManage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/manage/RemindManage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/service/MessageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/service/MessageService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/service/MessageServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/service/MessageServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/service/RemindService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/service/RemindService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/service/RemindServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/service/RemindServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/service/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/service/UserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/hibernate.cfg.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/hibernate.cfg.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/bot/TelegramBot.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/bot/TelegramBot.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/entity/Storage.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/entity/Storage.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/manage/RemindManage.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/manage/RemindManage.class" afterDir="false" />
@@ -139,12 +152,15 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../oracleJDBC/Algoritms" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Binance manager" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
+    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
@@ -259,7 +275,7 @@
       <workItem from="1648985522103" duration="24868000" />
       <workItem from="1649408502114" duration="8641000" />
       <workItem from="1649505329198" duration="25041000" />
-      <workItem from="1649921516892" duration="40478000" />
+      <workItem from="1649921516892" duration="85245000" />
     </task>
     <servers />
   </component>

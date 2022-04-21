@@ -5,6 +5,7 @@ import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import telegramBot.crypt.XORCrypt;
 import telegramBot.dao.RemindDAOImpl;
+import telegramBot.entity.Details;
 import telegramBot.entity.Remind;
 import telegramBot.entity.User;
 import telegramBot.manage.DateManage;
@@ -67,9 +68,11 @@ public class RemindServiceImpl implements RemindService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public boolean isExistRemind(Remind remind) {
+    public boolean isExistRemind(Remind remind, Details details) {
+        remind.setDetails(details);
         String decryptMaintenance = XORCrypt.
-                decrypt(XORCrypt.stringToIntArray(remind.getEncryptedMaintenance()), remind.getKey());
+                decrypt(XORCrypt.stringToIntArray(remind.getEncryptedMaintenance()),
+                        remind.getDetails().getKey());
         List<Remind> reminds = new ArrayList<>();
         Session session;
         try {
@@ -92,11 +95,12 @@ public class RemindServiceImpl implements RemindService {
 
         return reminds.stream().map((r)->{
             return XORCrypt.decrypt(XORCrypt.stringToIntArray(r.getEncryptedMaintenance()),
-                    r.getKey());}).anyMatch((m)-> m.equals(decryptMaintenance));
+                    r.getDetails().getKey());}).anyMatch((m)-> m.equals(decryptMaintenance));
     }
 
 
-    public static RemindServiceImpl newRemindService() {
+    public static RemindServiceImpl remindService() {
+
         return new RemindServiceImpl(new RemindDAOImpl());
     }
 
@@ -161,7 +165,7 @@ public class RemindServiceImpl implements RemindService {
                 .setParameter("rd", remind.getRemindDate()).list();
         session.getTransaction().commit();
     }
-    catch (Exception e){e.printStackTrace();}
+    catch (Exception e){ return null;}
     finally {
             this.remindDAO.getSessionFactory().close();
         }

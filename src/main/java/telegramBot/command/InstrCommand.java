@@ -1,7 +1,11 @@
 package telegramBot.command;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
+import telegramBot.entity.Message;
 import telegramBot.service.SendMessageService;
+import telegramBot.service.SendMessageServiceImpl;
+
+import static telegramBot.service.MessageServiceImpl.messageService;
 
 public class InstrCommand implements Command{
     public static final String INSTR_COMMAND = "Поддерживаю следующие команды.\n" +
@@ -16,8 +20,12 @@ public class InstrCommand implements Command{
 
     @Override
     public boolean execute(Update update) {
-     return this.sendMessageService.sendMessage(update.getMessage().getChatId().toString(), INSTR_COMMAND);
-
+        String id = update.getMessage().getChatId().toString();
+        if(this.sendMessageService.sendMessage(id, INSTR_COMMAND)){
+            Message output = new Message(id, "0",
+                    SendMessageServiceImpl.getMessageId(), false);
+            messageService().save(output);}
+        return true;
 
     }
 }

@@ -2,7 +2,11 @@ package telegramBot.command;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
 import telegramBot.bot.TelegramBot;
+import telegramBot.entity.Message;
 import telegramBot.service.SendMessageService;
+import telegramBot.service.SendMessageServiceImpl;
+
+import static telegramBot.service.MessageServiceImpl.messageService;
 
 public class StartCommand implements Command{
     private int counter = 1;
@@ -17,12 +21,11 @@ public class StartCommand implements Command{
 
     @Override
     public boolean execute(Update update) {
-        counter ++;
-        this.sendMessageService.sendMessage(update.getMessage().getChatId().toString(),
-                START_COMMAND);
-        if(counter > 0){
-            START_COMMAND = "Команда уже была запущена ранее";}
-        counter = 1 ;
+        String chatId = update.getMessage().getChatId().toString();
+        if(this.sendMessageService.sendMessage(chatId, START_COMMAND)){
+            Message output = new Message(chatId, "0",
+                    SendMessageServiceImpl.getMessageId(), false);
+            messageService().save(output);}
         return true;
     }}
 

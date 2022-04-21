@@ -21,22 +21,19 @@ public class Remind {
     private String encryptedMaintenance;
     @Column(name = "REMIND_DATE")
     private String remindDate;
-    @Column(name = "KEY_TO_DECRYPT")
-    private String key;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "details_id")
     private Details details;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 
 
-    public Remind(String encryptedMaintenance, String remindDate, String key){
+    public Remind(String encryptedMaintenance, String remindDate){
         this.encryptedMaintenance = encryptedMaintenance;
         this.remindDate = remindDate;
-        this.key = key;
     }
 
     @Override
@@ -53,9 +50,10 @@ public class Remind {
         if (! (obj instanceof Remind)) return false;
         Remind remind = (Remind) obj;
         String thisMaintenance =
-                XORCrypt.decrypt(XORCrypt.stringToIntArray(this.encryptedMaintenance), this.getKey());
+                XORCrypt.decrypt(XORCrypt.stringToIntArray(this.encryptedMaintenance),
+                        this.getDetails().getKey());
         String compMaintenance = XORCrypt.decrypt(XORCrypt.stringToIntArray(remind.
-                encryptedMaintenance), this.getKey());
+                encryptedMaintenance), this.getDetails().getKey());
         return thisMaintenance.equalsIgnoreCase(compMaintenance) && this.remindDate.replaceAll("\\p{P}", "\\.").
                 equals(remind.remindDate.replaceAll("\\p{P}", "\\."));
     }

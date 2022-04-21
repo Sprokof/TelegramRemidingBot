@@ -22,8 +22,11 @@ public class Details {
     private String lastSendTime;
     @Column(name = "COUNT_SEND_OF_REMIND")
     private int countSendOfRemind;
-    public Details(String lastSendTime, boolean timeToSend,
-                    int countSendOfRemind) {
+    @Column(name = "KEY_TO_DECRYPT")
+    private String key;
+
+    public Details(String key, String lastSendTime, boolean timeToSend, int countSendOfRemind) {
+        this.key = key;
         this.lastSendTime = lastSendTime;
         this.timeToSend = timeToSend;
         this.countSendOfRemind = countSendOfRemind;
