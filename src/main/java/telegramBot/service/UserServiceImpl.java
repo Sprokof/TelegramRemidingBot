@@ -55,8 +55,7 @@ public class UserServiceImpl implements UserService {
         userService().updateUser(user);
     }
 
-    public static void addUserRemind(User user, Remind remind){
-        user.addRemind(remind);
+    public static void addUserRemind(Remind remind){
         remindService().saveRemind(remind);
     }
 

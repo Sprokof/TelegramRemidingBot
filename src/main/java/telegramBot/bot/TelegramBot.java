@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import telegramBot.command.InstrCommand;
 import telegramBot.crypt.XORCrypt;
 import telegramBot.entity.*;
 import telegramBot.manage.*;
@@ -16,7 +15,6 @@ import telegramBot.command.CommandContainer;
 import telegramBot.service.SendMessageServiceImpl;
 
 import static telegramBot.service.UserServiceImpl.*;
-import static telegramBot.service.StorageServiceImpl.*;
 import static telegramBot.service.RemindServiceImpl.*;
 
 
@@ -24,7 +22,6 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Getter
 @Component
@@ -59,15 +56,16 @@ public class TelegramBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         String command = "";
         String chatId;
+        User user;
         if (update.hasMessage() && update.getMessage().hasText()) {
             chatId = update.getMessage().getChatId().toString();
-            createUser(chatId);
+            user = createUser(chatId);
             commands.putIfAbsent(chatId, new ArrayList<String>());
             String message = update.getMessage().getText().trim();
             if (message.startsWith(COMMAND_PREFIX)) {
                 command = message.split(" ")[0].toLowerCase(Locale.ROOT);
                 this.commandContainer.retrieveCommand(command).execute(update);
-                commands.get(chatId).add(command); saveCommand(chatId);
+                commands.get(chatId).add(command); saveCommand(user); saveCommandMessage(user);
             } else {
                 if (lastCommand(chatId).equals("/add")) {
                     acceptNewRemindFromUser(update);
@@ -88,11 +86,11 @@ public class TelegramBot extends TelegramLongPollingBot {
                                 "Вероятно вы ошиблись в формате даты. Повторите команду /show и " +
                                         "введите дату в верном формате");
                     }
+                    saveCommandMessage(user);
                 }
             }
         }
         executeReminds();
-        executeInstrCommand();
     }
 
     private String getDateFromUserInput(String input) {
@@ -126,7 +124,6 @@ public class TelegramBot extends TelegramLongPollingBot {
             return false;
         }
     }
-
 
 
     private void executeReminds() {
@@ -200,28 +197,33 @@ public class TelegramBot extends TelegramLongPollingBot {
 
                 double temp = TimeManage.toDoubleTime(TimeManage.currentTime()) - 2;
                 String time;
-                if((time = TimeManage.
-                        toStringTime(temp)).length() == 1){ time = time+"0";}
+                if ((time = TimeManage.
+                        toStringTime(temp)).length() == 1) {
+                    time = time + "0";
+                }
 
                 Details details = new Details(key, time, false, 0);
 
-                isExist = remindService().isExistRemind(remind, details);
+                isExist = remindService().isExistRemind(user, remind, details);
                 if (!isExist) {
                     String maxTime;
                     if ((maxTime = remindService().getMaxTime(remind)) != null) {
                         remind.getDetails().setLastSendTime(maxTime);
                     }
-                    addUserRemind(user, remind);
-                        notify();
-                        this.deleteMessageService.deleteMessage(new Message(chatId,
-                                messageId));
-                        Thread.sleep(570);
-                        this.sendMessageService.sendMessage(chatId, "Напоминание успешно" +
-                                " добавлено.");
+                    addUserRemind(remind);
+                    notify();
+                    this.deleteMessageService.deleteMessage(new Message(chatId,
+                            messageId));
+                    Thread.sleep(370);
+                    this.sendMessageService.sendMessage(chatId, "Напоминание успешно" +
+                            " добавлено.");
                 } else {
+                    this.deleteMessageService.deleteMessage(new Message(chatId,
+                            messageId));
                     this.sendMessageService.sendMessage(chatId,
                             "Данное напоминание было добавлено ранее.");
                 }
+                saveCommandMessage(user);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -233,6 +235,8 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             commands.get(chatId).clear();
         }
+        saveCommand(user);
+        saveCommandMessage(user);
 
     }
 
@@ -241,48 +245,27 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
 
-    private void createUser(String chatId) {
-        if (userService().getUserByChatId(chatId) == null) {
+    private User createUser(String chatId) {
+        User user;
+        if ((user = userService().getUserByChatId(chatId)) == null) {
             userService().saveUser(new User(chatId, true));
         }
+        return user;
     }
 
-    private void executeInstrCommand() {
-        Storage st = newStorageService().getStorageById(1);
-        String command = String.format("%s%s%s",
-                "Позвольте напомнить, что ",
-                Character.toLowerCase(InstrCommand.INSTR_COMMAND.charAt(0)),
-                InstrCommand.INSTR_COMMAND.substring(1));
-
-        new Thread(() -> {
-            while (true) {
-                newStorageService().fillStorage(st);
-                if (st.isFull()) {
-                    if ((newStorageService().sum(st.getRandomInts()) % 2 == 0)) {
-                        List<String> chatId = userService().getAllUsers().stream()
-                                .map(User::getChatId)
-                                .collect(Collectors.toList());
-                        for (String id : chatId) {
-                            this.sendMessageService.sendMessage(id, command);
-                        }
-                    }
-                    newStorageService().cleanStorage(st);
-                }
-            try{
-                Thread.sleep(870000);
-            }
-            catch (InterruptedException e){e.printStackTrace();}
-            }
-        }).start();
-    }
-
-    private void saveCommand(String chatId){
-        Message command = new Message(chatId, "0",
+    private void saveCommand(User user) {
+        Message command = new Message(user.getChatId(), "0",
                 (SendMessageServiceImpl.getMessageId() - 1), false);
         MessageServiceImpl.messageService().save(command);
     }
 
+    private void saveCommandMessage(User user) {
+        Message command = new Message(user.getChatId(), "0",
+                (SendMessageServiceImpl.getMessageId()), false);
+        MessageServiceImpl.messageService().save(command);
+    }
 }
+
 
 
 

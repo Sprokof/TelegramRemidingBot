@@ -24,12 +24,8 @@ public class RestartCommand implements Command {
     public boolean execute(Update update) {
         String chatId = update.getMessage().getChatId().toString();
         if (!restart(chatId)){
-        this.sendMessageService.sendMessage(chatId, RESTART_COMMANDS[1]);}
-        else this.sendMessageService.sendMessage(chatId, RESTART_COMMANDS[0]);
-        Message output = new Message(chatId, "0",
-                SendMessageServiceImpl.getMessageId(), false);
-            messageService().save(output);
-        return true;
+        return this.sendMessageService.sendMessage(chatId, RESTART_COMMANDS[1]);}
+        else return this.sendMessageService.sendMessage(chatId, RESTART_COMMANDS[0]);
     }
 
     private boolean restart(String chatId) {

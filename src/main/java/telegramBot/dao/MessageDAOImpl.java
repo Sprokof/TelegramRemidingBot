@@ -134,8 +134,7 @@ public class MessageDAOImpl implements MessageDAO{
                         "AND CHAT_ID=:chatId AND IS_REMIND_MESSAGE is true").
                 addEntity(Message.class).setParameter("remindId", message.getRemindId()).
                 setParameter("chatId", message.getChatId()).getSingleResult(); }
-        catch (Exception e){
-            e.printStackTrace(); return false; }
+        catch (Exception e){ return false; }
         session.getTransaction().commit();
     }
     catch (Exception e){

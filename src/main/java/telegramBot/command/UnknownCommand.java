@@ -18,11 +18,7 @@ public class UnknownCommand implements Command{
     @Override
     public boolean execute(Update update) {
         String chatId = update.getMessage().getChatId().toString();
-        if(this.sendMessageService.sendMessage(chatId, UNKNOWN_COMMAND)){
-            Message output = new Message(chatId, "0",
-                    SendMessageServiceImpl.getMessageId(), false);
-            messageService().save(output);}
-        return true;
+        return this.sendMessageService.sendMessage(chatId, UNKNOWN_COMMAND);
     }
 }
 

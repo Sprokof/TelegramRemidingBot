@@ -68,8 +68,8 @@ public class RemindServiceImpl implements RemindService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public boolean isExistRemind(Remind remind, Details details) {
-        remind.setDetails(details);
+    public boolean isExistRemind(User user, Remind remind, Details details) {
+        remind.setDetails(details); user.addRemind(remind);
         String decryptMaintenance = XORCrypt.
                 decrypt(XORCrypt.stringToIntArray(remind.getEncryptedMaintenance()),
                         remind.getDetails().getKey());
