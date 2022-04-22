@@ -140,7 +140,7 @@ public class RemindManage {
             }
 
         }
-        return String.format("%s%s", messageToSend+"\n", "(/instr - сводка по коммандам)");
+        return String.format("%s%s", messageToSend+"\n", "/instr - сводка по командам.");
     }
 
 
@@ -185,7 +185,7 @@ public class RemindManage {
             }
         }
 
-        return String.format("%s%s", messageToSend+"\n", "(/instr - сводка по коммандам)");
+        return String.format("%s%s", messageToSend+"\n", "/instr - сводка по командам.");
     }
 
 
