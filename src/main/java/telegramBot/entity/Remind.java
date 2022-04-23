@@ -3,6 +3,8 @@ package telegramBot.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import telegramBot.crypt.XORCrypt;
 
 import javax.persistence.*;
@@ -26,7 +28,7 @@ public class Remind {
     @JoinColumn(name = "details_id")
     private Details details;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(cascade={CascadeType.PERSIST,CascadeType.REMOVE})
     @JoinColumn(name = "user_id")
     private User user;
 

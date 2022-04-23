@@ -48,7 +48,6 @@ public class UserServiceImpl implements UserService {
         return this.userDAO.getAllActiveUser();
     }
 
-
     private void saveOrUpdateUser(User user) {
         if (this.getUserByChatId(user.getChatId()) == null) {
             userService().saveUser(user);}

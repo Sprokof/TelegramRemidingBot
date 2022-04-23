@@ -2,7 +2,6 @@ package telegramBot.service;
 
 
 import telegramBot.entity.Message;
-import telegramBot.entity.Remind;
 import telegramBot.entity.User;
 import telegramBot.manage.RemindManage;
 

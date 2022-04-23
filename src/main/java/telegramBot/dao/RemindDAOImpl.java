@@ -21,11 +21,14 @@ public class RemindDAOImpl implements RemindDAO {
     @Override
     public boolean deleteByID(int id) {
         Session session;
+        Remind remind;
         try{
             session = this.sessionFactory.getCurrentSession();
             session.beginTransaction();
-            if(session.get(Remind.class, id)!=null){
-                session.delete(session.get(Remind.class, id));}
+            if((remind = session.get(Remind.class, id))!=null){
+                session.delete(remind);
+
+            }
             session.getTransaction().commit();}
         catch (Exception e){
             e.printStackTrace();

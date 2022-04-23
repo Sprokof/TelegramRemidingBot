@@ -228,6 +228,8 @@ public class TelegramBot extends TelegramLongPollingBot {
                 e.printStackTrace();
             }
         } else {
+            this.deleteMessageService.deleteMessage(new Message(chatId, SendMessageServiceImpl.
+                    getMessageId()));
             this.sendMessageService.sendMessage(chatId,
                     "Напоминание не было добавлено, проверьте формат даты (dd.mm.yyyy) . " +
                             "Возможно, что вы указали уже прошедшую дату. " +

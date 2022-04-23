@@ -113,7 +113,6 @@ public class RemindManage {
         if (count != 0) this.service.sendMessage(userChatId, messageToSend);
         Thread.sleep(5700);
         this.deleteService.deleteMessage(new Message(userChatId, SendMessageServiceImpl.getMessageId()));
-        this.service.sendMessage(userChatId, "reminds was showed");
         return count > 0;
     }
 
