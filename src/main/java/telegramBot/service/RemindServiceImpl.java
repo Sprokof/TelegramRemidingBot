@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import telegramBot.crypt.XORCrypt;
 import telegramBot.dao.RemindDAOImpl;
 import telegramBot.entity.Details;
+import telegramBot.entity.Message;
 import telegramBot.entity.Remind;
 import telegramBot.entity.User;
 import telegramBot.manage.DateManage;
@@ -150,9 +151,8 @@ public class RemindServiceImpl implements RemindService {
         return reminds;
     }
 
-    @Override
     @SuppressWarnings("unchecked")
-    public String getMaxTime(Remind remind) {
+    private String getMaxTime(Remind remind) {
         Session session;
         List<Remind> reminds = new ArrayList<>();
     try{
@@ -201,6 +201,26 @@ public class RemindServiceImpl implements RemindService {
     return ides;
     }
 
+    @Override
+    public void extendsLastSendTimeIfAbsent(Remind remind) {
+        String chatId = remind.getUser().getChatId();
+        List<Message> remindMessage =
+                MessageServiceImpl.messageService().getRemindMessagesByChatId(chatId);
+        Message message;
+        int lastIndex = remindMessage.size() - 1;
+
+        if((message = remindMessage.get(lastIndex)) != null){
+        int remindId = Integer.parseInt(String.valueOf(message.getRemindId().
+                    charAt(message.getRemindId().length() - 1))) + 1;
+            message.setRemindId((String.format("%s%s%d",
+                    message.getRemindId(), "/", remindId)));
+            MessageServiceImpl.
+                    messageService().updateMessage(message);
+        }
+        String time = getMaxTime(remind);
+        if(time != null)
+        remind.getDetails().setLastSendTime(time);
+    }
 }
 
 

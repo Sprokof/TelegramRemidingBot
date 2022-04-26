@@ -8,7 +8,6 @@ import telegramBot.entity.Message;
 import telegramBot.entity.User;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class MessageDAOImpl implements MessageDAO{
@@ -61,22 +60,20 @@ public class MessageDAOImpl implements MessageDAO{
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<Message> getAllRemindMessages() {
         Session session;
-        List<?> tempList = null;
+        List<Message> messages = new ArrayList<>();
     try{
         session = this.sessionFactory.getCurrentSession();
         session.beginTransaction();
-        tempList = session.createSQLQuery("SELECT * FROM MESSAGES " +
-                        "WHER IS_REMIND_MESSAGE is true").
+        messages = session.createSQLQuery("SELECT * FROM MESSAGES " +
+                        "WHERE IS_REMIND_MESSAGE is true").
                 addEntity(Message.class).list();
         session.getTransaction().commit();}
     catch (Exception e){ e.getCause();}
     finally{
-        this.sessionFactory.close();}
-    List<Message> messages = new ArrayList<>();
-        for(Iterator<?> it = tempList.iterator(); it.hasNext();){
-            messages.add((Message) it.next());
+        this.sessionFactory.close();
     }
     return messages;
     }
@@ -167,6 +164,28 @@ public class MessageDAOImpl implements MessageDAO{
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public List<Message> getRemindMessagesByChatId(String chatId) {
+        Session session;
+        List<Message> messages = new ArrayList<>();
+        try {
+            session = this.sessionFactory.getCurrentSession();
+            session.beginTransaction();
+            messages = (ArrayList<Message>) session.
+                    createSQLQuery("SELECT * FROM MESSAGES WHERE CHAT_ID=:id " +
+                            "AND IS_REMIND_MESSAGE is true").
+                    addEntity(Message.class).setParameter("id", chatId).list();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            this.sessionFactory.close();
+        }
+        return messages;
+    }
+
+
+    @Override
     public void deleteAllNotRemindMessage(User user) {
         Session session;
     try{
@@ -180,6 +199,8 @@ public class MessageDAOImpl implements MessageDAO{
     finally {
         this.sessionFactory.close();
     }
+
+
 
 
     }

@@ -73,7 +73,7 @@ public class MessageServiceImpl implements MessageService {
         return this.messageDAO.isSentMessage(message);
     }
 
-    private String toStringId(List<Remind> reminds){
+    public String toStringId(List<Remind> reminds){
     List<Integer> ides;
     ides = reminds.stream().map(Remind::getId).sorted((i1, i2) -> i1 - i2).
             collect(Collectors.toList());
@@ -94,6 +94,11 @@ public class MessageServiceImpl implements MessageService {
                 map(Message::buildSecondConstructorMessage).
                 forEach(manage.getDeleteService()::deleteMessage);
         this.messageDAO.deleteAllNotRemindMessage(user);
+    }
+
+    @Override
+    public List<Message> getRemindMessagesByChatId(String chatId) {
+        return this.messageDAO.getRemindMessagesByChatId(chatId);
     }
 }
 

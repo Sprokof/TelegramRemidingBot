@@ -11,6 +11,7 @@ public interface MessageService {
     void save(Message message);
     void deleteAllMessages();
     void deleteMessage(Message message);
+    List<Message> getRemindMessagesByChatId(String chatId);
     Message getMessageByNextFields(String chatId, String maintenance);
     List<Message> getAllRemindMessages();
     void updateMessage(Message message);

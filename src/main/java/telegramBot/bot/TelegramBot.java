@@ -71,6 +71,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     acceptNewRemindFromUser(update);
                 } else if (lastCommand(chatId).equals("/show")) {
                     if (acceptDateFromUser(update)) {
+                        saveCommandMessage(user);
                         try {
                             if (!this.manage.showRemindsByDate(update.getMessage().getChatId().toString(),
                                     update.getMessage().getText())) {
@@ -206,10 +207,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
                 isExist = remindService().isExistRemind(user, remind, details);
                 if (!isExist) {
-                    String maxTime;
-                    if ((maxTime = remindService().getMaxTime(remind)) != null) {
-                        remind.getDetails().setLastSendTime(maxTime);
-                    }
+                    remindService().extendsLastSendTimeIfAbsent(remind);
                     addUserRemind(remind);
                     notify();
                     this.deleteMessageService.deleteMessage(new Message(chatId,
