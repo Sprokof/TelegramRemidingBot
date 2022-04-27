@@ -66,8 +66,8 @@ public class RemindManage {
             List<Message> messages;
             if (!(messages = messageService().getAllRemindMessages()).isEmpty()) {
                 messages.forEach(this.deleteService::deleteMessage);
+                messageService().deleteAllMessages();
             }
-            messageService().deleteAllMessages();
         }
         deleteNotUpdatedRemind();
     }

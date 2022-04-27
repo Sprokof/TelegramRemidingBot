@@ -208,18 +208,19 @@ public class RemindServiceImpl implements RemindService {
                 MessageServiceImpl.messageService().getRemindMessagesByChatId(chatId);
         Message message;
         int lastIndex = remindMessage.size() - 1;
-
-        if((message = remindMessage.get(lastIndex)) != null){
-        int remindId = Integer.parseInt(String.valueOf(message.getRemindId().
+        String time = getMaxTime(remind);
+        if(time != null){
+            remind.getDetails().setLastSendTime(time);
+            if((message = remindMessage.get(lastIndex)) != null){
+                int remindId = Integer.parseInt(String.valueOf(message.getRemindId().
                     charAt(message.getRemindId().length() - 1))) + 1;
-            message.setRemindId((String.format("%s%s%d",
-                    message.getRemindId(), "/", remindId)));
+                message.setRemindId((String.format("%s%s%d",
+                        message.getRemindId(), "/", remindId)));
             MessageServiceImpl.
                     messageService().updateMessage(message);
+            }
         }
-        String time = getMaxTime(remind);
-        if(time != null)
-        remind.getDetails().setLastSendTime(time);
+
     }
 }
 

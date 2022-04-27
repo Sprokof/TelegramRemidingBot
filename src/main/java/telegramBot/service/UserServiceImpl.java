@@ -48,21 +48,26 @@ public class UserServiceImpl implements UserService {
         return this.userDAO.getAllActiveUser();
     }
 
-    private void saveOrUpdateUser(User user) {
-        if (this.getUserByChatId(user.getChatId()) == null) {
-            userService().saveUser(user);}
-        userService().updateUser(user);
-    }
 
     public static void addUserRemind(Remind remind){
         remindService().saveRemind(remind);
     }
 
+    public User createUser(String chatId) {
+        User user;
+        if ((user = userService().getUserByChatId(chatId)) == null) {
+            userService().saveUser(new User(chatId, true));
+        }
+        return user;
+    }
+
+
     public static void deleteUserRemind(Remind remind){
         User user = remind.getUser();
+        String chatId = user.getChatId();
         user.removeRemind(remind);
         remindService().deleteRemind(remind.getId());
-        userService().saveOrUpdateUser(user);
+        userService().createUser(chatId);
     }
 }
 

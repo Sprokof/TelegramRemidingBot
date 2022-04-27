@@ -59,7 +59,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         User user;
         if (update.hasMessage() && update.getMessage().hasText()) {
             chatId = update.getMessage().getChatId().toString();
-            user = createUser(chatId);
+            user = userService().createUser(chatId);
             commands.putIfAbsent(chatId, new ArrayList<String>());
             String message = update.getMessage().getText().trim();
             if (message.startsWith(COMMAND_PREFIX)) {
@@ -242,15 +242,6 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private long getMills() {
         return Calendar.getInstance().getTimeInMillis();
-    }
-
-
-    private User createUser(String chatId) {
-        User user;
-        if ((user = userService().getUserByChatId(chatId)) == null) {
-            userService().saveUser(new User(chatId, true));
-        }
-        return user;
     }
 
     private void saveCommand(User user) {
