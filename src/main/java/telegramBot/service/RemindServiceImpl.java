@@ -215,15 +215,14 @@ public class RemindServiceImpl implements RemindService {
         String time = getMaxTime(remind);
         if (time != null) {
             remind.getDetails().setLastSendTime(time);
-            if ((remindMessage.size() - 1) > lastIndex) {
-                if ((message = remindMessage.get(lastIndex)) != null) {
+                if ((!remindMessage.isEmpty()) && (message = remindMessage.get(lastIndex)) != null) {
+                    //rewrite string under...
                     int remindId = Integer.parseInt(String.valueOf(message.getRemindId().
                             charAt(message.getRemindId().length() - 1))) + 1;
                     message.setRemindId((String.format("%s%s%d",
                             message.getRemindId(), "/", remindId)));
                     MessageServiceImpl.
                             messageService().updateMessage(message);
-                }
             }
         }
     }
