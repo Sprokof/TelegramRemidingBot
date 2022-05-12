@@ -13,6 +13,7 @@ import telegramBot.manage.DateManage;
 import telegramBot.manage.TimeManage;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -216,15 +217,27 @@ public class RemindServiceImpl implements RemindService {
         if (time != null) {
             remind.getDetails().setLastSendTime(time);
                 if ((!remindMessage.isEmpty()) && (message = remindMessage.get(lastIndex)) != null) {
-                    //rewrite string under...
-                    int remindId = Integer.parseInt(String.valueOf(message.getRemindId().
-                            charAt(message.getRemindId().length() - 1))) + 1;
+                    int remindId = getLastId(remind) + 1;
                     message.setRemindId((String.format("%s%s%d",
                             message.getRemindId(), "/", remindId)));
                     MessageServiceImpl.
                             messageService().updateMessage(message);
             }
         }
+    }
+
+    private int getLastId(Remind remind) {
+        List<Remind> reminds =
+                remindService().
+                        getAllExecutingReminds(remind);
+
+        reminds.sort(new Comparator<Remind>() {
+            @Override
+            public int compare(Remind r1, Remind r2) {
+                return r2.getId() - r1.getId();
+            }
+        });
+        return reminds.get(0).getId();
     }
 
 }

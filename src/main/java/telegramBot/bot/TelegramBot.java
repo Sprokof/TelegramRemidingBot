@@ -226,15 +226,16 @@ public class TelegramBot extends TelegramLongPollingBot {
                 e.printStackTrace();
             }
         } else {
-            this.deleteMessageService.deleteMessage(new Message(chatId, SendMessageServiceImpl.
-                    getMessageId()));
             this.sendMessageService.sendMessage(chatId,
                     "Напоминание не было добавлено, проверьте формат даты (dd.mm.yyyy) . " +
                             "Возможно, что вы указали уже прошедшую дату. " +
                             "После введите команду /add для повторного добавления.");
+            this.deleteMessageService.deleteMessage(new Message(chatId, SendMessageServiceImpl.
+                    getMessageId() - 1));
+        }
 
             commands.get(chatId).clear();
-        }
+
         saveCommand(user);
         saveCommandMessage(user);
 

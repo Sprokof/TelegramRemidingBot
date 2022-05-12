@@ -12,6 +12,10 @@
       <change afterPath="$PROJECT_DIR$/../SpringProjects/Scala/.idea/modules/Scala-build.iml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../SpringProjects/Scala/.idea/modules/Scala.iml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../SpringProjects/springMVC/.idea/springMVC.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/docker/env/app.env" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/docker/env/postgres.env" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/hibernate.cfg.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Converter.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../ConverterTest.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../Median.java" beforeDir="false" />
@@ -58,7 +62,11 @@
       <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/log4j2.properties" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/templates.books/index.html" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/bot/TelegramBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/bot/TelegramBot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/service/MessageServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/service/MessageServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/service/RemindServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/service/RemindServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/service/RemindServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/service/RemindServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/ex1.sql" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/hr4.sql" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/hr7.sql" beforeDir="false" />
@@ -128,7 +136,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Binance manager" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -251,7 +259,9 @@
       <workItem from="1648985522103" duration="24868000" />
       <workItem from="1649408502114" duration="8641000" />
       <workItem from="1649505329198" duration="25041000" />
-      <workItem from="1649921516892" duration="134940000" />
+      <workItem from="1649921516892" duration="136777000" />
+      <workItem from="1651471346293" duration="1170000" />
+      <workItem from="1652351214930" duration="1392000" />
     </task>
     <servers />
   </component>
