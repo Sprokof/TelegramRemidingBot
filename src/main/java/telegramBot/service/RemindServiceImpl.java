@@ -217,7 +217,7 @@ public class RemindServiceImpl implements RemindService {
         if (time != null) {
             remind.getDetails().setLastSendTime(time);
                 if ((!remindMessage.isEmpty()) && (message = remindMessage.get(lastIndex)) != null) {
-                    int remindId = getLastId(remind) + 1;
+                    int remindId = getLastId(chatId) + 1;
                     message.setRemindId((String.format("%s%s%d",
                             message.getRemindId(), "/", remindId)));
                     MessageServiceImpl.
@@ -226,18 +226,13 @@ public class RemindServiceImpl implements RemindService {
         }
     }
 
-    private int getLastId(Remind remind) {
-        List<Remind> reminds =
-                remindService().
-                        getAllExecutingReminds(remind);
-
-        reminds.sort(new Comparator<Remind>() {
-            @Override
-            public int compare(Remind r1, Remind r2) {
-                return r2.getId() - r1.getId();
-            }
-        });
-        return reminds.get(0).getId();
+    private int getLastId(String chatId) {
+        return remindService().
+                getAllRemindsFromDB().
+                stream().filter((r) -> {
+                    return r.getUser().getChatId().equals(chatId);
+                }).sorted((r1, r2) -> r2.getId() - r1.getId()).
+                collect(Collectors.toList()).get(0).getId();
     }
 
 }
