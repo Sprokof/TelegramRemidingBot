@@ -152,7 +152,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         new Thread(() -> {
             try {
                 while (true){
-                sendToAllUsers();
+                sendToAllUsers(this.sendMessageService);
                 Thread.sleep(910000);
                 }
             }

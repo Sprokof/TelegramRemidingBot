@@ -16,7 +16,8 @@ public class SendMessageServiceImpl implements SendMessageService{
 
     @Autowired
     public SendMessageServiceImpl(TelegramBot telegramBot){
-        this.telegramBot = telegramBot;}
+        this.telegramBot = telegramBot;
+    }
 
     @Override
     public boolean sendMessage(String chatId, String message) {

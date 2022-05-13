@@ -13,15 +13,17 @@ public class Storage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
     @Column(name = "CURRENT_MONTH")
     private int currentMonth;
-    @Column(name = "DATES_TO_SEND")
-    private String datesToSend;
+    @Column(name = "DAYS_TO_SEND")
+    private String daysToSend;
 
-    public Storage(int currentMonth, String datesToSend){
+
+    public Storage(int currentMonth, String daysToSend){
         this.currentMonth = currentMonth;
-        this.datesToSend = datesToSend;
+        this.daysToSend = daysToSend;
     }
+
+
 
 }

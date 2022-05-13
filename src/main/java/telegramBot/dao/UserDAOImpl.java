@@ -91,7 +91,8 @@ public class UserDAOImpl implements UserDAO{
     try{
         session = this.sessionFactory.getCurrentSession();
         session.beginTransaction();
-        users = session.createSQLQuery("SELECT * FROM USERS").addEntity(User.class).list();
+        users = session.createSQLQuery("SELECT * FROM USERS WHERE " +
+                "IS_ACTIVE is true").addEntity(User.class).list();
         session.getTransaction().commit();
     }
     catch (Exception e){e.printStackTrace();}

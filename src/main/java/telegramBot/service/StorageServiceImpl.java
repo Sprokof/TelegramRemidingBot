@@ -40,7 +40,7 @@ public class StorageServiceImpl implements StorageService{
 
         if(currentMonth > storage.getCurrentMonth()){
             storage.setCurrentMonth(currentMonth);
-            storage.setDatesToSend(datesToSend);
+            storage.setDaysToSend(datesToSend);
             storageService().updateStorage(storage);
         }
         return storage;
