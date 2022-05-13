@@ -11,7 +11,7 @@ public class InstrCommand implements Command {
     public static final String INSTR_COMMAND = "Поддерживаю следующие команды.\n" +
             "/add - добавление напоминания на исполнение.\n" +
             "/stop - остановка напоминаний.\n" +
-            "/restart  - возообнавление напоминаний.\n" +
+            "/restart - возообнавление напоминаний.\n" +
             "/show - показ всех напоминаний на заданную дату.";
     private final SendMessageService sendMessageService;
 

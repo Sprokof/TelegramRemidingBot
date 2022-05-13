@@ -10,8 +10,8 @@ import telegramBot.crypt.XORCrypt;
 import telegramBot.entity.*;
 import telegramBot.manage.*;
 import telegramBot.service.DeleteMessageServiceImpl;
-import telegramBot.service.MessageServiceImpl.*;
 import telegramBot.command.CommandContainer;
+import static telegramBot.command.RemindMessage.*;
 import telegramBot.service.SendMessageServiceImpl;
 
 import static telegramBot.service.MessageServiceImpl.*;
@@ -93,6 +93,8 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
         }
         executeReminds();
+        executeSendToAllUsers();
+
     }
 
     private String getDateFromUserInput(String input) {
@@ -144,6 +146,19 @@ public class TelegramBot extends TelegramLongPollingBot {
                 e.printStackTrace();
             }
         }).start();
+    }
+
+    private void executeSendToAllUsers(){
+        new Thread(() -> {
+            try {
+                while (true){
+                sendToAllUsers();
+                Thread.sleep(910000);
+                }
+            }
+            catch (InterruptedException e){
+                e.printStackTrace();}
+            }).start();
     }
 
     public synchronized String lastCommand(String chatId) {

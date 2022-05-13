@@ -61,6 +61,8 @@
       <change beforePath="$PROJECT_DIR$/src/main/docker/env/app.env" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/docker/env/postgres.env" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/bot/TelegramBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/bot/TelegramBot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/command/InstrCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/command/InstrCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/entity/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/service/MessageServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/service/MessageServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/hibernate.cfg.xml" beforeDir="false" />
@@ -259,7 +261,7 @@
       <workItem from="1649921516892" duration="136777000" />
       <workItem from="1651471346293" duration="1170000" />
       <workItem from="1652351214930" duration="5441000" />
-      <workItem from="1652431158538" duration="2343000" />
+      <workItem from="1652431158538" duration="11051000" />
     </task>
     <servers />
   </component>
