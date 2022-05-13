@@ -10,10 +10,11 @@ import telegramBot.crypt.XORCrypt;
 import telegramBot.entity.*;
 import telegramBot.manage.*;
 import telegramBot.service.DeleteMessageServiceImpl;
-import telegramBot.service.MessageServiceImpl;
+import telegramBot.service.MessageServiceImpl.*;
 import telegramBot.command.CommandContainer;
 import telegramBot.service.SendMessageServiceImpl;
 
+import static telegramBot.service.MessageServiceImpl.*;
 import static telegramBot.service.UserServiceImpl.*;
 import static telegramBot.service.RemindServiceImpl.*;
 
@@ -212,6 +213,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     notify();
                     this.deleteMessageService.deleteMessage(new Message(chatId,
                             messageId));
+                    deleteWrongRemindsMessages(user, this.deleteMessageService);
                     Thread.sleep(370);
                     this.sendMessageService.sendMessage(chatId, "Напоминание успешно" +
                             " добавлено.");
@@ -221,17 +223,16 @@ public class TelegramBot extends TelegramLongPollingBot {
                     this.sendMessageService.sendMessage(chatId,
                             "Данное напоминание было добавлено ранее.");
                 }
-                saveCommandMessage(user);
+               saveCommandMessage(user);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
+            addWrongRemindsMessage(user, new Message(chatId, messageId));
             this.sendMessageService.sendMessage(chatId,
                     "Напоминание не было добавлено, проверьте формат даты (dd.mm.yyyy) . " +
                             "Возможно, что вы указали уже прошедшую дату. " +
                             "После введите команду /add для повторного добавления.");
-            this.deleteMessageService.deleteMessage(new Message(chatId, SendMessageServiceImpl.
-                    getMessageId() - 1));
         }
 
             commands.get(chatId).clear();
@@ -245,17 +246,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         return Calendar.getInstance().getTimeInMillis();
     }
 
-    private void saveCommand(User user) {
-        Message command = new Message(user.getChatId(), "0",
-                (SendMessageServiceImpl.getMessageId() - 1), false);
-        MessageServiceImpl.messageService().save(command);
-    }
-
-    private void saveCommandMessage(User user) {
-        Message command = new Message(user.getChatId(), "0",
-                (SendMessageServiceImpl.getMessageId()), false);
-        MessageServiceImpl.messageService().save(command);
-    }
 }
 
 

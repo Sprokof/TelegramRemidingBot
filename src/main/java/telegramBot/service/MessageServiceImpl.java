@@ -7,10 +7,19 @@ import telegramBot.entity.User;
 import telegramBot.manage.RemindManage;
 
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MessageServiceImpl implements MessageService {
+
+    private static final Map<String, List<Message>> wrongRemindsMessages;
+
+    static {
+      wrongRemindsMessages = new HashMap<>();
+    }
 
 
     private final MessageDAOImpl messageDAO;
@@ -100,6 +109,35 @@ public class MessageServiceImpl implements MessageService {
     public List<Message> getRemindMessagesByChatId(String chatId) {
         return this.messageDAO.getRemindMessagesByChatId(chatId);
     }
+
+
+    public static void saveCommand(User user) {
+        Message command = new Message(user.getChatId(), "0",
+                (SendMessageServiceImpl.getMessageId() - 1), false);
+        MessageServiceImpl.messageService().save(command);
+    }
+
+    public static void saveCommandMessage(User user) {
+        Message command = new Message(user.getChatId(), "0",
+                (SendMessageServiceImpl.getMessageId()), false);
+        MessageServiceImpl.messageService().save(command);
+    }
+
+    public static void deleteWrongRemindsMessages(User user, DeleteMessageServiceImpl service){
+    String chatId = user.getChatId();
+    List<Message> messagesToDelete;
+        if(!(messagesToDelete = wrongRemindsMessages.get(chatId)).isEmpty()) {
+                messagesToDelete.forEach(service::deleteMessage);
+        }
+        wrongRemindsMessages.get(chatId).clear();
+    }
+    public static void addWrongRemindsMessage(User user, Message message){
+        if(wrongRemindsMessages.isEmpty()) return ;
+        String chatId = user.getChatId();
+            wrongRemindsMessages.putIfAbsent(chatId, new ArrayList<>());
+            wrongRemindsMessages.get(chatId).add(message);
+        }
+
 }
 
 
