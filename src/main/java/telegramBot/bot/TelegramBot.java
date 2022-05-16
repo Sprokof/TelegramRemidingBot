@@ -7,11 +7,14 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import telegramBot.crypt.XORCrypt;
+import telegramBot.dao.RemindDAOImpl;
 import telegramBot.entity.*;
 import telegramBot.manage.*;
 import telegramBot.service.DeleteMessageServiceImpl;
 import telegramBot.command.CommandContainer;
 import static telegramBot.command.RemindMessage.*;
+
+import telegramBot.service.RemindServiceImpl;
 import telegramBot.service.SendMessageServiceImpl;
 
 import static telegramBot.service.MessageServiceImpl.*;
@@ -41,6 +44,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final String COMMAND_PREFIX = "/";
     private final CommandContainer commandContainer;
     @Getter
+    private final RemindServiceImpl remindService;
     private final SendMessageServiceImpl sendMessageService;
     private final RemindManage manage;
     private final DeleteMessageServiceImpl deleteMessageService;
@@ -50,7 +54,9 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.sendMessageService = new SendMessageServiceImpl(this);
         this.commandContainer = new CommandContainer(sendMessageService);
         this.deleteMessageService = new DeleteMessageServiceImpl(this);
-        this.manage = new RemindManage(sendMessageService, deleteMessageService);
+        this.remindService = new RemindServiceImpl(new RemindDAOImpl());
+        this.manage = new RemindManage(sendMessageService,
+                remindService, deleteMessageService);
     }
 
     @Override
@@ -221,10 +227,10 @@ public class TelegramBot extends TelegramLongPollingBot {
 
                 Details details = new Details(key, time, false, 0);
 
-                isExist = remindService().isExistRemind(user, remind, details);
+                isExist = remindService.isExistRemind(user, remind, details);
                 if (!isExist) {
-                    remindService().extendsLastSendTimeIfAbsent(remind);
-                    addUserRemind(remind);
+                    remindService.extendsLastSendTimeIfAbsent(remind);
+                    addUserRemind(this.remindService, remind);
                     notify();
                     this.deleteMessageService.deleteMessage(new Message(chatId,
                             messageId));

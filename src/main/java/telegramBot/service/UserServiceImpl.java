@@ -1,6 +1,7 @@
 package telegramBot.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import telegramBot.dao.RemindDAOImpl;
 import telegramBot.dao.UserDAOImpl;
 import telegramBot.entity.Details;
 import telegramBot.entity.Remind;
@@ -49,8 +50,8 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    public static void addUserRemind(Remind remind){
-        remindService().saveRemind(remind);
+    public static void addUserRemind(RemindServiceImpl remindService, Remind remind){
+        remindService.saveRemind(remind);
     }
 
     public User createUser(String chatId) {
@@ -62,12 +63,12 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    public static void deleteUserRemind(Remind remind){
+    public static void deleteUserRemind(RemindServiceImpl remindService, Remind remind){
         User user = remind.getUser();
         String chatId = user.getChatId();
         user.removeRemind(remind);
-        remindService().deleteRemind(remind.getId());
-        userService().createUser(chatId);
+        remindService.deleteRemind(remind.getId());
+        new UserServiceImpl(new UserDAOImpl()).createUser(chatId);
     }
 }
 

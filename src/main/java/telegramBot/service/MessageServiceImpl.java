@@ -70,11 +70,11 @@ public class MessageServiceImpl implements MessageService {
         Message newMessage = new Message(user.getChatId(), id,
                 SendMessageServiceImpl.getMessageId(), true);
         Message oldMessage;
-        if (!isSentMessage(newMessage)){ messageService().save(newMessage); }
+        if (!isSentMessage(newMessage)){ save(newMessage); }
         else { oldMessage = messageService().getMessageByNextFields(user.getChatId(), id);
             manage.getDeleteService().deleteMessage(oldMessage);
-            messageService().deleteMessage(oldMessage);
-            messageService().save(newMessage); }
+            deleteMessage(oldMessage);
+            save(newMessage); }
     }
 
     @Override
@@ -114,16 +114,18 @@ public class MessageServiceImpl implements MessageService {
     public static void saveCommand(User user) {
         Message command = new Message(user.getChatId(), "0",
                 (SendMessageServiceImpl.getMessageId() - 1), false);
-        MessageServiceImpl.messageService().save(command);
+        new MessageDAOImpl().save(command);
     }
 
     public static void saveCommandMessage(User user) {
         Message command = new Message(user.getChatId(), "0",
                 (SendMessageServiceImpl.getMessageId()), false);
-        MessageServiceImpl.messageService().save(command);
+        new MessageDAOImpl().save(command);
     }
 
     public static void deleteWrongRemindsMessages(User user, DeleteMessageServiceImpl service){
+        if(wrongRemindsMessages.isEmpty()) return;
+
     String chatId = user.getChatId();
     List<Message> messagesToDelete;
         if(!(messagesToDelete = wrongRemindsMessages.get(chatId)).isEmpty()) {

@@ -9,15 +9,15 @@ import java.util.List;
 public interface RemindService{
     boolean saveRemind(Remind remind);
     void deleteRemind(int index);
-    void updateRemindDateField(Remind remind, String newDate);
+    RemindServiceImpl updateRemindDateField(Remind remind, String newDate);
     List<Remind> getAllRemindsFromDB();
     Remind getRemindById(int id);
     List<Remind> getAllExecutingReminds(Remind remind);
     List<Integer> getIdOfAllReminds();
     void extendsLastSendTimeIfAbsent(Remind remind);
     boolean isExistRemind(User user, Remind remind, Details details);
-    void updateTimeToSendField(Remind remind, boolean flag);
-    void updateCountSendField(Remind remind, int count);
-    void updateSendHourField(Remind remind, String time);
+    RemindServiceImpl updateTimeToSendField(Remind remind, boolean flag);
+    RemindServiceImpl updateCountSendField(Remind remind, int count);
+    RemindServiceImpl updateSendHourField(Remind remind, String time);
 }
 

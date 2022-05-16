@@ -12,38 +12,51 @@ import telegramBot.entity.Storage;
 public class StorageDAOImpl implements StorageDAO{
 
     @Getter
-    private final SessionFactory sessionFactory =
-            new Configuration().configure("hibernate.cfg.xml").
-                    addAnnotatedClass(Storage.class).buildSessionFactory();
+    private static final SessionFactory sessionFactory =
+            DB.getInstance().getSessionFactory(new Class[]{Storage.class});
+
 
 
     @Override
     public void saveStorage(Storage storage) {
         Session session = null;
-     try{
-         session = this.sessionFactory.getCurrentSession();
-         session.beginTransaction();
-         session.save(storage);
-         session.getTransaction().commit();
-     }
-     catch (Exception e){e.printStackTrace();}
-     finally {
-         this.sessionFactory.close();
-     }
+        try {
+            session = sessionFactory.openSession();
+            session.beginTransaction();
+            session.save(storage);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            if (session != null) {
+                if (session.getTransaction() != null) {
+                    session.getTransaction().rollback();
+                }
+            }
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
     }
 
     @Override
     public void updateStorage(Storage storage) {
         Session session = null;
         try{
-            session = this.sessionFactory.getCurrentSession();
+            session = sessionFactory.openSession();
             session.beginTransaction();
             session.update(storage);
             session.getTransaction().commit();
         }
-        catch (Exception e){e.printStackTrace();}
-        finally {
-            this.sessionFactory.close();
+        catch (Exception e) {
+            if (session != null) {
+                if (session.getTransaction() != null) {
+                    session.getTransaction().rollback();
+                }
+            }
+        } finally {
+            if (session != null) {
+                session.close();
+            }
         }
     }
 
@@ -51,16 +64,22 @@ public class StorageDAOImpl implements StorageDAO{
     public Storage getStorage() {
         Session session = null;
         Storage storage = null;
-        try{
-            session = this.sessionFactory.getCurrentSession();
+        try {
+            session = sessionFactory.openSession();
             session.beginTransaction();
             storage = session.get(Storage.class, 1);
             session.getTransaction().commit();
+        } catch (Exception e) {
+            if (session != null) {
+                if (session.getTransaction() != null) {
+                    session.getTransaction().rollback();
+                }
+            }
+        } finally {
+            if (session != null) {
+                session.close();
+            }
         }
-        catch (Exception e){e.printStackTrace();}
-        finally {
-            this.sessionFactory.close();
-        }
-    return storage;
+        return storage;
     }
 }

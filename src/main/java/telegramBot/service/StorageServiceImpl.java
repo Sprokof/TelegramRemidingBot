@@ -1,7 +1,5 @@
 package telegramBot.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import telegramBot.dao.StorageDAO;
 import telegramBot.dao.StorageDAOImpl;
 import telegramBot.entity.Storage;
 
@@ -11,9 +9,6 @@ public class StorageServiceImpl implements StorageService{
 
     public StorageServiceImpl(){
         this.storageDAO = new StorageDAOImpl();
-    }
-    public static StorageServiceImpl storageService(){
-        return new StorageServiceImpl();
     }
 
     @Override
@@ -33,15 +28,15 @@ public class StorageServiceImpl implements StorageService{
 
     public static Storage createStorage(int currentMonth, String datesToSend){
         Storage storage;
-        if((storage = storageService().getStorage()) == null) {
+        if((storage = new StorageDAOImpl().getStorage()) == null) {
             storage = new Storage(currentMonth, datesToSend);
-            storageService().saveStorage(storage);
+            new StorageDAOImpl().saveStorage(storage);
         }
 
         if(currentMonth > storage.getCurrentMonth()){
             storage.setCurrentMonth(currentMonth);
             storage.setDaysToSend(datesToSend);
-            storageService().updateStorage(storage);
+            new StorageDAOImpl().updateStorage(storage);
         }
         return storage;
 

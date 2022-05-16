@@ -1,27 +1,20 @@
 package telegramBot.service;
 
-
-import org.hibernate.Session;
-import org.springframework.beans.factory.annotation.Autowired;
-import telegramBot.crypt.XORCrypt;
+import org.springframework.stereotype.Component;
 import telegramBot.dao.RemindDAOImpl;
 import telegramBot.entity.Details;
 import telegramBot.entity.Message;
 import telegramBot.entity.Remind;
 import telegramBot.entity.User;
-import telegramBot.manage.DateManage;
-import telegramBot.manage.TimeManage;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class RemindServiceImpl implements RemindService {
 
     private final RemindDAOImpl remindDAO;
 
-    @Autowired
     public RemindServiceImpl(RemindDAOImpl remindDAO) {
         this.remindDAO = remindDAO;
     }
@@ -38,172 +31,60 @@ public class RemindServiceImpl implements RemindService {
     }
 
     @Override
-    public void updateRemindDateField(Remind remind, String newDate) {
+    public RemindServiceImpl updateRemindDateField(Remind remind, String newDate) {
         remind.setRemindDate(newDate);
         this.remindDAO.update(remind);
+        return this;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<Remind> getAllRemindsFromDB() {
-        Session session;
-        ArrayList<Remind> reminds = null;
-        try {
-            session = this.remindDAO.getSessionFactory().getCurrentSession();
-            session.beginTransaction();
-            reminds = (ArrayList<Remind>) session.createSQLQuery("SELECT * from REMINDS").
-                    addEntity(Remind.class).list();
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            this.remindDAO.getSessionFactory().close();
-        }
-        return reminds;
+        return this.remindDAO.getAllRemindsFromDB();
     }
 
     @Override
     public Remind getRemindById(int id) {
-        return this.remindDAO.getObjectByID(id);
+        return this.remindDAO.getRemindByID(id);
     }
-
 
     @Override
-    @SuppressWarnings("unchecked")
-    public boolean isExistRemind(User user, Remind remind, Details details) {
-        remind.setDetails(details);
-        user.addRemind(remind);
-        String decryptMaintenance = XORCrypt.
-                decrypt(XORCrypt.stringToIntArray(remind.getEncryptedMaintenance()),
-                        remind.getDetails().getKey());
-        List<Remind> reminds = new ArrayList<>();
-        Session session;
-        try {
-            session = this.remindDAO.getSessionFactory().getCurrentSession();
-            session.beginTransaction();
-            reminds = (List<Remind>) session.createSQLQuery("SELECT * FROM REMINDS as r " +
-                            "join USERS as u on r.user_id = u.id" +
-                            " WHERE u.CHAT_ID=:chatId " +
-                            "AND r.REMIND_DATE=:rm").
-                    addEntity("r", Remind.class).
-                    setParameter("chatId", remind.getUser().getChatId()).
-                    setParameter("rm", remind.getRemindDate()).list();
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            this.remindDAO.getSessionFactory().close();
-        }
-        if (reminds.isEmpty()) {
-            return false;
-        }
-
-        return reminds.stream().map((r) -> {
-            return XORCrypt.decrypt(XORCrypt.stringToIntArray(r.getEncryptedMaintenance()),
-                    r.getDetails().getKey());
-        }).anyMatch((m) -> m.equals(decryptMaintenance));
-    }
-
-
-    public static RemindServiceImpl remindService() {
-
-        return new RemindServiceImpl(new RemindDAOImpl());
-    }
-
-
-    @Override
-    public void updateTimeToSendField(Remind remind, boolean flag) {
+    public RemindServiceImpl updateTimeToSendField(Remind remind, boolean flag) {
         remind.getDetails().setTimeToSend(flag);
         this.remindDAO.update(remind);
+        return this;
 
     }
 
     @Override
-    public void updateCountSendField(Remind remind, int count) {
+    public RemindServiceImpl updateCountSendField(Remind remind, int count) {
         remind.getDetails().setCountSendOfRemind(count);
         this.remindDAO.update(remind);
+        return this;
     }
 
     @Override
-    public void updateSendHourField(Remind remind, String time) {
+    public RemindServiceImpl updateSendHourField(Remind remind, String time) {
         remind.getDetails().setLastSendTime(time);
         this.remindDAO.update(remind);
+        return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public List<Remind> getAllExecutingReminds(Remind remind) {
-        if (TimeManage.toDoubleTime(TimeManage.currentTime()) <= 5.09) return new ArrayList<>();
-        Session session;
-        List<Remind> reminds = new ArrayList<>();
-        try {
-            session = this.remindDAO.getSessionFactory().getCurrentSession();
-            session.beginTransaction();
-            reminds = session.createSQLQuery("SELECT * FROM REMINDS as r join DETAILS as d " +
-                            "on r.details_id = d.id join USERS as u on r.user_id = u.id" +
-                            " WHERE u.CHAT_ID=:chatId " +
-                            "AND d.TIME_TO_SEND is true AND " +
-                            "u.IS_ACTIVE is true AND r.REMIND_DATE =:currentDate").
-                    addEntity("r", Remind.class).
-                    setParameter("chatId", remind.getUser().getChatId()).
-                    setParameter("currentDate", DateManage.currentDate()).list();
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            this.remindDAO.getSessionFactory().close();
-        }
-        return reminds;
+        return this.remindDAO.getAllExecutingReminds(remind);
     }
 
-    @SuppressWarnings("unchecked")
-    private String getMaxTime(Remind remind) {
-        Session session;
-        List<Remind> reminds = new ArrayList<>();
-        try {
-            session = this.remindDAO.getSessionFactory().getCurrentSession();
-            session.beginTransaction();
-            reminds = session.createSQLQuery("SELECT * FROM REMINDS as r " +
-                            "join USERS as u on r.user_id = u.id " +
-                            "WHERE u.CHAT_ID=:id AND r.REMIND_DATE=:rd").addEntity("r", Remind.class)
-                    .setParameter("id", remind.getUser().getChatId())
-                    .setParameter("rd", remind.getRemindDate()).list();
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            return null;
-        } finally {
-            this.remindDAO.getSessionFactory().close();
-        }
-
-        if (reminds.isEmpty()) return null;
-
-        List<Double> times =
-                reminds.stream().map((r) -> {
-                    return TimeManage.toDoubleTime(r.getDetails().getLastSendTime());
-                }).sorted((d1, d2) -> d2.compareTo(d1)).collect(Collectors.toList());
-
-        String time = TimeManage.toStringTime(times.get(0));
-        if (time.length() == 4) return time + "0";
-        return time;
+    @Override
+    public boolean isExistRemind(User user, Remind remind, Details details){
+        return this.remindDAO.isExistRemind(user, remind, details);
     }
+
 
     @Override
     @SuppressWarnings("unchecked")
     public List<Integer> getIdOfAllReminds() {
-        Session session;
-        List<Integer> ides = new ArrayList<>();
-        try {
-            session = this.remindDAO.getSessionFactory().getCurrentSession();
-            session.beginTransaction();
-            ides = session.createSQLQuery("SELECT ID FROM REMINDS").list();
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            this.remindDAO.getSessionFactory().close();
-        }
-        if (ides.isEmpty()) return new ArrayList<>();
-        return ides;
+        return this.remindDAO.getIdOfAllReminds();
     }
 
     @Override
@@ -213,7 +94,7 @@ public class RemindServiceImpl implements RemindService {
                 MessageServiceImpl.messageService().getRemindMessagesByChatId(chatId);
         Message message;
         int lastIndex = remindMessage.size() - 1;
-        String time = getMaxTime(remind);
+        String time = this.remindDAO.getMaxTime(remind);
         if (time != null) {
             remind.getDetails().setLastSendTime(time);
                 if ((!remindMessage.isEmpty()) && (message = remindMessage.get(lastIndex)) != null) {
@@ -227,8 +108,7 @@ public class RemindServiceImpl implements RemindService {
     }
 
     private int getLastId(String chatId) {
-        return remindService().
-                getAllRemindsFromDB().
+        return this.remindDAO.getAllRemindsFromDB().
                 stream().filter((r) -> {
                     return r.getUser().getChatId().equals(chatId);
                 }).sorted((r1, r2) -> r2.getId() - r1.getId()).

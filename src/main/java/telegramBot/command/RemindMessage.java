@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 public class RemindMessage {
 
-    private static final String[] datesToSend = {"10/17", "13/19", "15/21", "14/23", "16/27"};
+    private static final String[] datesToSend = {"10/17", "13/19", "15/21", "14/23", "12/27"};
 
     private  static final String REMIND_MESSAGE = "Позвольте напомнить, " +
             "что я поддерживаю следующие комманды:\n" +
@@ -56,10 +56,10 @@ public class RemindMessage {
         if(storage.getDaysToSend().length() == full){
         String nextExecuteDay = storage.getDaysToSend().substring(3);
         storage.setDaysToSend(nextExecuteDay);
-        storageService().updateStorage(storage);
+        new StorageServiceImpl().updateStorage(storage);
         }
         else storage.setDaysToSend(mock);
-             storageService().updateStorage(storage);
+             new StorageServiceImpl().updateStorage(storage);
 
     }
 
