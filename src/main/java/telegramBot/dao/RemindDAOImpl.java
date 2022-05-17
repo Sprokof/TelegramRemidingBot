@@ -12,7 +12,6 @@ import telegramBot.entity.User;
 import telegramBot.manage.DateManage;
 import telegramBot.manage.TimeManage;
 
-import javax.persistence.NoResultException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,9 +20,8 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Component
 public class RemindDAOImpl implements RemindDAO {
-    @Getter
-    private static final SessionFactory sessionFactory =
-            DB.getInstance().getSessionFactory(new Class[]{User.class, Remind.class, Details.class});
+
+    private static final SessionFactory sessionFactory = InstanceSessionFactory.getInstance();
 
     @Override
     public boolean deleteByID(int id) {

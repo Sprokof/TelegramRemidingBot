@@ -3,7 +3,6 @@ package telegramBot.dao;
 import lombok.Getter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
 import org.springframework.stereotype.Component;
 import telegramBot.entity.Storage;
 
@@ -11,9 +10,7 @@ import telegramBot.entity.Storage;
 @Component
 public class StorageDAOImpl implements StorageDAO{
 
-    @Getter
-    private static final SessionFactory sessionFactory =
-            DB.getInstance().getSessionFactory(new Class[]{Storage.class});
+    private static final SessionFactory sessionFactory = InstanceSessionFactory.getInstance();
 
 
 

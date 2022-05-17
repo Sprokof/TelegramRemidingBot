@@ -1,12 +1,8 @@
 package telegramBot.dao;
 
-import lombok.Getter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
 import org.springframework.stereotype.Component;
-import telegramBot.entity.Details;
-import telegramBot.entity.Remind;
 import telegramBot.entity.User;
 
 import javax.persistence.NoResultException;
@@ -17,8 +13,7 @@ import java.util.List;
 public class UserDAOImpl implements UserDAO{
 
     private static final SessionFactory sessionFactory =
-            DB.getInstance().getSessionFactory(new Class[]{User.class, Remind.class,
-                    Details.class});
+            InstanceSessionFactory.getInstance();
 
     @Override
     public void saveUser(User user) {

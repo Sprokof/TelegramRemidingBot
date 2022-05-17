@@ -1,21 +1,18 @@
 package telegramBot.dao;
 
-import lombok.Getter;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
 import telegramBot.entity.Message;
 import telegramBot.entity.User;
 
 import javax.persistence.NoResultException;
-import java.awt.desktop.AboutHandler;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MessageDAOImpl implements MessageDAO{
 
-    private static final SessionFactory sessionFactory =
-            DB.getInstance().getSessionFactory(new Class[]{Message.class});
+    private static final SessionFactory sessionFactory = InstanceSessionFactory.getInstance();
 
     @Override
     public void save(Message message) {
@@ -193,7 +190,7 @@ public class MessageDAOImpl implements MessageDAO{
         Session session = null;
         List<Message> messages = null;
         try{
-            session = this.sessionFactory.getCurrentSession();
+            session = sessionFactory.openSession();
             session.beginTransaction();
         messages = session.createSQLQuery("SELECT * FROM MESSAGES WHERE CHAT_ID=:id AND " +
                     "IS_REMIND_MESSAGE is false").
@@ -221,7 +218,7 @@ public class MessageDAOImpl implements MessageDAO{
         Session session = null;
         List<Message> messages = new ArrayList<>();
         try {
-            session = this.sessionFactory.getCurrentSession();
+            session = sessionFactory.openSession();
             session.beginTransaction();
             messages = (ArrayList<Message>) session.
                     createSQLQuery("SELECT * FROM MESSAGES WHERE CHAT_ID=:id " +
