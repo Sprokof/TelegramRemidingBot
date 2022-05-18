@@ -74,7 +74,11 @@ public class MessageServiceImpl implements MessageService {
         else { oldMessage = messageService().getMessageByNextFields(user.getChatId(), id);
             manage.getDeleteService().deleteMessage(oldMessage);
             deleteMessage(oldMessage);
-            save(newMessage); }
+            save(newMessage);
+            manage.getDeleteService().
+                    deleteMessage(deleteLastSendMessage(user));
+
+        }
     }
 
     @Override
@@ -133,13 +137,17 @@ public class MessageServiceImpl implements MessageService {
         }
         wrongRemindsMessages.get(chatId).clear();
     }
-    public static void addWrongRemindsMessage(User user, Message message){
-        if(wrongRemindsMessages.isEmpty()) return ;
+    public static void addWrongRemindsMessage(User user, Message message) {
+        if (wrongRemindsMessages.isEmpty()) return;
         String chatId = user.getChatId();
-            wrongRemindsMessages.putIfAbsent(chatId, new ArrayList<>());
-            wrongRemindsMessages.get(chatId).add(message);
-        }
+        wrongRemindsMessages.putIfAbsent(chatId, new ArrayList<>());
+        wrongRemindsMessages.get(chatId).add(message);
+    }
 
+    @Override
+    public Message deleteLastSendMessage(User user) {
+        return this.messageDAO.deleteLastSendMessage(user);
+    }
 }
 
 

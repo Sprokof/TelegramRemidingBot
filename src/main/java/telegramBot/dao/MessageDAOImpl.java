@@ -262,4 +262,58 @@ public class MessageDAOImpl implements MessageDAO{
             }
         }
     }
+
+    @Override
+    public Message deleteLastSendMessage(User user) {
+        Integer messageId; Message message = null;
+        if((messageId = getLastMessageId(user)) == null) return null;
+        Session session = null;
+        try {
+            session = sessionFactory.openSession();
+            session.beginTransaction();
+            session.createSQLQuery("DELETE FROM MESSAGES " +
+                    "WHERE MESSAGE_ID=:messageId").setParameter("id", messageId).executeUpdate();
+            message =  new Message(user.getChatId(), messageId);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            if (session != null) {
+                if (session.getTransaction() != null) {
+                    session.getTransaction().rollback();
+
+                }
+            }
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    return message;
+    }
+
+    private Integer getLastMessageId(User user) {
+        Session session = null;
+        int id = 0;
+    try{
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        id = (int) session.createSQLQuery("SELECT MESSAGE_ID FROM MESSAGES " +
+                "WHERE CHAT_ID=:id").
+                setParameter("id",
+                        user.getChatId()).getSingleResult();
+        session.getTransaction().commit();
+    } catch (Exception e) {
+        if (session != null) {
+            if (session.getTransaction() != null) {
+                session.getTransaction().rollback();
+                if(e instanceof NoResultException) return null;
+            }
+        }
+    } finally {
+        if (session != null) {
+            session.close();
+        }
+    }
+    return id;
+
+    }
 }

@@ -19,4 +19,5 @@ public interface MessageService {
     boolean isSentMessage(Message message);
     void deleteAllNotRemindMessage(User user, RemindManage manage);
     List<Message> getAllNotRemindMessage(User user);
+    Message deleteLastSendMessage(User user);
 }

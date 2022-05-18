@@ -17,9 +17,9 @@ public class InstanceSessionFactory {
     return instance;
     }
 
-    private static SessionFactory getSessionFactory(Class<?>[] annotatedClass){
+    private static SessionFactory getSessionFactory(Class<?>[] annotatedClasses){
         Configuration configuration = new Configuration();
-        for(Class<?> c: annotatedClass){ configuration.addAnnotatedClass(c); }
+        for(Class<?> aClass: annotatedClasses){ configuration.addAnnotatedClass(aClass); }
         return configuration.configure("hibernate.cfg.xml").buildSessionFactory();
 
     }

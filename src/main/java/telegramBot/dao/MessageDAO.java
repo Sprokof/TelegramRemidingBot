@@ -17,4 +17,5 @@ public interface MessageDAO {
     void deleteAllNotRemindMessage(User user);
     List<Message> getAllNotRemindMessage(User user);
     List<Message> getRemindMessagesByChatId(String chatId);
+    Message deleteLastSendMessage(User user);
 }
