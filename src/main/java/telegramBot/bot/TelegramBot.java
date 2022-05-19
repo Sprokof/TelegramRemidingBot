@@ -84,7 +84,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                             if (!this.manage.showRemindsByDate(update.getMessage().getChatId().toString(),
                                     update.getMessage().getText())) {
                                 this.deleteMessageService.
-                                        deleteMessage(new Message(chatId, SendMessageServiceImpl.getMessageId()));
+                                        deleteMessage(new Message(chatId, SendMessageServiceImpl.getMessageId() - 1));
                                 this.sendMessageService.sendMessage(update.getMessage().getChatId().toString(),
                                         "Не получилось найти напоминания, возможно " +
                                                 "вы указали уже прошедшую дату, либо на эту дату нет напоминаний");
@@ -100,7 +100,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                                 "Вероятно вы ошиблись в формате даты. Повторите команду /show и " +
                                         "введите дату в верном формате");
                     }
-
+                    saveMessage(user, false);
                 }
             }
         }
