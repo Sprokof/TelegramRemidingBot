@@ -10,6 +10,7 @@ import static telegramBot.service.RemindServiceImpl.*;
 
 
 import java.util.List;
+import java.util.Map;
 
 public class UserServiceImpl implements UserService {
 
@@ -68,7 +69,8 @@ public class UserServiceImpl implements UserService {
         String chatId = user.getChatId();
         user.removeRemind(remind);
         remindService.deleteRemind(remind.getId());
-        new UserServiceImpl(new UserDAOImpl()).createUser(chatId);
+        user.setStarted(true);
+        userService().createUser(chatId);
     }
 }
 

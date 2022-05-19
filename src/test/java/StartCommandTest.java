@@ -3,7 +3,7 @@ import telegramBot.command.Command;
 import telegramBot.command.StartCommand;
 import telegramBot.service.SendMessageService;
 
-import static telegramBot.command.StartCommand.START_COMMAND;
+import static telegramBot.command.StartCommand.START_COMMANDS;
 import static telegramBot.command.CommandName.START;
 
 public class StartCommandTest extends AbstractCommandTest {
@@ -21,7 +21,7 @@ public class StartCommandTest extends AbstractCommandTest {
 
     @Override
     String getCommandMessage() {
-        return START_COMMAND;
+        return START_COMMANDS[0];
     }
 }
 

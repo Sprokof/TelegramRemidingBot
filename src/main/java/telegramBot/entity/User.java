@@ -19,6 +19,8 @@ public class User {
     private String chatId;
     @Column(name = "IS_ACTIVE")
     private boolean isActive;
+    @Column(name = "IS_STARTED")
+    private boolean isStarted;
 
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)
@@ -38,5 +40,6 @@ public class User {
     public User(String chatId, boolean isActive) {
         this.chatId = chatId;
         this.isActive = isActive;
+        this.isStarted = false;
     }
 }

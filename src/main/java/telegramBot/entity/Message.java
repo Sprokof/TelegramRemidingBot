@@ -15,6 +15,9 @@ import javax.persistence.*;
 @Table(name = "MESSAGES")
 @ToString
 public class Message{
+
+    public static final String DEFAULT_REMIND_ID = "0";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;

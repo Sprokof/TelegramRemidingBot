@@ -6,6 +6,8 @@ import telegramBot.entity.Details;
 import telegramBot.entity.Message;
 import telegramBot.entity.Remind;
 import telegramBot.entity.User;
+import telegramBot.manage.DateManage;
+import telegramBot.manage.TimeManage;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -105,6 +107,18 @@ public class RemindServiceImpl implements RemindService {
                             messageService().updateMessage(message);
             }
         }
+        else {
+            if(DateManage.currentDate().
+                    equals(DateManage.currentDate())){
+                double temp = TimeManage.toDoubleTime(TimeManage.currentTime()) - 2;
+                if ((time = TimeManage.
+                        toStringTime(temp)).length() == 1) {
+                    time += "0";
+                }
+            remind.getDetails().setLastSendTime(time);
+            }
+        }
+
     }
 
     private int getLastId(String chatId) {

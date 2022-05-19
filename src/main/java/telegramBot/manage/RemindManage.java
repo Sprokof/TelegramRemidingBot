@@ -12,7 +12,6 @@ import telegramBot.service.*;
 
 import java.util.*;
 
-import static telegramBot.service.RemindServiceImpl.*;
 import static telegramBot.service.UserServiceImpl.*;
 import static telegramBot.service.MessageServiceImpl.*;
 
@@ -229,7 +228,7 @@ public class RemindManage {
         remindService.updateRemindDateField(remind, date).
                 updateCountSendField(remind, 0).
                 updateTimeToSendField(remind, false).
-                updateSendHourField(remind, "00:00");
+                updateSendHourField(remind, DateManage.DEFAULT_TIME);
     }
 
     public void updateRemindFieldsToNextSendTime(Remind remind, int count) {
@@ -267,7 +266,11 @@ public class RemindManage {
 
         boolean isSent = this.service.sendMessage(chatId, maintenance);
 
-        messageService().deleteAndAddMessage(user, this, isSent);
+        try {
+            this.messageService.deleteAndAddMessage(user, this, isSent);
+        }
+        catch (NullPointerException e){ ignoreNullPointerException(); }
+
         return true;
     }
 

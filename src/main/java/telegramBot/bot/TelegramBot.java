@@ -72,29 +72,35 @@ public class TelegramBot extends TelegramLongPollingBot {
             if (message.startsWith(COMMAND_PREFIX)) {
                 command = message.split(" ")[0].toLowerCase(Locale.ROOT);
                 this.commandContainer.retrieveCommand(command).execute(update);
-                commands.get(chatId).add(command); saveCommand(user); saveCommandMessage(user);
+                commands.get(chatId).add(command); saveMessage(user, true);
+                saveMessage(user, false);
             } else {
                 if (lastCommand(chatId).equals("/add")) {
-                    acceptNewRemindFromUser(update);
+                    acceptNewRemindFromUser(user, update);
                 } else if (lastCommand(chatId).equals("/show")) {
-                    if (acceptDateFromUser(update)) {
-                        saveCommandMessage(user);
+                    if (acceptDateFromUser(user, update)) {
                         try {
+
                             if (!this.manage.showRemindsByDate(update.getMessage().getChatId().toString(),
                                     update.getMessage().getText())) {
+                                this.deleteMessageService.
+                                        deleteMessage(new Message(chatId, SendMessageServiceImpl.getMessageId()));
                                 this.sendMessageService.sendMessage(update.getMessage().getChatId().toString(),
                                         "Не получилось найти напоминания, возможно " +
                                                 "вы указали уже прошедшую дату, либо на эту дату нет напоминаний");
                             }
+
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                     } else {
+                        this.deleteMessageService.
+                                deleteMessage(new Message(chatId, SendMessageServiceImpl.getMessageId()));
                         this.sendMessageService.sendMessage(update.getMessage().getChatId().toString(),
                                 "Вероятно вы ошиблись в формате даты. Повторите команду /show и " +
                                         "введите дату в верном формате");
                     }
-                    saveCommandMessage(user);
+
                 }
             }
         }
@@ -189,24 +195,26 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
 
-    private boolean acceptDateFromUser(Update update) {
+    private boolean acceptDateFromUser(User user, Update update) {
         String input = update.getMessage().getText();
         Pattern p = Pattern.compile("[0-9]{2}\\p{P}[0-9]{2}\\p{P}[0-9]{4}");
         boolean isDate = p.matcher(input).find();
+        boolean result = false;
         if (isDate) {
             String[] dateArray = input.split("\\p{P}");
-            return DateManage.validateDate(dateArray[0], dateArray[1], dateArray[2]);
-        } else {
-            return false;
+            result = DateManage.validateDate(dateArray[0], dateArray[1], dateArray[2]);
         }
+
+        saveMessage(user, true);
+
+        return result;
 
     }
 
-    private synchronized void acceptNewRemindFromUser(Update update) {
+    private synchronized void acceptNewRemindFromUser(User user, Update update) {
         String chatId = update.getMessage().getChatId().toString();
         String input = update.getMessage().getText();
         Integer messageId = update.getMessage().getMessageId();
-        User user = userService().getUserByChatId(chatId);
         boolean isExist;
         if (isCorrectInput(input)) {
             try {
@@ -218,14 +226,9 @@ public class TelegramBot extends TelegramLongPollingBot {
                         getDateFromUserInput(input).
                                 replaceAll("\\p{P}", "\\."));
 
-                double temp = TimeManage.toDoubleTime(TimeManage.currentTime()) - 2;
-                String time;
-                if ((time = TimeManage.
-                        toStringTime(temp)).length() == 1) {
-                    time = time + "0";
-                }
 
-                Details details = new Details(key, time, false, 0);
+                Details details = new Details(key, DateManage.DEFAULT_TIME,
+                        false, 0);
 
                 isExist = remindService.isExistRemind(user, remind, details);
                 if (!isExist) {
@@ -244,7 +247,6 @@ public class TelegramBot extends TelegramLongPollingBot {
                     this.sendMessageService.sendMessage(chatId,
                             "Данное напоминание было добавлено ранее.");
                 }
-               saveCommandMessage(user);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -257,9 +259,8 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
 
             commands.get(chatId).clear();
-
-        saveCommand(user);
-        saveCommandMessage(user);
+        saveMessage(user, true);
+        saveMessage(user, false);
 
     }
 

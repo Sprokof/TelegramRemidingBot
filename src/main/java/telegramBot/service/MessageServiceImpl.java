@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 public class MessageServiceImpl implements MessageService {
 
+
     private static final Map<String, List<Message>> wrongRemindsMessages;
 
     static {
@@ -64,7 +65,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void deleteAndAddMessage(User user, RemindManage manage, boolean isRemindSent) {
+    public void deleteAndAddMessage(User user, RemindManage manage, boolean isRemindSent) throws NullPointerException {
         if(!isRemindSent) return;
         String id = toStringId(user.getReminds());
         Message newMessage = new Message(user.getChatId(), id,
@@ -115,17 +116,21 @@ public class MessageServiceImpl implements MessageService {
     }
 
 
-    public static void saveCommand(User user) {
-        Message command = new Message(user.getChatId(), "0",
-                (SendMessageServiceImpl.getMessageId() - 1), false);
-        new MessageDAOImpl().save(command);
+    public static void saveMessage(User user, boolean isCommand) {
+        Message message = null;
+        int commandCorrecting = isCommand ? - 1 : 0;
+
+        try {
+            message = new Message(user.getChatId(), Message.DEFAULT_REMIND_ID,
+                    (SendMessageServiceImpl.getMessageId() + commandCorrecting), false);
+        } catch (NullPointerException e) {
+            ignoreNullPointerException();
+        }
+        if (message != null) {
+            new MessageDAOImpl().save(message);
+        }
     }
 
-    public static void saveCommandMessage(User user) {
-        Message command = new Message(user.getChatId(), "0",
-                (SendMessageServiceImpl.getMessageId()), false);
-        new MessageDAOImpl().save(command);
-    }
 
     public static void deleteWrongRemindsMessages(User user, DeleteMessageServiceImpl service){
         if(wrongRemindsMessages.isEmpty()) return;
@@ -138,11 +143,12 @@ public class MessageServiceImpl implements MessageService {
         wrongRemindsMessages.get(chatId).clear();
     }
     public static void addWrongRemindsMessage(User user, Message message) {
-        if (wrongRemindsMessages.isEmpty()) return;
         String chatId = user.getChatId();
         wrongRemindsMessages.putIfAbsent(chatId, new ArrayList<>());
         wrongRemindsMessages.get(chatId).add(message);
     }
+
+    public static void ignoreNullPointerException(){};
 
     @Override
     public Message deleteLastSendMessage(User user) {

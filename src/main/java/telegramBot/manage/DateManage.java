@@ -4,7 +4,11 @@ import java.util.Calendar;
 import java.util.HashMap;
 
 public class DateManage {
+
+    public static final String DEFAULT_TIME = "00:00";
+
     public static final HashMap<String, String> lastDayInMonth = new HashMap<>();
+
 
     static {
         lastDayInMonth.put("01", "31.01");
@@ -19,6 +23,7 @@ public class DateManage {
         lastDayInMonth.put("10", "31.10");
         lastDayInMonth.put("11", "30.11");
         lastDayInMonth.put("12", "31.12");
+
 
     }
 
