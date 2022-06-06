@@ -7,11 +7,19 @@
     <list default="true" id="43856064-b782-429c-a6db-3ed054bc481a" name="Default Changelist" comment="">
       <change afterPath="$PROJECT_DIR$/../BlogApp/BlogApp.iml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../BlogApp/src/main/java/com/blog/app/controllers/RegistrationController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../JS/.idea/JS.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../JavaScript/JavaScript.iml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../OtherFiles/BankApplication.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScalaLearning/.idea/modules/ScalaLearning-build.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScalaLearning/.idea/modules/ScalaLearning.iml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../SpringProjects/Bank/src/main/java/bank/service/ClientService.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../SpringProjects/Scala/.idea/modules/Scala-build.iml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../SpringProjects/Scala/.idea/modules/Scala.iml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../SpringProjects/springMVC/.idea/springMVC.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/docker/env/app.env" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/docker/env/postgres.env" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/hibernate.cfg.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Converter.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../ConverterTest.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../Median.java" beforeDir="false" />
@@ -57,6 +65,11 @@
       <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/com/spring5/repositories/Spring5webApplication.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/log4j2.properties" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/templates.books/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/XORCryptTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/XORCryptTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/hibernate.cfg.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/hibernate.cfg.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/test-classes/XORCryptTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-classes/XORCryptTest.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/ex1.sql" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/hr4.sql" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/hr7.sql" beforeDir="false" />
@@ -153,6 +166,10 @@
   </component>
   <component name="RunManager" selected="Application.BotApplication">
     <configuration name="BotApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <envs>
+        <env name="NAME" value="Reminder" />
+        <env name="TOKEN" value="5129659197:AAGk_j8ONXEw-tq8upbsAp9QpSPGqEQvFhQ" />
+      </envs>
       <option name="MAIN_CLASS_NAME" value="telegramBot.BotApplication" />
       <module name="Tbot" />
       <extension name="coverage">
@@ -209,6 +226,14 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <list>
+      <item itemvalue="Application.BotApplication" />
+      <item itemvalue="JUnit.AddCommandTest" />
+      <item itemvalue="JUnit.StartCommandTest" />
+      <item itemvalue="JUnit.TelegramBotTest" />
+      <item itemvalue="JUnit.TelegramBotTest.time" />
+      <item itemvalue="Spring Boot.BotApplication" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Application.BotApplication" />
@@ -254,7 +279,9 @@
       <workItem from="1652351214930" duration="5441000" />
       <workItem from="1652431158538" duration="35300000" />
       <workItem from="1652883670963" duration="3319000" />
-      <workItem from="1652973806859" duration="5509000" />
+      <workItem from="1652973806859" duration="13650000" />
+      <workItem from="1653810249226" duration="1340000" />
+      <workItem from="1654449253742" duration="2106000" />
     </task>
     <servers />
   </component>
