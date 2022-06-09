@@ -1,6 +1,9 @@
 package telegramBot.manage;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 public class DateManage {
@@ -184,30 +187,19 @@ public class DateManage {
     }
 
     public static boolean isRemindDateBeforeCurrent(String date){
-        String[] currentDate = currentDate().
-                replaceAll("0", "").
-                split("\\.");
+        String dateFormat = "dd.MM.yyyy";
+        Date currentDate = null, remindDate = null;
+    try{
+        currentDate = new SimpleDateFormat(dateFormat).parse(currentDate());
+        remindDate = new SimpleDateFormat(dateFormat).parse(date);
+    }
+    catch (ParseException e){
+        e.printStackTrace();
+    }
 
-        String[] remindDate = date.
-                replaceAll("0", "").
-                split("\\.");
+    assert currentDate != null; assert remindDate != null;
 
-        int index = 0;
-
-        while(index != remindDate.length) {
-
-            int rd = (Integer.parseInt(remindDate[index]));
-
-            int cd = (Integer.parseInt(currentDate[index]));
-
-            if (rd < cd) {
-                return true;
-            }
-
-            index++;
-
-        }
-    return false;
+    return remindDate.before(currentDate);
 
     }
 
