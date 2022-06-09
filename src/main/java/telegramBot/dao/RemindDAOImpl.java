@@ -134,7 +134,7 @@ public class RemindDAOImpl implements RemindDAO {
             session.beginTransaction();
             reminds = session.createSQLQuery("SELECT * FROM REMINDS as r join DETAILS as d " +
                             "on r.details_id = d.id join USERS as u on r.user_id = u.id" +
-                            " WHERE u.CHAT_ID=:chatId " +
+                            " WHERE u.CHAT_ID =:chatId " +
                             "AND d.TIME_TO_SEND is true AND " +
                             "u.IS_ACTIVE is true AND r.REMIND_DATE =:currentDate").
                     addEntity("r", Remind.class).

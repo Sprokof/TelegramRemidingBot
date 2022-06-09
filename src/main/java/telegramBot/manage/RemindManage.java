@@ -240,11 +240,12 @@ public class RemindManage {
     private void deleteNotUpdatedRemind() {
         List<Remind> reminds = remindService.getAllRemindsFromDB();
         reminds.forEach((r) -> {
-            if (DateManage.nextDate(r.getRemindDate()).equals(DateManage.currentDate())) {
+            if (DateManage.isRemindDateBeforeCurrent(r.getRemindDate())) {
                 deleteUserRemind(remindService, r);
             }
         });
     }
+    
 
     private boolean send(final List<Remind> reminds) {
 
@@ -264,10 +265,9 @@ public class RemindManage {
             maintenance = messageForAggregateRemind(reminds.toArray(Remind[]::new));
         }
 
-        boolean isSent = this.service.sendMessage(chatId, maintenance);
-
         try {
-            this.messageService.deleteAndAddMessage(user, this, isSent);
+            this.messageService.deleteAndAddMessage(user, this,
+                    this.service.sendMessage(chatId, maintenance));
         }
         catch (NullPointerException e){ ignoreNullPointerException(); }
 

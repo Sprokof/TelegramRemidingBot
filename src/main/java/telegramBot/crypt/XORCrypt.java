@@ -16,11 +16,12 @@ public class XORCrypt {
     }
 
     public static String decrypt(Integer[] input, String key) {
-        String output = "";
+        StringBuilder sb = new StringBuilder("");
         for (int i = 0; i < input.length; i++) {
-            output += (char) ((input[i] - 48) ^ (int) key.charAt(i % (key.length() - 1)));
+            sb.append((char) ((input[i] - 48) ^ (int) key.charAt(i % (key.length() - 1))));
         }
-        return output;
+
+        return sb.toString();
     }
 
     public static String keyGenerate() {

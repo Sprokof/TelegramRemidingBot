@@ -9,7 +9,6 @@ public class DateManage {
 
     public static final HashMap<String, String> lastDayInMonth = new HashMap<>();
 
-
     static {
         lastDayInMonth.put("01", "31.01");
         lastDayInMonth.put("02", "28.02");
@@ -183,4 +182,33 @@ public class DateManage {
 
         return (result == 3);
     }
+
+    public static boolean isRemindDateBeforeCurrent(String date){
+        String[] currentDate = currentDate().
+                replaceAll("0", "").
+                split("\\.");
+
+        String[] remindDate = date.
+                replaceAll("0", "").
+                split("\\.");
+
+        int index = 0;
+
+        while(index != remindDate.length) {
+
+            int rd = (Integer.parseInt(remindDate[index]));
+
+            int cd = (Integer.parseInt(currentDate[index]));
+
+            if (rd < cd) {
+                return true;
+            }
+
+            index++;
+
+        }
+    return false;
+
+    }
+
 }

@@ -16,10 +16,6 @@
       <change afterPath="$PROJECT_DIR$/../SpringProjects/Scala/.idea/modules/Scala-build.iml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../SpringProjects/Scala/.idea/modules/Scala.iml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../SpringProjects/springMVC/.idea/springMVC.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/docker/env/app.env" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/docker/env/postgres.env" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/hibernate.cfg.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Converter.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../ConverterTest.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../Median.java" beforeDir="false" />
@@ -66,10 +62,10 @@
       <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/log4j2.properties" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/templates.books/index.html" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/XORCryptTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/XORCryptTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/hibernate.cfg.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/hibernate.cfg.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/XORCryptTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-classes/XORCryptTest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/crypt/XORCrypt.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/crypt/XORCrypt.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/dao/RemindDAOImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/dao/RemindDAOImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/manage/DateManage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/manage/DateManage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/manage/RemindManage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/manage/RemindManage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/ex1.sql" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/hr4.sql" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/hr7.sql" beforeDir="false" />
@@ -281,7 +277,8 @@
       <workItem from="1652883670963" duration="3319000" />
       <workItem from="1652973806859" duration="13650000" />
       <workItem from="1653810249226" duration="1340000" />
-      <workItem from="1654449253742" duration="2106000" />
+      <workItem from="1654449253742" duration="4114000" />
+      <workItem from="1654683698331" duration="5195000" />
     </task>
     <servers />
   </component>
