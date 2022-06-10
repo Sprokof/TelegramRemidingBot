@@ -25,7 +25,7 @@ public class XORCrypt {
     }
 
     public static String keyGenerate() {
-        String[] keyArray = new String[10];
+        String[] keyArray = new String[7];
         int index = 0;
         while (index != keyArray.length) {
             double d = Math.random() * 9;
@@ -33,8 +33,11 @@ public class XORCrypt {
             keyArray[index] = String.valueOf(i);
             index++;
         }
-        return Arrays.toString(keyArray).replaceAll("\\p{P}", "").
+
+        String tempKey = Arrays.toString(keyArray).replaceAll("\\p{P}", "").
                 replaceAll("\\s", "");
+
+        return MD5.hash(tempKey);
 
     }
 

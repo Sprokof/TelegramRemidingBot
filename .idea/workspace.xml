@@ -62,7 +62,8 @@
       <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/log4j2.properties" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/templates.books/index.html" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/manage/DateManage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/manage/DateManage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/crypt/XORCrypt.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/crypt/XORCrypt.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/crypt/XORCrypt.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/crypt/XORCrypt.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/ex1.sql" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/hr4.sql" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/hr7.sql" beforeDir="false" />
@@ -229,11 +230,11 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.BotApplication" />
         <item itemvalue="JUnit.TelegramBotTest.time" />
         <item itemvalue="JUnit.TelegramBotTest" />
-        <item itemvalue="JUnit.AddCommandTest" />
         <item itemvalue="JUnit.StartCommandTest" />
+        <item itemvalue="JUnit.AddCommandTest" />
+        <item itemvalue="Application.BotApplication" />
       </list>
     </recent_temporary>
   </component>
@@ -275,7 +276,8 @@
       <workItem from="1652973806859" duration="13650000" />
       <workItem from="1653810249226" duration="1340000" />
       <workItem from="1654449253742" duration="4114000" />
-      <workItem from="1654683698331" duration="9228000" />
+      <workItem from="1654683698331" duration="13410000" />
+      <workItem from="1654861689974" duration="481000" />
     </task>
     <servers />
   </component>
