@@ -30,6 +30,7 @@ public class User {
         if (this.reminds == null) this.reminds = new ArrayList<>();
         this.reminds.add(remind);
         remind.setUser(this);
+
     }
 
     public void removeRemind(Remind remind){

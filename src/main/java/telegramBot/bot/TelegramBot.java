@@ -19,7 +19,6 @@ import telegramBot.service.SendMessageServiceImpl;
 
 import static telegramBot.service.MessageServiceImpl.*;
 import static telegramBot.service.UserServiceImpl.*;
-import static telegramBot.service.RemindServiceImpl.*;
 
 
 import java.util.*;
@@ -226,11 +225,9 @@ public class TelegramBot extends TelegramLongPollingBot {
                         getDateFromUserInput(input).
                                 replaceAll("\\p{P}", "\\."));
 
+                remind.setDetails(new Details(key, DateManage.DEFAULT_TIME, false, 0));
 
-                Details details = new Details(key, DateManage.DEFAULT_TIME,
-                        false, 0);
-
-                isExist = remindService.isExistRemind(user, remind, details);
+                isExist = remindService.isExistRemind(user, remind);
                 if (!isExist) {
                     remindService.extendsLastSendTimeIfAbsent(remind);
                     addUserRemind(this.remindService, remind);

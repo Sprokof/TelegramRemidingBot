@@ -15,7 +15,7 @@ public interface RemindService{
     List<Remind> getAllExecutingReminds(Remind remind);
     List<Integer> getIdOfAllReminds();
     void extendsLastSendTimeIfAbsent(Remind remind);
-    boolean isExistRemind(User user, Remind remind, Details details);
+    boolean isExistRemind(User user, Remind remind);
     RemindServiceImpl updateTimeToSendField(Remind remind, boolean flag);
     RemindServiceImpl updateCountSendField(Remind remind, int count);
     RemindServiceImpl updateSendHourField(Remind remind, String time);

@@ -6,6 +6,8 @@ import telegramBot.dao.UserDAOImpl;
 import telegramBot.entity.Details;
 import telegramBot.entity.Remind;
 import telegramBot.entity.User;
+import telegramBot.manage.DateManage;
+
 import static telegramBot.service.RemindServiceImpl.*;
 
 
@@ -58,19 +60,16 @@ public class UserServiceImpl implements UserService {
     public User createUser(String chatId) {
         User user;
         if ((user = userService().getUserByChatId(chatId)) == null) {
-            userService().saveUser(new User(chatId, true));
+            this.userDAO.saveUser(new User(chatId, true));
         }
         return user;
     }
 
 
-    public static void deleteUserRemind(RemindServiceImpl remindService, Remind remind){
+    public static void deleteUserRemind(Remind remind){
         User user = remind.getUser();
-        String chatId = user.getChatId();
         user.removeRemind(remind);
-        remindService.deleteRemind(remind.getId());
-        user.setStarted(true);
-        userService().createUser(chatId);
+        userService().updateUser(user);
     }
 }
 

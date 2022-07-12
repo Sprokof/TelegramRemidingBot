@@ -26,12 +26,13 @@ public class RemindManage {
     private final RemindServiceImpl remindService;
     @Getter
     private final MessageServiceImpl messageService;
+    private final DateManage dateManage;
 
     @Getter
     private static final String REMIND_MESSAGE = "(R) Позвольте напомнить, что вам следует ";
     private static final String SHOW_MESSAGE = "(R) На эту дату есть следующие записи:\n";
-    private static final int countSend = 4;
-    private static final double hour = 3.01;
+    private static final int COUNT_SEND_REMIND = 4;
+    private static final double HOUR = 3.01;
 
     @Autowired
     public RemindManage(SendMessageService service, RemindServiceImpl remindService,
@@ -40,6 +41,7 @@ public class RemindManage {
         this.deleteService = deleteService;
         this.remindService = remindService;
         this.messageService = new MessageServiceImpl(new MessageDAOImpl());
+        this.dateManage = new DateManage();
 
     }
 
@@ -54,14 +56,14 @@ public class RemindManage {
             Remind remind = remindService.getRemindById(remindsId.get(index));
             if ((remind.getRemindDate().equals(DateManage.currentDate())
                     && (remind.getUser().isActive()))) {
-                changeRemind(reminds, remind, remindsId.get(index));
+                changeRemind(reminds, remind);
             }
         }
 
-        reminds.forEach((r) -> {
+        reminds.forEach((remind) -> {
             List<Remind> waitsExecuteReminds = null;
             while (!(waitsExecuteReminds =
-                    remindService.getAllExecutingReminds(r)).isEmpty()) {
+                    remindService.getAllExecutingReminds(remind)).isEmpty()) {
                 while (true) {
                     if (send(waitsExecuteReminds)) {
                         break;
@@ -138,12 +140,12 @@ public class RemindManage {
         }
 
         updateRemindFieldsToNextSendTime(remind, remind.getDetails().getCountSendOfRemind() + 1);
-        if (remind.getDetails().getCountSendOfRemind() == countSend) {
+        if (remind.getDetails().getCountSendOfRemind() == COUNT_SEND_REMIND) {
             if (isContainsDailySendMarker(decrypt)) {
                 String date = DateManage.nextDate(remind.getRemindDate());
                 updateRemindFieldsToNextDay(remind, date);
             } else {
-                deleteUserRemind(remindService, remind);
+                deleteUserRemind(remind);
             }
 
         }
@@ -181,13 +183,13 @@ public class RemindManage {
                     getEncryptedMaintenance()), remind.getDetails().getKey());
 
             if ((isContainsDailySendMarker(decrypted))) {
-                if (remind.getDetails().getCountSendOfRemind() == countSend) {
+                if (remind.getDetails().getCountSendOfRemind() == COUNT_SEND_REMIND) {
                     String date = DateManage.nextDate(reminds[i].getRemindDate());
                     updateRemindFieldsToNextDay(reminds[i], date);
                 }
             } else {
-                if (remind.getDetails().getCountSendOfRemind() == countSend) {
-                    deleteUserRemind(remindService, remind);
+                if (remind.getDetails().getCountSendOfRemind() == COUNT_SEND_REMIND) {
+                    deleteUserRemind(remind);
                 }
             }
         }
@@ -196,10 +198,10 @@ public class RemindManage {
     }
 
 
-    private void changeRemind(List<Remind> reminds, Remind remind, int index) {
+    private void changeRemind(List<Remind> reminds, Remind remind) {
         double time = TimeManage.toDoubleTime(TimeManage.currentTime());
         if (!remind.getDetails().isTimeToSend()) {
-            if ((TimeManage.timeDifference(remind.getDetails().getLastSendTime()) >= hour) && (time < 23.05)) {
+            if ((TimeManage.timeDifference(remind.getDetails().getLastSendTime()) >= HOUR) && (time < 23.05)) {
                 remindService.updateTimeToSendField(remind, true);
                 reminds.add(remindService.getRemindById(remind.getId()));
                 remindService.updateSendHourField(remind, TimeManage.currentTime());
@@ -218,7 +220,7 @@ public class RemindManage {
                 String date = DateManage.nextDate(remind.getRemindDate());
                 updateRemindFieldsToNextDay(remind, date);
             } else {
-                deleteUserRemind(remindService, remind);
+                deleteUserRemind(remind);
 
             }
         }
@@ -240,8 +242,8 @@ public class RemindManage {
     private void deleteNotUpdatedRemind() {
         List<Remind> reminds = remindService.getAllRemindsFromDB();
         reminds.forEach((r) -> {
-            if (DateManage.isRemindDateBeforeCurrent(r.getRemindDate())) {
-                deleteUserRemind(remindService, r);
+            if (dateManage.isRemindDateBeforeCurrent(r.getRemindDate())) {
+                deleteUserRemind(r);
             }
         });
     }

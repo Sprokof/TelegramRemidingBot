@@ -186,10 +186,11 @@ public class DateManage {
         return (result == 3);
     }
 
-    public static boolean isRemindDateBeforeCurrent(String date){
-        String dateFormat = "dd.MM.yyyy";
+    public boolean isRemindDateBeforeCurrent(String date){
+    String dateFormat = "dd.MM.yyyy";
         Date currentDate = null, remindDate = null;
     try{
+
         currentDate = new SimpleDateFormat(dateFormat).parse(currentDate());
         remindDate = new SimpleDateFormat(dateFormat).parse(date);
     }

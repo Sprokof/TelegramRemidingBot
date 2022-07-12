@@ -14,5 +14,5 @@ public interface RemindDAO {
     List<Remind> getAllExecutingReminds(Remind remind);
     List<Integer> getIdOfAllReminds();
     List<Remind> getAllRemindsFromDB();
-    boolean isExistRemind(User user, Remind remind, Details details);
+    boolean isExistRemind(User user, Remind remind);
 }

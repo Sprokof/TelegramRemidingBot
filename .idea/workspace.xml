@@ -62,8 +62,32 @@
       <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/log4j2.properties" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../SpringFirstApp/target/classes/templates.books/index.html" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/crypt/XORCrypt.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/crypt/XORCrypt.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/crypt/XORCrypt.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/crypt/XORCrypt.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/bot/TelegramBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/bot/TelegramBot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/command/RemindMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/command/RemindMessage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/dao/RemindDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/dao/RemindDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/dao/RemindDAOImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/dao/RemindDAOImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/entity/Remind.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/entity/Remind.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/entity/Storage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/entity/Storage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/entity/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/manage/DateManage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/manage/DateManage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/manage/RemindManage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/manage/RemindManage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/manage/TimeManage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/manage/TimeManage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/service/RemindService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/service/RemindService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/service/RemindServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/service/RemindServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telegramBot/service/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telegramBot/service/UserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/hibernate.cfg.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/hibernate.cfg.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/bot/TelegramBot.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/bot/TelegramBot.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/command/RemindMessage.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/command/RemindMessage.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/dao/RemindDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/dao/RemindDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/dao/RemindDAOImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/dao/RemindDAOImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/entity/Remind.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/entity/Remind.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/entity/Storage.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/entity/Storage.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/entity/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/entity/User.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/manage/DateManage.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/manage/DateManage.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/manage/RemindManage.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/manage/RemindManage.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/service/RemindService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/service/RemindService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/service/RemindServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/service/RemindServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/telegramBot/service/UserServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/telegramBot/service/UserServiceImpl.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/ex1.sql" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/hr4.sql" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../sql-exm/hr7.sql" beforeDir="false" />
@@ -86,6 +110,9 @@
   </component>
   <component name="CodeStyleSettingsInfer">
     <option name="done" value="true" />
+  </component>
+  <component name="ComposerSettings">
+    <execution />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -119,7 +146,9 @@
     <option name="version" value="2" />
   </component>
   <component name="ProjectId" id="21tur4tK7haLk8zFgHK5Lt3XTlp" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="autoscrollFromSource" value="true" />
     <option name="autoscrollToSource" value="true" />
@@ -133,7 +162,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Sidebar" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -162,7 +191,7 @@
     <configuration name="BotApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <envs>
         <env name="NAME" value="Reminder" />
-        <env name="TOKEN" value="5129659197:AAGk_j8ONXEw-tq8upbsAp9QpSPGqEQvFhQ" />
+        <env name="TOKEN" value="5273325791:AAEO8XaATAwpPeUKYWgf8gs4a-8oLWajXHo" />
       </envs>
       <option name="MAIN_CLASS_NAME" value="telegramBot.BotApplication" />
       <module name="Tbot" />
@@ -230,11 +259,11 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.BotApplication" />
         <item itemvalue="JUnit.TelegramBotTest.time" />
         <item itemvalue="JUnit.TelegramBotTest" />
         <item itemvalue="JUnit.StartCommandTest" />
         <item itemvalue="JUnit.AddCommandTest" />
-        <item itemvalue="Application.BotApplication" />
       </list>
     </recent_temporary>
   </component>
@@ -277,7 +306,10 @@
       <workItem from="1653810249226" duration="1340000" />
       <workItem from="1654449253742" duration="4114000" />
       <workItem from="1654683698331" duration="13410000" />
-      <workItem from="1654861689974" duration="481000" />
+      <workItem from="1654861689974" duration="15830000" />
+      <workItem from="1655827871175" duration="4702000" />
+      <workItem from="1656346459336" duration="595000" />
+      <workItem from="1656722080121" duration="6442000" />
     </task>
     <servers />
   </component>

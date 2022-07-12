@@ -18,6 +18,8 @@ import java.util.stream.Collectors;
 
 public class RemindMessage {
 
+
+
     private static final String[] datesToSend = {"10/17", "13/19", "15/21", "14/23", "12/27"};
 
     private  static final String REMIND_MESSAGE = "Позвольте напомнить, " +
@@ -29,8 +31,6 @@ public class RemindMessage {
 
 
     public static void sendToAllUsers(SendMessageService messageService){
-    int full = 5;
-    String mock = "MOCK";
     List<String> usersChatId =
             UserServiceImpl.userService().
                     getAllUsers().stream().map(User::getChatId).collect(Collectors.toList());
@@ -53,12 +53,12 @@ public class RemindMessage {
         for(String chatId : usersChatId){
             messageService.sendMessage(chatId, REMIND_MESSAGE);
         }
-        if(storage.getDaysToSend().length() == full){
+        if(storage.getDaysToSend().length() == Storage.FULL){
         String nextExecuteDay = storage.getDaysToSend().substring(3);
         storage.setDaysToSend(nextExecuteDay);
         new StorageServiceImpl().updateStorage(storage);
         }
-        else storage.setDaysToSend(mock);
+        else storage.setDaysToSend(Storage.MOCK);
              new StorageServiceImpl().updateStorage(storage);
 
     }
@@ -70,6 +70,7 @@ public class RemindMessage {
         double d = (Math.random() * 3);
 
         int index = ((int) d);
+
         return datesToSend[index];
 
     }

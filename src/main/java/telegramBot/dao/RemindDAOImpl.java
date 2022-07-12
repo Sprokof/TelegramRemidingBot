@@ -211,8 +211,7 @@ public class RemindDAOImpl implements RemindDAO {
 
     @Override
     @SuppressWarnings("unchecked")
-    public boolean isExistRemind(User user, Remind remind, Details details) {
-        remind.setDetails(details);
+    public boolean isExistRemind(User user, Remind remind) {
         user.addRemind(remind);
         String decryptMaintenance = XORCrypt.
                 decrypt(XORCrypt.stringToIntArray(remind.getEncryptedMaintenance()),

@@ -78,8 +78,8 @@ public class RemindServiceImpl implements RemindService {
     }
 
     @Override
-    public boolean isExistRemind(User user, Remind remind, Details details){
-        return this.remindDAO.isExistRemind(user, remind, details);
+    public boolean isExistRemind(User user, Remind remind){
+        return this.remindDAO.isExistRemind(user, remind);
     }
 
 

@@ -19,6 +19,10 @@ public class Storage {
     private String daysToSend;
 
 
+    public static final int FULL = 5;
+    public static final String MOCK = "MOCK";
+
+
     public Storage(int currentMonth, String daysToSend){
         this.currentMonth = currentMonth;
         this.daysToSend = daysToSend;

@@ -28,7 +28,7 @@ public class Remind {
     @JoinColumn(name = "details_id")
     private Details details;
 
-    @ManyToOne(cascade={CascadeType.PERSIST,CascadeType.REMOVE})
+    @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -63,9 +63,9 @@ public class Remind {
     @Override
     public int hashCode() {
         char[] chArray = encryptedMaintenance.toCharArray();
-        int result = (int)Character.toUpperCase(chArray[0]);
-        for(int i = 1; i<chArray.length; i++){
-            result+=(int)chArray[i];}
+        int result = (int) Character.toUpperCase(chArray[0]);
+        for(int i = 1; i < chArray.length; i++){
+            result += (int)chArray[i];}
         return result;
     }
 }

@@ -16,7 +16,7 @@ public class TimeManage {
             hour = String.valueOf(Integer.parseInt(params[22].
                     substring(params[22].indexOf("=") + 1)));
         }
-        if(minutes.length() == 1) minutes = "0"+minutes;
+        if(minutes.length() == 1) minutes = "0" +minutes;
         return String.format("%s:%s", hour, minutes);
     }
 
