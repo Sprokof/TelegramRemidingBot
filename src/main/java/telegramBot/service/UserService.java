@@ -10,4 +10,5 @@ public interface UserService {
     void updateUser(User user);
     void deleteUser(User user);
     List<User> getAllUsers();
+    User createUser(String chatId);
 }

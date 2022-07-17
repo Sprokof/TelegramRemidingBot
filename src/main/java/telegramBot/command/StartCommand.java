@@ -1,14 +1,12 @@
 package telegramBot.command;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
-import telegramBot.bot.TelegramBot;
-import telegramBot.entity.Message;
+import telegramBot.dao.UserDAOImpl;
 import telegramBot.entity.User;
 import telegramBot.service.SendMessageService;
-import telegramBot.service.SendMessageServiceImpl;
+import telegramBot.service.UserService;
 import telegramBot.service.UserServiceImpl;
 
-import static telegramBot.service.MessageServiceImpl.messageService;
 
 public class StartCommand implements Command{
 
@@ -19,18 +17,22 @@ public class StartCommand implements Command{
     };
 
     private final SendMessageService sendMessageService;
+    private final UserService userService;
+
 
     public StartCommand(SendMessageService sendMessageService){
-        this.sendMessageService = sendMessageService;}
+        this.sendMessageService = sendMessageService;
+        this.userService = new UserServiceImpl(new UserDAOImpl());
+    }
 
 
     @Override
     public boolean execute(Update update) {
         String chatId = update.getMessage().getChatId().toString();
-        User user = UserServiceImpl.userService().getUserByChatId(chatId);
+        User user = this.userService.getUserByChatId(chatId);
         if(!user.isStarted()) {
             user.setStarted(true);
-            UserServiceImpl.userService().updateUser(user);
+            userService.updateUser(user);
             return this.sendMessageService.sendMessage(chatId, START_COMMANDS[0]);
         }
         return this.sendMessageService.sendMessage(chatId, START_COMMANDS[1]);

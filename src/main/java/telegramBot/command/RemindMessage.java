@@ -2,6 +2,7 @@ package telegramBot.command;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import telegramBot.dao.UserDAOImpl;
 import telegramBot.entity.Storage;
 import telegramBot.entity.User;
 import telegramBot.manage.DateManage;
@@ -32,8 +33,7 @@ public class RemindMessage {
 
     public static void sendToAllUsers(SendMessageService messageService){
     List<String> usersChatId =
-            UserServiceImpl.userService().
-                    getAllUsers().stream().map(User::getChatId).collect(Collectors.toList());
+                    new UserServiceImpl(new UserDAOImpl()).getAllUsers().stream().map(User::getChatId).collect(Collectors.toList());
 
         String currentDay =
                 DateManage.

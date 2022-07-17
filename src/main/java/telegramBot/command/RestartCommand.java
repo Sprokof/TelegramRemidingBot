@@ -1,38 +1,43 @@
 package telegramBot.command;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
-import telegramBot.entity.Message;
+
+import telegramBot.dao.UserDAOImpl;
 import telegramBot.entity.User;
 
-import static telegramBot.service.MessageServiceImpl.messageService;
-import static telegramBot.service.UserServiceImpl.*;
 import telegramBot.service.SendMessageService;
-import telegramBot.service.SendMessageServiceImpl;
+import telegramBot.service.UserService;
+import telegramBot.service.UserServiceImpl;
+
 
 public class RestartCommand implements Command {
     public static String[] RESTART_COMMANDS = {"Вы возообновили напоминания.",
             "Невозможно возообновить активные напоминания."};
 
     private SendMessageService sendMessageService;
+    private UserService userService;
 
     public RestartCommand(SendMessageService sendMessageService) {
-
         this.sendMessageService = sendMessageService;
+        this.userService = new UserServiceImpl(new UserDAOImpl());
     }
 
     @Override
     public boolean execute(Update update) {
         String chatId = update.getMessage().getChatId().toString();
         if (!restart(chatId)){
-        return this.sendMessageService.sendMessage(chatId, RESTART_COMMANDS[1]);}
-        else return this.sendMessageService.sendMessage(chatId, RESTART_COMMANDS[0]);
+        return this.sendMessageService.sendMessage(chatId, RESTART_COMMANDS[1]);
+        }
+        else {
+            return this.sendMessageService.sendMessage(chatId, RESTART_COMMANDS[0]);
+        }
     }
 
     private boolean restart(String chatId) {
-       User user = userService().getUserByChatId(chatId);
+       User user = this.userService.getUserByChatId(chatId);
        if(!user.isActive()) {
            user.setActive(true);
-           userService().updateUser(user);
+           this.userService.updateUser(user);
            return true; }
        else return false;
 

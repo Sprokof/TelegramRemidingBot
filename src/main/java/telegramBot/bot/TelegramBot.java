@@ -1,6 +1,7 @@
 package telegramBot.bot;
 
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -16,6 +17,7 @@ import static telegramBot.command.RemindMessage.*;
 
 import telegramBot.service.RemindServiceImpl;
 import telegramBot.service.SendMessageServiceImpl;
+import telegramBot.service.UserService;
 
 import static telegramBot.service.MessageServiceImpl.*;
 import static telegramBot.service.UserServiceImpl.*;
@@ -36,6 +38,9 @@ public class TelegramBot extends TelegramLongPollingBot {
         commands = new HashMap<>();
     }
 
+
+    @Autowired
+    private UserService userService;
     @Value("${bot.username}")
     private String botUsername;
     @Value("${bot.token}")
@@ -65,7 +70,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         User user;
         if (update.hasMessage() && update.getMessage().hasText()) {
             chatId = update.getMessage().getChatId().toString();
-            user = userService().createUser(chatId);
+            user = userService.createUser(chatId);
             commands.putIfAbsent(chatId, new ArrayList<String>());
             String message = update.getMessage().getText().trim();
             if (message.startsWith(COMMAND_PREFIX)) {

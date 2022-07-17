@@ -1,19 +1,17 @@
 package telegramBot.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import telegramBot.dao.RemindDAOImpl;
+import org.springframework.stereotype.Component;
+
 import telegramBot.dao.UserDAOImpl;
-import telegramBot.entity.Details;
 import telegramBot.entity.Remind;
 import telegramBot.entity.User;
-import telegramBot.manage.DateManage;
 
-import static telegramBot.service.RemindServiceImpl.*;
 
 
 import java.util.List;
-import java.util.Map;
 
+@Component
 public class UserServiceImpl implements UserService {
 
     private final UserDAOImpl userDAO;
@@ -43,10 +41,6 @@ public class UserServiceImpl implements UserService {
         this.userDAO.deleteUser(user);
     }
 
-    public static UserServiceImpl userService() {
-        return new UserServiceImpl(new UserDAOImpl());
-    }
-
     @Override
     public List<User> getAllUsers() {
         return this.userDAO.getAllActiveUser();
@@ -59,7 +53,7 @@ public class UserServiceImpl implements UserService {
 
     public User createUser(String chatId) {
         User user;
-        if ((user = userService().getUserByChatId(chatId)) == null) {
+        if ((user = getUserByChatId(chatId)) == null) {
             this.userDAO.saveUser(new User(chatId, true));
         }
         return user;
@@ -67,9 +61,10 @@ public class UserServiceImpl implements UserService {
 
 
     public static void deleteUserRemind(Remind remind){
+        String chatId = remind.getUser().getChatId();
         User user = remind.getUser();
         user.removeRemind(remind);
-        userService().updateUser(user);
+        new UserServiceImpl(new UserDAOImpl()).createUser(chatId);
     }
 }
 

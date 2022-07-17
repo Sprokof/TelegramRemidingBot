@@ -28,7 +28,7 @@ public class Remind {
     @JoinColumn(name = "details_id")
     private Details details;
 
-    @ManyToOne(cascade=CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name = "user_id")
     private User user;
 
