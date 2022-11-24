@@ -15,4 +15,8 @@ public interface RemindDAO {
     List<Integer> getIdOfAllReminds();
     List<Remind> getAllRemindsFromDB();
     boolean isExistRemind(User user, Remind remind);
+    void insertIntoExecutedRemind(Remind remind);
+    boolean remindExecuted(Remind remind);
+    Remind findExecutedRemindByDate(String date);
+    void deleteExecutedRemindsById(int remindId);
 }

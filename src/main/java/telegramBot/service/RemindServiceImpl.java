@@ -1,21 +1,23 @@
 package telegramBot.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import telegramBot.dao.RemindDAOImpl;
-import telegramBot.entity.Details;
-import telegramBot.entity.Message;
 import telegramBot.entity.Remind;
 import telegramBot.entity.User;
 import telegramBot.manage.DateManage;
 import telegramBot.manage.TimeManage;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class RemindServiceImpl implements RemindService {
 
+    @Autowired
+    private SendMessageService messageService;
+
     private final RemindDAOImpl remindDAO;
+
 
     public RemindServiceImpl(RemindDAOImpl remindDAO) {
         this.remindDAO = remindDAO;
@@ -23,13 +25,12 @@ public class RemindServiceImpl implements RemindService {
 
     @Override
     public boolean saveRemind(Remind remind) {
-
         return this.remindDAO.save(remind);
     }
 
     @Override
-    public void deleteRemind(int index) {
-        this.remindDAO.deleteByID(index);
+    public void deleteRemind(int id) {
+        this.remindDAO.deleteByID(id);
     }
 
     @Override
@@ -65,10 +66,10 @@ public class RemindServiceImpl implements RemindService {
     }
 
     @Override
-    public RemindServiceImpl updateSendHourField(Remind remind, String time) {
+    public void updateSendHourField(Remind remind, String time) {
         remind.getDetails().setLastSendTime(time);
         this.remindDAO.update(remind);
-        return this;
+        deleteExecutedRemind(remind);
     }
 
     @Override
@@ -91,44 +92,45 @@ public class RemindServiceImpl implements RemindService {
 
     @Override
     public void extendsLastSendTimeIfAbsent(Remind remind) {
-        String chatId = remind.getUser().getChatId();
-        List<Message> remindMessage =
-                MessageServiceImpl.messageService().getRemindMessagesByChatId(chatId);
-        Message message;
-        int lastIndex = remindMessage.size() - 1;
-        String time = this.remindDAO.getMaxTime(remind);
-        if (time != null) {
-            remind.getDetails().setLastSendTime(time);
-                if ((!remindMessage.isEmpty()) && (message = remindMessage.get(lastIndex)) != null) {
-                    int remindId = getLastId(chatId) + 1;
-                    message.setRemindId((String.format("%s%s%d",
-                            message.getRemindId(), "/", remindId)));
-                    MessageServiceImpl.
-                            messageService().updateMessage(message);
-            }
+        Remind executedRemind;
+        String time;
+        if ((executedRemind = findExecutedRemindByDate(remind.getRemindDate())) != null) {
+            time = executedRemind.getDetails().getLastSendTime();
         }
         else {
-            if(DateManage.currentDate().
-                    equals(DateManage.currentDate())){
-                double temp = TimeManage.toDoubleTime(TimeManage.currentTime()) - 2;
-                if ((time = TimeManage.
-                        toStringTime(temp)).length() == 1) {
-                    time += "0";
-                }
-            remind.getDetails().setLastSendTime(time);
+            if(remind.getRemindDate().equals(DateManage.currentDate())) {
+                time = TimeManage.currentTime();
             }
+            else time = TimeManage.DEFAULT_TIME;
         }
-
+        remind.getDetails().setLastSendTime(time);
     }
 
-    private int getLastId(String chatId) {
-        return this.remindDAO.getAllRemindsFromDB().
-                stream().filter((r) -> {
-                    return r.getUser().getChatId().equals(chatId);
-                }).sorted((r1, r2) -> r2.getId() - r1.getId()).
-                collect(Collectors.toList()).get(0).getId();
+    @Override
+    public void markAsExecuted(Remind remind) {
+        if(remindExecuted(remind)) return ;
+        this.remindDAO.insertIntoExecutedRemind(remind);
     }
 
+    @Override
+    public boolean remindExecuted(Remind remind) {
+        return this.remindDAO.remindExecuted(remind);
+    }
+
+    @Override
+    public Remind findExecutedRemindByDate(String date) {
+        return this.remindDAO.findExecutedRemindByDate(date);
+    }
+
+    @Override
+    public boolean sendRemind(String chatId, String maintenance) {
+        return this.messageService.sendMessage(chatId, maintenance);
+    }
+
+    @Override
+    public void deleteExecutedRemind(Remind remind) {
+        this.remindDAO.deleteExecutedRemindsById(remind.getId());
+    }
 }
 
 

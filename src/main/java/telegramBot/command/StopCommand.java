@@ -1,15 +1,9 @@
 package telegramBot.command;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
-import telegramBot.bot.TelegramBot;
 import telegramBot.dao.UserDAOImpl;
-import telegramBot.entity.Details;
-import telegramBot.entity.Message;
-import telegramBot.entity.Remind;
 import telegramBot.entity.User;
 import telegramBot.service.*;
-
-import static telegramBot.service.MessageServiceImpl.messageService;
 
 public class StopCommand implements Command {
     public static String[] STOP_COMMANDS = {"Вы остановили напоминания. /restart - для возообновления " +

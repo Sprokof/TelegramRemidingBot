@@ -6,10 +6,12 @@ import java.security.NoSuchAlgorithmException;
 public class MD5 {
 
     public static String hash(String text) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         MessageDigest md = null;
         try {
+
             md = MessageDigest.getInstance("MD5");
+
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
@@ -17,6 +19,7 @@ public class MD5 {
         md.update(text.getBytes());
 
         byte[] bytes = md.digest();
+
         for (byte aByte : bytes) {
             sb.append(Integer.toString((aByte & 0xff) + 0x100, 16).substring(1));
         }

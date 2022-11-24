@@ -11,8 +11,7 @@ public class InstanceSessionFactory {
 
     public static synchronized SessionFactory getInstance(){
         if(instance == null){
-            instance = getSessionFactory(new Class[]{Message.class,
-                    Storage.class, User.class, Remind.class, Details.class});
+            instance = getSessionFactory(new Class[]{User.class, Remind.class, Details.class});
         }
     return instance;
     }

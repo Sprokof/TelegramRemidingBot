@@ -11,7 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "DETAILS")
+@Table(name = "REMINDS_DETAILS")
 public class Details {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,9 +25,8 @@ public class Details {
     @Column(name = "KEY_TO_DECRYPT")
     private String key;
 
-    public Details(String key, String lastSendTime, boolean timeToSend, int countSendOfRemind) {
+    public Details(String key, boolean timeToSend, int countSendOfRemind) {
         this.key = key;
-        this.lastSendTime = lastSendTime;
         this.timeToSend = timeToSend;
         this.countSendOfRemind = countSendOfRemind;
     }

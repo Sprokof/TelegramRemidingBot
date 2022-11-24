@@ -3,14 +3,12 @@ package telegramBot.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 import telegramBot.crypt.XORCrypt;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "REMINDS")
+@Table(name = "USERS_REMINDS")
 @NoArgsConstructor
 @Getter
 @Setter

@@ -3,6 +3,7 @@ package telegramBot.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import telegramBot.dao.UserDAO;
 import telegramBot.dao.UserDAOImpl;
 import telegramBot.entity.Remind;
 import telegramBot.entity.User;
@@ -14,7 +15,12 @@ import java.util.List;
 @Component
 public class UserServiceImpl implements UserService {
 
-    private final UserDAOImpl userDAO;
+    @Autowired
+    private UserDAO userDAO;
+
+    @Autowired
+    private RemindService service;
+
 
     @Autowired
     public UserServiceImpl(UserDAOImpl userDAO) {
@@ -60,11 +66,12 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    public static void deleteUserRemind(Remind remind){
-        String chatId = remind.getUser().getChatId();
+    public void deleteUserRemind(Remind remind){
         User user = remind.getUser();
         user.removeRemind(remind);
-        new UserServiceImpl(new UserDAOImpl()).createUser(chatId);
+        service.deleteRemind(remind.getId());
+        updateUser(user);
+
     }
 }
 

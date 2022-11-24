@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface RemindService{
     boolean saveRemind(Remind remind);
-    void deleteRemind(int index);
+    void deleteRemind(int id);
     RemindServiceImpl updateRemindDateField(Remind remind, String newDate);
     List<Remind> getAllRemindsFromDB();
     Remind getRemindById(int id);
@@ -18,6 +18,11 @@ public interface RemindService{
     boolean isExistRemind(User user, Remind remind);
     RemindServiceImpl updateTimeToSendField(Remind remind, boolean flag);
     RemindServiceImpl updateCountSendField(Remind remind, int count);
-    RemindServiceImpl updateSendHourField(Remind remind, String time);
+    void updateSendHourField(Remind remind, String time);
+    void markAsExecuted(Remind remind);
+    boolean remindExecuted(Remind remind);
+    Remind findExecutedRemindByDate(String date);
+    boolean sendRemind(String chatId, String maintenance);
+    void deleteExecutedRemind(Remind remind);
 }
 

@@ -2,32 +2,13 @@ package telegramBot.manage;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.Locale;
 
 public class DateManage {
 
-    public static final String DEFAULT_TIME = "00:00";
-
-    public static final HashMap<String, String> lastDayInMonth = new HashMap<>();
-
-    static {
-        lastDayInMonth.put("01", "31.01");
-        lastDayInMonth.put("02", "28.02");
-        lastDayInMonth.put("03", "30.03");
-        lastDayInMonth.put("04", "30.04");
-        lastDayInMonth.put("05", "31.05");
-        lastDayInMonth.put("06", "30.06");
-        lastDayInMonth.put("07", "31.07");
-        lastDayInMonth.put("08", "31.08");
-        lastDayInMonth.put("09", "30.09");
-        lastDayInMonth.put("10", "31.10");
-        lastDayInMonth.put("11", "30.11");
-        lastDayInMonth.put("12", "31.12");
-
-
-    }
 
     public static String dayAndMonth(String date) {
         String month = detachMonthFromInputDate(date);
@@ -104,31 +85,7 @@ public class DateManage {
     }
 
     public static String nextDate(String date) {
-        String[] thisDate = date.split("");
-        String nextDate = String.format(thisDate[0] + "%d" + thisDate[2] +
-                "" + thisDate[3] + "" + thisDate[4] + "" + thisDate[5] + "" +
-                thisDate[6] + "" + thisDate[7] + "" + thisDate[8] + "" + thisDate[9], Integer.parseInt(thisDate[1]) + 1);
-
-        if (nextDate.startsWith("0") && nextDate.indexOf(".") == 3) {
-            nextDate = nextDate.substring(1);
-        }
-
-        if (nextDate.indexOf(".") == 3) {
-            nextDate = String.format("%d" + thisDate[2] +
-                            "" + thisDate[3] + "" + thisDate[4] + "" + thisDate[5] + "" +
-                            thisDate[6] + "" + thisDate[7] + "" + thisDate[8] + "" + thisDate[9],
-                    Integer.parseInt(thisDate[0] + thisDate[1]) + 1);
-        }
-
-        String lastDate = lastDayInMonth.get(nextDate.substring(nextDate.indexOf(".") + 1,
-                nextDate.lastIndexOf(".")));
-
-        if ((Integer.parseInt(nextDate.substring(0, nextDate.indexOf("."))) - 1)
-                == Integer.parseInt(lastDate.substring(0, lastDate.indexOf(".")))) {
-            nextDate = DateManage.toNextMonth(nextDate);
-        }
-
-        return nextDate;
+       return parseToDate(date).plusDays(1).toString();
     }
 
     public static String currentDate() {
@@ -186,22 +143,17 @@ public class DateManage {
         return (result == 3);
     }
 
-    public boolean isRemindDateBeforeCurrent(String date){
-    String dateFormat = "dd.MM.yyyy";
-        Date currentDate = null, remindDate = null;
-    try{
+    public boolean isRemindDateBefore(String date){
+        LocalDate current = parseToDate(currentDate());
+        LocalDate remindDate = parseToDate(date);
+    return remindDate.isBefore(current);
 
-        currentDate = new SimpleDateFormat(dateFormat).parse(currentDate());
-        remindDate = new SimpleDateFormat(dateFormat).parse(date);
-    }
-    catch (ParseException e){
-        e.printStackTrace();
-    }
-
-    assert currentDate != null; assert remindDate != null;
-
-    return remindDate.before(currentDate);
 
     }
 
+    private static LocalDate parseToDate(String date){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        formatter = formatter.withLocale(Locale.ENGLISH);
+        return LocalDate.parse(date, formatter);
+    }
 }

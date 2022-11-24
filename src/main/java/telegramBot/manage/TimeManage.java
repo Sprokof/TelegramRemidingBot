@@ -3,6 +3,7 @@ package telegramBot.manage;
 import java.util.Calendar;
 
 public class TimeManage {
+    public static final String DEFAULT_TIME = "00:00";
 
     public static String currentTime() {
         String[] params = Calendar.getInstance().toString().split(",");

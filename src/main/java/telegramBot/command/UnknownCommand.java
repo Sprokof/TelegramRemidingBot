@@ -1,12 +1,7 @@
 package telegramBot.command;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
-import telegramBot.bot.TelegramBot;
-import telegramBot.entity.Message;
 import telegramBot.service.SendMessageService;
-import telegramBot.service.SendMessageServiceImpl;
-
-import static telegramBot.service.MessageServiceImpl.messageService;
 
 public class UnknownCommand implements Command{
     public static final String UNKNOWN_COMMAND = "Unknown input command. /instr для получения сводки.";

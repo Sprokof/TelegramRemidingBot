@@ -1,7 +1,5 @@
 package telegramBot.service;
 
-import telegramBot.entity.Message;
-
 public interface DeleteMessageService {
-    boolean deleteMessage(Message message);
+    boolean deleteMessage(String chatId, Integer messageId);
 }

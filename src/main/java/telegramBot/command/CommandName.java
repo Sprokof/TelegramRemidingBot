@@ -10,7 +10,6 @@ public enum CommandName {
     INSTR("/instr");
 
 
-
     private String commandName;
 
     CommandName(String commandName){this.commandName = commandName;}
@@ -18,4 +17,5 @@ public enum CommandName {
     public String getCommandName() {
         return commandName;
     }
+
 }

@@ -2,6 +2,10 @@ package telegramBot.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+import org.springframework.beans.factory.annotation.Autowired;
+import telegramBot.service.RemindService;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -12,6 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -23,7 +28,8 @@ public class User {
     private boolean isStarted;
 
 
-    @OneToMany(cascade = CascadeType.MERGE, mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.REFRESH, mappedBy = "user", fetch = FetchType.EAGER)
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Remind> reminds;
 
     public void addRemind(Remind remind) {
@@ -36,6 +42,7 @@ public class User {
     public void removeRemind(Remind remind){
         this.reminds.remove(remind);
         remind.setUser(null);
+
     }
 
     public User(String chatId, boolean isActive) {
